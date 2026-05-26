@@ -6,7 +6,8 @@
  * All application code imports from this module — never from process.env directly.
  */
 
-require('dotenv').config();
+const path = require('path');
+require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
 
 const REQUIRED_KEYS = [
   'PORT',
@@ -32,6 +33,23 @@ if (missingKeys.length > 0) {
   process.exit(1);
 }
 
+// Optional conditional check for Meta WhatsApp keys if the provider is set to 'meta'
+if (process.env.WHATSAPP_PROVIDER === 'meta') {
+  const metaKeys = [
+    'META_WHATSAPP_PHONE_NUMBER_ID',
+    'META_WHATSAPP_ACCESS_TOKEN',
+    'META_WHATSAPP_TEMPLATE_NAME',
+    'WHATSAPP_RECEIVER_NUMBER',
+  ];
+  const missingMeta = metaKeys.filter((key) => !process.env[key]);
+  if (missingMeta.length > 0) {
+    console.error(
+      `\n❌  [VoltEx] Missing required Meta WhatsApp API variables:\n  ${missingMeta.join('\n  ')}\n`
+    );
+    process.exit(1);
+  }
+}
+
 module.exports = Object.freeze({
   PORT: parseInt(process.env.PORT, 10) || 5000,
   NODE_ENV: process.env.NODE_ENV,
@@ -55,4 +73,12 @@ module.exports = Object.freeze({
   CLIENT_URL: process.env.CLIENT_URL,
   RESEND_API_KEY: process.env.RESEND_API_KEY || '',
   EMAIL_FROM: process.env.EMAIL_FROM || 'support@shopchipzo.com',
+
+  // WhatsApp integration configs
+  WHATSAPP_PROVIDER: process.env.WHATSAPP_PROVIDER || 'mock',
+  META_WHATSAPP_PHONE_NUMBER_ID: process.env.META_WHATSAPP_PHONE_NUMBER_ID || '',
+  META_WHATSAPP_ACCESS_TOKEN: process.env.META_WHATSAPP_ACCESS_TOKEN || '',
+  META_WHATSAPP_TEMPLATE_NAME: process.env.META_WHATSAPP_TEMPLATE_NAME || '',
+  WHATSAPP_RECEIVER_NUMBER: process.env.WHATSAPP_RECEIVER_NUMBER || '',
 });
+

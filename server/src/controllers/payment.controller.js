@@ -6,6 +6,7 @@ const cartService = require('../services/cart.service');
 const deliveryService = require('../services/delivery.service');
 const emailService = require('../services/emailService');
 const generateInvoicePdf = require('../utils/generateInvoice');
+const whatsappService = require('../services/whatsapp.service');
 const ApiError = require('../utils/ApiError');
 const ApiResponse = require('../utils/ApiResponse');
 const asyncHandler = require('../utils/asyncHandler');
@@ -133,6 +134,11 @@ const verifyPayment = asyncHandler(async (req, res) => {
   // ── 6. Assign delivery (non-blocking — don't fail order on delivery error) ─
   deliveryService.assignDelivery(order._id.toString()).catch((err) => {
     logger.error(`[Delivery] Failed to assign delivery for order ${order._id}: ${err.message}`);
+  });
+
+  // ── 7. Send WhatsApp Notification to hardcoded receiver (non-blocking) ─────
+  whatsappService.sendOrderNotification(order).catch((err) => {
+    logger.error(`[WhatsApp] Failed to trigger order notification for order ${order._id}: ${err.message}`);
   });
 
   logger.info(`[Payment] Verified — orderId: ${order._id}, paymentId: ${razorpayPaymentId}`);
