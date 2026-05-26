@@ -49,6 +49,19 @@ app.use(
 app.use(express.json({ limit: '10kb' }));
 app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 
+// ─── Express 4.19+ req.query getter workaround for express-mongo-sanitize ───
+app.use((req, res, next) => {
+  if (req.query) {
+    Object.defineProperty(req, 'query', {
+      value: { ...req.query },
+      writable: true,
+      configurable: true,
+      enumerable: true,
+    });
+  }
+  next();
+});
+
 // ─── Security: NoSQL injection prevention ────────────────────────────────────
 app.use(mongoSanitize());
 

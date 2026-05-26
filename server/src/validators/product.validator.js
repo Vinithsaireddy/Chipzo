@@ -3,24 +3,12 @@
 const Joi = require('joi');
 const { PRODUCT_CATEGORIES } = require('../models/Product');
 
+// ── Create ─────────────────────────────────────────────────────────────────────
 const createProductSchema = Joi.object({
+  id: Joi.string().trim().max(200),
+
   name: Joi.string().trim().min(2).max(200).required().messages({
     'any.required': 'Product name is required',
-  }),
-
-  price: Joi.number().min(0).required().messages({
-    'number.min': 'Price cannot be negative',
-    'any.required': 'Price is required',
-  }),
-
-  description: Joi.string().trim().min(10).max(2000).required().messages({
-    'string.min': 'Description must be at least 10 characters',
-    'any.required': 'Description is required',
-  }),
-
-  stock: Joi.number().integer().min(0).required().messages({
-    'number.min': 'Stock cannot be negative',
-    'any.required': 'Stock quantity is required',
   }),
 
   category: Joi.string()
@@ -30,14 +18,41 @@ const createProductSchema = Joi.object({
       'any.only': `Category must be one of: ${PRODUCT_CATEGORIES.join(', ')}`,
       'any.required': 'Category is required',
     }),
+
+  description: Joi.string().trim().max(2000).allow('').default(''),
+
+  specifications: Joi.object().default({}),
+
+  interfaces: Joi.array().items(Joi.string()).default([]),
+
+  price: Joi.number().min(0).allow(null).default(null).messages({
+    'number.min': 'Price cannot be negative',
+  }),
+
+  currency: Joi.string().trim().uppercase().max(10).default('INR'),
+
+  in_stock: Joi.boolean().default(true),
+
+  stock: Joi.number().integer().min(0).default(0).messages({
+    'number.min': 'Stock cannot be negative',
+  }),
+
+  images: Joi.array().items(Joi.string().uri()).default([]),
 });
 
+// ── Update (all fields optional, at least one required) ───────────────────────
 const updateProductSchema = Joi.object({
+  id: Joi.string().trim().max(200),
   name: Joi.string().trim().min(2).max(200),
-  price: Joi.number().min(0),
-  description: Joi.string().trim().min(10).max(2000),
-  stock: Joi.number().integer().min(0),
   category: Joi.string().valid(...PRODUCT_CATEGORIES),
-}).min(1); // At least one field must be provided for update
+  description: Joi.string().trim().max(2000).allow(''),
+  specifications: Joi.object(),
+  interfaces: Joi.array().items(Joi.string()),
+  price: Joi.number().min(0).allow(null),
+  currency: Joi.string().trim().uppercase().max(10),
+  in_stock: Joi.boolean(),
+  stock: Joi.number().integer().min(0),
+  images: Joi.array().items(Joi.string().uri()),
+}).min(1); // At least one field must be provided
 
 module.exports = { createProductSchema, updateProductSchema };

@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Checkout - CHIPZO</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed": "#ffdbd0",
+                        "on-secondary-fixed-variant": "#334f00",
+                        "inverse-primary": "#41ddc2",
+                        "surface": "#f4fbf7",
+                        "primary-container": "#00c2a8",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "ink": "#0D0D0D",
+                        "background": "#f4fbf7",
+                        "surface-container-low": "#eef5f2",
+                        "on-primary-container": "#00493e",
+                        "on-primary-fixed-variant": "#005045",
+                        "outline-variant": "#bbcac4",
+                        "tertiary-container": "#ff8d69",
+                        "on-error": "#ffffff",
+                        "on-background": "#161d1b",
+                        "tertiary-fixed-dim": "#ffb59e",
+                        "secondary-fixed": "#b2f746",
+                        "on-error-container": "#93000a",
+                        "error": "#ba1a1a",
+                        "surface-dark": "#1A1A1A",
+                        "surface-container-highest": "#dde4e1",
+                        "primary": "#006b5c",
+                        "background-light": "#F2F2EE",
+                        "surface-tint": "#006b5c",
+                        "on-primary": "#ffffff",
+                        "border-dark": "#F2F2EE",
+                        "on-surface": "#161d1b",
+                        "on-primary-fixed": "#00201b",
+                        "inverse-surface": "#2b3230",
+                        "background-dark": "#0D0D0D",
+                        "surface-container-high": "#e2eae6",
+                        "circuit-teal": "#00A892",
+                        "error-container": "#ffdad6",
+                        "primary-fixed-dim": "#41ddc2",
+                        "inverse-on-surface": "#ebf2ef",
+                        "surface-bright": "#f4fbf7",
+                        "secondary-fixed-dim": "#98da27",
+                        "on-surface-variant": "#3c4a46",
+                        "surface-variant": "#dde4e1",
+                        "on-tertiary-fixed": "#3a0b00",
+                        "secondary": "#446900",
+                        "surface-dim": "#d4dcd8",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-container": "#496f00",
+                        "on-tertiary-container": "#752509",
+                        "tertiary": "#9d4224",
+                        "outline": "#6c7a76",
+                        "on-secondary-fixed": "#121f00",
+                        "secondary-container": "#b2f746",
+                        "primary-fixed": "#65fade",
+                        "surface-container": "#e8f0ec",
+                        "on-tertiary-fixed-variant": "#7e2c0f"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0px",
+                        "lg": "0px",
+                        "xl": "0px",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "stack-md": "1rem",
+                        "container-max": "1280px",
+                        "stack-sm": "0.5rem",
+                        "margin-mobile": "1.5rem",
+                        "border-width-heavy": "4px",
+                        "border-width": "2px",
+                        "stack-lg": "2rem",
+                        "gutter": "2rem"
+                    },
+                    "fontFamily": {
+                        "price-tabular": ["Space Grotesk"],
+                        "label-bold": ["Space Grotesk"],
+                        "headline-lg": ["Space Grotesk"],
+                        "display-xl-mobile": ["Space Grotesk"],
+                        "display-xl": ["Space Grotesk"],
+                        "body-lg": ["Space Grotesk"],
+                        "headline-md": ["Space Grotesk"],
+                        "body-md": ["Space Grotesk"]
+                    },
+                    "boxShadow": {
+                        "hard": "4px 4px 0px 0px #000000",
+                        "hard-sm": "2px 2px 0px 0px #000000"
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Space Grotesk', sans-serif; background-color: #f4fbf7; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .brutalist-border { border: 2px solid black; }
+        .brutalist-shadow { box-shadow: 4px 4px 0px 0px #000000; }
+        .brutalist-input { 
+            background-color: #eef5f2; 
+            border: 2px solid black;
+            border-radius: 0 !important;
+        }
+        .brutalist-input:focus {
+            ring: 0;
+            outline: 2px solid #00c2a8;
+            box-shadow: 2px 2px 0px 0px #000000;
+        }
+    </style>
+</head>
+<body class="bg-background text-ink antialiased">
+<header class="bg-surface border-b-2 border-ink sticky top-0 z-50 py-4">
+<div class="max-w-7xl mx-auto px-6 flex items-center justify-between">
+<a class="text-3xl font-black tracking-tighter text-ink uppercase" href="#">
+<span class="bg-primary-container px-2 border-2 border-ink brutalist-shadow">CHIPZO</span>
+</a>
+<div class="flex items-center text-ink font-bold text-xs tracking-widest uppercase bg-surface-container-high px-3 py-1 border-2 border-ink">
+<span class="material-symbols-outlined text-sm mr-2">lock</span> [SECURE_LINK_ENCRYPTED]
+        </div>
+</div>
+</header>
+<main class="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 lg:grid-cols-12 gap-10">
+<!-- Left Column: Checkout Flow -->
+<div class="lg:col-span-8 flex flex-col gap-10">
+<!-- Progress Indicator (Tactical Stepper) -->
+<div class="flex items-center justify-between gap-2">
+<div class="flex-1 flex flex-col items-center">
+<div class="w-full h-4 brutalist-border bg-primary-container brutalist-shadow mb-2"></div>
+<span class="text-[10px] font-black uppercase tracking-tighter text-primary-container">01_ADDRESS</span>
+</div>
+<div class="flex-1 flex flex-col items-center opacity-40">
+<div class="w-full h-4 brutalist-border bg-surface-dim mb-2"></div>
+<span class="text-[10px] font-black uppercase tracking-tighter">02_PAYMENT</span>
+</div>
+<div class="flex-1 flex flex-col items-center opacity-40">
+<div class="w-full h-4 brutalist-border bg-surface-dim mb-2"></div>
+<span class="text-[10px] font-black uppercase tracking-tighter">03_REVIEW</span>
+</div>
+<div class="flex-1 flex flex-col items-center opacity-40">
+<div class="w-full h-4 brutalist-border bg-surface-dim mb-2"></div>
+<span class="text-[10px] font-black uppercase tracking-tighter">04_CONFIRM</span>
+</div>
+</div>
+<!-- Delivery Info Banner -->
+<div class="bg-surface-bright brutalist-border brutalist-shadow p-6 flex items-start gap-4 relative overflow-hidden">
+<div class="absolute right-2 top-2 text-[10px] font-bold text-outline-variant opacity-30">[SYSTEM_ID_04]</div>
+<div class="p-2 bg-primary-container brutalist-border">
+<span class="material-symbols-outlined text-ink" style="font-variation-settings: 'FILL' 1;">bolt</span>
+</div>
+<div class="flex-1">
+<h3 class="text-xl font-black uppercase mb-1">90-Minute Delivery Available</h3>
+<p class="text-sm font-medium opacity-80">Central Hub Online. Handled via Rapido integration for rapid prototyping needs.</p>
+</div>
+</div>
+<!-- Address Section -->
+<section class="bg-surface brutalist-border brutalist-shadow overflow-hidden">
+<div class="px-6 py-4 border-b-2 border-ink bg-surface-container-high flex justify-between items-center">
+<h2 class="text-lg font-black uppercase tracking-tight flex items-center gap-2">
+<span class="w-2 h-2 bg-ink"></span> Delivery Details
+                </h2>
+<button class="text-[10px] font-black uppercase tracking-widest border-2 border-ink px-4 py-1 bg-surface hover:bg-primary-container transition-all active:translate-x-0.5 active:translate-y-0.5">
+                    RECALL_SAVED
+                </button>
+</div>
+<div class="p-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="flex flex-col gap-2 md:col-span-2">
+<label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">FULL_NAME</label>
+<input class="w-full brutalist-input px-4 py-3 font-bold placeholder:text-outline-variant" placeholder="Jane Doe" type="text"/>
+</div>
+<div class="flex flex-col gap-2">
+<label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">PHONE_NUMBER</label>
+<input class="w-full brutalist-input px-4 py-3 font-bold" placeholder="+91 98765 43210" type="tel"/>
+</div>
+<div class="flex flex-col gap-2">
+<label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">PIN_CODE</label>
+<input class="w-full brutalist-input px-4 py-3 font-bold" placeholder="560001" type="text"/>
+</div>
+<div class="flex flex-col gap-2 md:col-span-2">
+<label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">ADDRESS (BLDG / STREET / UNIT)</label>
+<textarea class="w-full brutalist-input px-4 py-3 font-bold min-h-[100px]" placeholder="Maker Space 42, Silicon Lane"></textarea>
+</div>
+<div class="flex flex-col gap-2">
+<label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">LANDMARK_OPT</label>
+<input class="w-full brutalist-input px-4 py-3 font-bold" placeholder="Opposite Tech Park" type="text"/>
+</div>
+<div class="flex flex-col gap-2">
+<label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">CITY_TERMINAL</label>
+<input class="w-full brutalist-input px-4 py-3 font-bold" placeholder="Bengaluru" type="text"/>
+</div>
+</div>
+</section>
+<!-- Payment Methods -->
+<section class="bg-surface brutalist-border brutalist-shadow overflow-hidden">
+<div class="px-6 py-4 border-b-2 border-ink bg-surface-container-high">
+<h2 class="text-lg font-black uppercase tracking-tight flex items-center gap-2">
+<span class="w-2 h-2 bg-ink"></span> Payment Protocol
+                </h2>
+</div>
+<div class="p-8 flex flex-col gap-4">
+<label class="flex items-center p-6 brutalist-border bg-primary-container brutalist-shadow cursor-pointer group transition-all">
+<input checked="" class="w-5 h-5 text-ink focus:ring-0 mr-4 border-2 border-ink rounded-none bg-surface" name="payment" type="radio"/>
+<div class="flex flex-col">
+<span class="font-black uppercase text-ink">UPI_FAST_PAY</span>
+<span class="text-xs font-medium opacity-80">GPay, PhonePe, Paytm accepted</span>
+</div>
+<span class="material-symbols-outlined ml-auto text-ink text-3xl">qr_code_scanner</span>
+</label>
+<label class="flex items-center p-6 brutalist-border hover:bg-surface-container-low cursor-pointer transition-all">
+<input class="w-5 h-5 text-ink focus:ring-0 mr-4 border-2 border-ink rounded-none bg-surface" name="payment" type="radio"/>
+<div class="flex flex-col">
+<span class="font-black uppercase text-ink">CASH_ON_DELIVERY</span>
+<span class="text-xs font-medium opacity-80">Manual handover to Rapido units</span>
+</div>
+<span class="material-symbols-outlined ml-auto text-outline text-3xl opacity-50">payments</span>
+</label>
+</div>
+</section>
+</div>
+<!-- Right Column: Sticky Summary (Control Module) -->
+<div class="lg:col-span-4">
+<div class="sticky top-24 flex flex-col gap-6">
+<section class="bg-surface-dim brutalist-border brutalist-shadow overflow-hidden">
+<div class="px-6 py-4 border-b-2 border-ink bg-surface-container-highest">
+<h2 class="text-lg font-black uppercase tracking-tight flex items-center justify-between">
+                        ORDER_SUMMARY
+                        <span class="text-[10px] opacity-40 font-mono">v4.0.2</span>
+</h2>
+</div>
+<div class="p-6 flex flex-col gap-6 border-b-2 border-ink max-h-80 overflow-y-auto">
+<!-- Item 1 -->
+<div class="flex gap-4 items-start">
+<div class="w-20 h-20 bg-surface-container-low brutalist-border flex-shrink-0 relative">
+<img alt="Microcontroller" class="w-full h-full object-cover mix-blend-multiply p-2" src="https://lh3.googleusercontent.com/aida-public/AB6AXuByrIYF2oWBxZn1qUd4GR8_qU_bivwU6gZU8QPG4dZXU4CqD5vOhQYS8J5Ocs32fSK_y6GzaJ1E0MO0ieaHEMwUqQzOTzYYRFhhEQENYw5d3aH5L_3oPQxXEcODOPkRFm_9b8leaVIKqjSjphvUsSX5rV5sk6lbBFCtjut4FDoLca5p9fpD_QQmX6zyMk00npIm8fX8Ckt6fybpAfpHvOJrIjWmzDOmmk-POWB2kBIz_GgqdMKjLYFGV3xjoATi7dOdB24qsFdMv7I"/>
+<span class="absolute -top-2 -right-2 bg-ink text-white font-black text-[10px] w-6 h-6 flex items-center justify-center brutalist-border">2</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="font-black uppercase text-sm truncate">ESP32 Dev Board</p>
+<p class="text-[10px] font-bold text-on-surface-variant tracking-wider uppercase">WiFi + Bluetooth</p>
+<div class="mt-1 font-black text-ink">₹998</div>
+</div>
+</div>
+<!-- Item 2 -->
+<div class="flex gap-4 items-start">
+<div class="w-20 h-20 bg-surface-container-low brutalist-border flex-shrink-0 relative">
+<img alt="AI Sensor" class="w-full h-full object-cover mix-blend-multiply p-2" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCVfrqO3wxlFa-zCH8K4p_6Mas3Ft2HBGgdIYziCK-_vTceZRLLLVpORs4DJfKV2Ut7NAflY6kzMYDWbFcedikLBIkq34kqln_9PAYLNqiu66B9d5OT7nlQ763HNO6ajkFu47pKU997O-zjlZaglWfrrBhtmvC7bCOpG1582eb_tpBURcVI6imiOJHmGgKFmgbECJVK0yiscDi8aC-5XKrKmqpz-gAv8QsEa9zuAmqNY30wnIrFNoP-7jnEUW2V45sNMNzkOwSR0vw"/>
+<span class="absolute -top-2 -right-2 bg-ink text-white font-black text-[10px] w-6 h-6 flex items-center justify-center brutalist-border">1</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="font-black uppercase text-sm truncate">NeuralX AI Vision</p>
+<p class="text-[10px] font-bold text-on-surface-variant tracking-wider uppercase">Camera Module</p>
+<div class="mt-1 font-black text-ink">₹2499</div>
+</div>
+</div>
+</div>
+<div class="p-6 border-b-2 border-ink">
+<div class="flex gap-2">
+<input class="flex-1 brutalist-input px-3 py-2 text-[11px] font-black uppercase tracking-widest" placeholder="COUPON_CODE" type="text" value="BITSTUDENT10"/>
+<button class="bg-surface brutalist-border font-black text-[11px] px-4 py-2 hover:bg-primary-container transition-all uppercase tracking-widest active:translate-x-0.5 active:translate-y-0.5">
+                            EXEC_APPLY
+                        </button>
+</div>
+</div>
+<div class="p-6 flex flex-col gap-2">
+<div class="flex justify-between text-xs font-bold uppercase tracking-wider opacity-60">
+<span>Subtotal</span>
+<span>₹3497</span>
+</div>
+<div class="flex justify-between text-xs font-bold uppercase tracking-wider opacity-60">
+<span>Logistic_Fee</span>
+<span>₹149</span>
+</div>
+<div class="flex justify-between text-xs font-bold uppercase tracking-wider text-primary">
+<span>Bit_Discount</span>
+<span>-₹349</span>
+</div>
+<div class="h-0.5 bg-ink my-2 w-full"></div>
+<div class="flex justify-between items-end">
+<span class="font-black uppercase text-sm">Grand_Total</span>
+<span class="font-black text-3xl text-ink tracking-tighter">₹3297</span>
+</div>
+</div>
+<div class="p-6 bg-surface-container-high border-t-2 border-ink">
+<button class="w-full bg-primary-container text-ink font-black uppercase py-4 px-6 brutalist-border brutalist-shadow hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] active:translate-x-0 active:translate-y-0 active:shadow-none transition-all flex items-center justify-center gap-3 text-lg">
+                        COMMIT ORDER <span class="material-symbols-outlined font-black">arrow_forward</span>
+</button>
+<p class="text-[9px] font-black uppercase text-center mt-4 tracking-widest opacity-40">Agreement_ID: TOS_v2023_rev4</p>
+</div>
+</section>
+<div class="flex items-center gap-3 p-4 opacity-30 justify-center">
+<span class="material-symbols-outlined">security</span>
+<span class="text-[10px] font-black uppercase tracking-[0.2em]">256-BIT_AES_HARDWARE_LOCK</span>
+</div>
+</div>
+</div>
+</main>
+</body></html>

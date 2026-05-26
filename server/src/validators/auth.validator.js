@@ -19,6 +19,9 @@ const signupSchema = Joi.object({
     'string.max': 'Password cannot exceed 128 characters',
     'any.required': 'Password is required',
   }),
+
+  phone: Joi.string().allow('').optional(),
+  city: Joi.string().allow('').optional(),
 });
 
 const loginSchema = Joi.object({
@@ -32,4 +35,11 @@ const loginSchema = Joi.object({
   }),
 });
 
-module.exports = { signupSchema, loginSchema };
+const updateProfileSchema = Joi.object({
+  name: Joi.string().trim().min(2).max(80).optional(),
+  phone: Joi.string().allow('').max(20).optional(),
+  currentPassword: Joi.string().optional(),
+  newPassword: Joi.string().min(8).max(128).optional(),
+}).min(1).messages({ 'object.min': 'At least one field must be provided for update.' });
+
+module.exports = { signupSchema, loginSchema, updateProfileSchema };

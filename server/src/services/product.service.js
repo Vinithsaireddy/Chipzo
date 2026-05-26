@@ -6,6 +6,9 @@ const ApiError = require('../utils/ApiError');
 /**
  * Builds a MongoDB query from filter params and executes a paginated product search.
  *
+ * Supported query params:
+ *   page, limit, search, category, minPrice, maxPrice, inStock
+ *
  * @param {object} queryParams - Express req.query
  * @returns {Promise<{ products, totalCount, totalPages, currentPage, limit }>}
  */
@@ -21,31 +24,31 @@ const getPaginatedProducts = async (queryParams) => {
   } = queryParams;
 
   const pageNum = Math.max(parseInt(page, 10), 1);
-  const limitNum = Math.min(parseInt(limit, 10), 100); // Cap at 100 items per page
+  const limitNum = Math.min(parseInt(limit, 10), 100);
   const skip = (pageNum - 1) * limitNum;
 
   const filter = {};
 
-  // Full-text search
+  // Full-text search on name + description
   if (search) {
     filter.$text = { $search: search };
   }
 
-  // Category filter
+  // Category filter (exact match)
   if (category) {
     filter.category = category;
   }
 
-  // Price range
+  // Price range — only applies to documents where price is not null
   if (minPrice !== undefined || maxPrice !== undefined) {
-    filter.price = {};
+    filter.price = { $ne: null };
     if (minPrice !== undefined) filter.price.$gte = parseFloat(minPrice);
     if (maxPrice !== undefined) filter.price.$lte = parseFloat(maxPrice);
   }
 
-  // In-stock filter
+  // in_stock filter
   if (inStock === 'true') {
-    filter.stock = { $gt: 0 };
+    filter.in_stock = true;
   }
 
   const [products, totalCount] = await Promise.all([
@@ -67,11 +70,23 @@ const getPaginatedProducts = async (queryParams) => {
 };
 
 /**
- * Fetches a single product by ID. Throws 404 if not found.
+ * Fetches a single product by MongoDB _id. Throws 404 if not found.
  * @param {string} productId
  */
 const getProductById = async (productId) => {
   const product = await Product.findById(productId).lean();
+  if (!product) {
+    throw new ApiError(404, 'Product not found');
+  }
+  return product;
+};
+
+/**
+ * Fetches a single product by its inventory slug (id field).
+ * @param {string} slug
+ */
+const getProductBySlug = async (slug) => {
+  const product = await Product.findOne({ id: slug }).lean();
   if (!product) {
     throw new ApiError(404, 'Product not found');
   }
@@ -88,14 +103,44 @@ const createProduct = async (productData) => {
 };
 
 /**
- * Partially updates a product. Throws 404 if not found.
+ * Partially updates a product. Handles _appendImages from controller.
  * @param {string}  productId
  * @param {object}  updates
  */
 const updateProduct = async (productId, updates) => {
+  const { _appendImages, ...setFields } = updates;
+
+  const mongoUpdate = {};
+
+  if (Object.keys(setFields).length > 0) {
+    mongoUpdate.$set = setFields;
+  }
+
+  if (_appendImages && _appendImages.length > 0) {
+    mongoUpdate.$push = { images: { $each: _appendImages } };
+  }
+
+  const product = await Product.findByIdAndUpdate(productId, mongoUpdate, {
+    new: true,
+    runValidators: true,
+  });
+
+  if (!product) {
+    throw new ApiError(404, 'Product not found');
+  }
+
+  return product;
+};
+
+/**
+ * Appends image URLs to the product's images array.
+ * @param {string}   productId
+ * @param {string[]} urls
+ */
+const addImages = async (productId, urls) => {
   const product = await Product.findByIdAndUpdate(
     productId,
-    { $set: updates },
+    { $push: { images: { $each: urls } } },
     { new: true, runValidators: true }
   );
   if (!product) {
@@ -105,8 +150,25 @@ const updateProduct = async (productId, updates) => {
 };
 
 /**
+ * Removes a specific image URL from the images array.
+ * @param {string} productId
+ * @param {string} url
+ */
+const removeImage = async (productId, url) => {
+  const product = await Product.findByIdAndUpdate(
+    productId,
+    { $pull: { images: url } },
+    { new: true }
+  );
+  if (!product) {
+    throw new ApiError(404, 'Product not found');
+  }
+  return product;
+};
+
+/**
  * Deletes a product by ID.
- * Soft-awareness: refuses deletion if product exists in active orders.
+ * Refuses deletion if product exists in an active (paid, undelivered) order.
  * @param {string} productId
  */
 const deleteProduct = async (productId) => {
@@ -137,7 +199,10 @@ const deleteProduct = async (productId) => {
 module.exports = {
   getPaginatedProducts,
   getProductById,
+  getProductBySlug,
   createProduct,
   updateProduct,
+  addImages,
+  removeImage,
   deleteProduct,
 };

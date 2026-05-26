@@ -44,6 +44,7 @@ const deductStock = async (items) => {
  * @param {object}   params.address
  * @param {string}   params.paymentId      - Razorpay payment ID
  * @param {string}   params.razorpayOrderId
+ * @param {string}   params.paymentSignature - Razorpay signature
  * @returns {Promise<Order>}
  */
 const createOrder = async ({
@@ -53,15 +54,20 @@ const createOrder = async ({
   address,
   paymentId,
   razorpayOrderId,
+  paymentSignature,
+  paymentMethod = 'razorpay',
+  paymentStatus = 'paid',
 }) => {
   const order = await Order.create({
     userId,
     items,
     totalAmount,
     address,
-    paymentStatus: 'paid',
-    paymentId,
-    razorpayOrderId,
+    paymentMethod,
+    paymentStatus,
+    ...(paymentId ? { paymentId } : {}),
+    ...(razorpayOrderId ? { razorpayOrderId } : {}),
+    ...(paymentSignature ? { paymentSignature } : {}),
   });
 
   return order;

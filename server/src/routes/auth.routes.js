@@ -6,7 +6,7 @@ const authController = require('../controllers/auth.controller');
 const { validate } = require('../middleware/validate.middleware');
 const { protect } = require('../middleware/auth.middleware');
 const { authLimiter } = require('../middleware/rateLimiter.middleware');
-const { signupSchema, loginSchema } = require('../validators/auth.validator');
+const { signupSchema, loginSchema, updateProfileSchema } = require('../validators/auth.validator');
 
 /**
  * POST /api/auth/signup
@@ -25,5 +25,11 @@ router.post('/login', authLimiter, validate(loginSchema), authController.login);
  * Protected — returns current user profile.
  */
 router.get('/me', protect, authController.getMe);
+
+/**
+ * PUT /api/auth/profile
+ * Protected — updates current user profile (name, phone, password).
+ */
+router.put('/profile', protect, validate(updateProfileSchema), authController.updateProfile);
 
 module.exports = router;

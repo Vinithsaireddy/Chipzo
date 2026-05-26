@@ -22,7 +22,17 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Password is required'],
       minlength: [8, 'Password must be at least 8 characters'],
-      select: false, // Never returned in query results by default
+      select: false,
+    },
+    phone: {
+      type: String,
+      default: '',
+      trim: true,
+    },
+    city: {
+      type: String,
+      default: '',
+      trim: true,
     },
   },
   {
@@ -31,12 +41,11 @@ const userSchema = new mongoose.Schema(
 );
 
 // ─── Pre-save hook: hash password when modified ───────────────────────────────
-userSchema.pre('save', async function (next) {
+userSchema.pre('save', async function () {
   // Only hash if password field is actually modified
-  if (!this.isModified('password')) return next();
+  if (!this.isModified('password')) return;
 
   this.password = await bcrypt.hash(this.password, 12);
-  next();
 });
 
 // ─── Instance method: password comparison ─────────────────────────────────────

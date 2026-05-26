@@ -11,15 +11,14 @@ const asyncHandler = require('../utils/asyncHandler');
  * Registers a new user, returns JWT + user object.
  */
 const signup = asyncHandler(async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, phone, city } = req.body;
 
-  // Duplicate email check
   const existingUser = await User.findOne({ email });
   if (existingUser) {
     throw new ApiError(409, 'An account with this email already exists.');
   }
 
-  const user = await User.create({ name, email, password });
+  const user = await User.create({ name, email, password, phone, city });
   const token = authService.signToken(user._id);
 
   const userObj = user.toObject();
@@ -70,4 +69,35 @@ const getMe = asyncHandler(async (req, res) => {
   }).send(res);
 });
 
-module.exports = { signup, login, getMe };
+/**
+ * PUT /api/auth/profile
+ * Updates the authenticated user's name, phone, or password.
+ */
+const updateProfile = asyncHandler(async (req, res) => {
+  const { name, phone, currentPassword, newPassword } = req.body;
+  const userId = req.user._id;
+
+  const user = await User.findById(userId);
+  if (!user) throw new ApiError(404, 'User not found.');
+
+  if (name !== undefined) user.name = name;
+  if (phone !== undefined) user.phone = phone;
+
+  if (newPassword) {
+    if (!currentPassword) {
+      throw new ApiError(400, 'Current password is required to set a new password.');
+    }
+    const isMatch = await user.comparePassword(currentPassword);
+    if (!isMatch) throw new ApiError(401, 'Current password is incorrect.');
+    user.password = newPassword;
+  }
+
+  await user.save();
+
+  const userObj = user.toObject();
+  delete userObj.password;
+
+  return new ApiResponse(200, 'Profile updated successfully', { user: userObj }).send(res);
+});
+
+module.exports = { signup, login, getMe, updateProfile };

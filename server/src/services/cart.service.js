@@ -10,7 +10,7 @@ const ApiError = require('../utils/ApiError');
  */
 const getCart = async (userId) => {
   const cart = await Cart.findOne({ userId })
-    .populate('items.productId', 'name price imageUrl stock category')
+    .populate('items.productId', 'name price images in_stock stock category')
     .lean({ virtuals: true });
 
   if (!cart) {

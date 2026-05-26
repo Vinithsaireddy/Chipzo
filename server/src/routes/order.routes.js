@@ -13,6 +13,9 @@ router.use(protect);
 /** POST /api/orders — Initiate order (creates Razorpay order, not DB order) */
 router.post('/', validate(createOrderSchema), orderController.initiateOrder);
 
+/** POST /api/orders/cod — Create COD order directly */
+router.post('/cod', validate(createOrderSchema), orderController.createCODOrder);
+
 /** GET /api/orders — Get paginated order history */
 router.get('/', orderController.getOrders);
 

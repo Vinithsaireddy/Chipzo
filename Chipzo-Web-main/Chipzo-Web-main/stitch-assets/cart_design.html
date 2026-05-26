@@ -1,0 +1,311 @@
+<!DOCTYPE html><html class="light" lang="en" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Your Build Cart - Chipzo Terminal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700;900&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-primary-fixed-variant": "#005045",
+                    "on-surface": "#161d1b",
+                    "surface-container": "#e8f0ec",
+                    "on-secondary": "#ffffff",
+                    "tertiary-container": "#ff8d69",
+                    "surface-variant": "#dde4e1",
+                    "surface-container-highest": "#dde4e1",
+                    "surface-dark": "#1A1A1A",
+                    "surface-dim": "#d4dcd8",
+                    "surface": "#f4fbf7",
+                    "on-primary-container": "#00493e",
+                    "circuit-teal": "#00A892",
+                    "tertiary-fixed-dim": "#ffb59e",
+                    "tertiary-fixed": "#ffdbd0",
+                    "on-tertiary-fixed-variant": "#7e2c0f",
+                    "surface-container-lowest": "#ffffff",
+                    "inverse-surface": "#2b3230",
+                    "primary-fixed-dim": "#41ddc2",
+                    "on-secondary-fixed": "#121f00",
+                    "on-surface-variant": "#3c4a46",
+                    "error-container": "#ffdad6",
+                    "background-dark": "#0D0D0D",
+                    "outline-variant": "#bbcac4",
+                    "surface-bright": "#f4fbf7",
+                    "on-background": "#161d1b",
+                    "tertiary": "#9d4224",
+                    "on-secondary-fixed-variant": "#334f00",
+                    "on-error-container": "#93000a",
+                    "surface-container-high": "#e2eae6",
+                    "secondary-fixed-dim": "#98da27",
+                    "error": "#ba1a1a",
+                    "on-tertiary": "#ffffff",
+                    "surface-container-low": "#eef5f2",
+                    "on-primary": "#ffffff",
+                    "background": "#f4fbf7",
+                    "secondary": "#446900",
+                    "on-secondary-container": "#496f00",
+                    "on-tertiary-container": "#752509",
+                    "secondary-fixed": "#b2f746",
+                    "border-dark": "#F2F2EE",
+                    "inverse-on-surface": "#ebf2ef",
+                    "ink": "#0D0D0D",
+                    "secondary-container": "#b2f746",
+                    "on-error": "#ffffff",
+                    "surface-tint": "#006b5c",
+                    "background-light": "#F2F2EE",
+                    "primary-container": "#00c2a8",
+                    "on-primary-fixed": "#00201b",
+                    "primary": "#006b5c",
+                    "on-tertiary-fixed": "#3a0b00",
+                    "inverse-primary": "#41ddc2",
+                    "outline": "#6c7a76",
+                    "primary-fixed": "#65fade"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0px",
+                    "lg": "0px",
+                    "xl": "0px",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "stack-lg": "2rem",
+                    "stack-sm": "0.5rem",
+                    "border-width-heavy": "4px",
+                    "margin-mobile": "1.5rem",
+                    "gutter": "2rem",
+                    "container-max": "1280px",
+                    "border-width": "2.5px",
+                    "stack-md": "1rem",
+                    "hard-shadow": "5px"
+            },
+            "fontFamily": {
+                    "price-tabular": ["Space Grotesk"],
+                    "headline-lg": ["Space Grotesk"],
+                    "body-md": ["Space Grotesk"],
+                    "headline-md": ["Space Grotesk"],
+                    "display-xl-mobile": ["Space Grotesk"],
+                    "display-xl": ["Space Grotesk"],
+                    "body-lg": ["Space Grotesk"],
+                    "label-bold": ["Space Grotesk"]
+            },
+            "fontSize": {
+                    "price-tabular": ["24px", {"fontWeight": "900"}],
+                    "headline-lg": ["48px", {"lineHeight": "1.1", "fontWeight": "900"}],
+                    "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "headline-md": ["32px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "display-xl-mobile": ["60px", {"lineHeight": "1", "letterSpacing": "-0.05em", "fontWeight": "900"}],
+                    "display-xl": ["96px", {"lineHeight": "0.9", "letterSpacing": "-0.05em", "fontWeight": "900"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "500"}],
+                    "label-bold": ["14px", {"lineHeight": "1", "letterSpacing": "0.1em", "fontWeight": "700"}]
+            },
+            "boxShadow": {
+                "brutalist": "5px 5px 0px 0px #0D0D0D",
+                "brutalist-sm": "3px 3px 0px 0px #0D0D0D",
+                "brutalist-hover": "2px 2px 0px 0px #0D0D0D"
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        .brutalist-border { border: 2.5px solid #0D0D0D; }
+        .brutalist-shadow { box-shadow: 5px 5px 0px 0px #0D0D0D; }
+        .brutalist-shadow-sm { box-shadow: 3px 3px 0px 0px #0D0D0D; }
+        .brutalist-hover:hover { 
+            transform: translate(-2px, -2px);
+            box-shadow: 7px 7px 0px 0px #0D0D0D;
+        }
+        .brutalist-active:active {
+            transform: translate(3px, 3px);
+            box-shadow: 0px 0px 0px 0px #0D0D0D;
+        }
+    </style>
+</head>
+<body class="bg-surface font-body-md text-on-surface antialiased">
+<!-- TopNavBar: Floating Command Bar -->
+<header class="fixed top-6 left-1/2 -translate-x-1/2 w-[calc(100%-3rem)] max-w-[1200px] z-50">
+<div class="bg-surface/80 backdrop-blur-md brutalist-border brutalist-shadow h-16 px-6 flex justify-between items-center">
+<!-- Brand Logo -->
+<div class="font-headline-md text-2xl font-black uppercase tracking-tighter text-ink">
+            CHIPZO<span class="text-primary">_</span>
+</div>
+<!-- Navigation Links -->
+<nav class="hidden md:flex gap-8 font-label-bold uppercase text-ink">
+<a class="border-b-4 border-primary pb-1" href="#">Shop</a>
+<a class="hover:text-primary transition-colors" href="#">Robotics</a>
+<a class="hover:text-primary transition-colors" href="#">Sensors</a>
+<a class="hover:text-primary transition-colors" href="#">Micro</a>
+<a class="hover:text-primary transition-colors" href="#">Tools</a>
+</nav>
+<!-- Trailing Icons -->
+<div class="flex gap-4">
+<button class="w-10 h-10 brutalist-border flex items-center justify-center bg-secondary-container brutalist-active">
+<span class="material-symbols-outlined font-bold">shopping_cart</span>
+</button>
+<button class="w-10 h-10 brutalist-border flex items-center justify-center bg-white brutalist-active">
+<span class="material-symbols-outlined font-bold">account_circle</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="max-w-[1280px] mx-auto px-6 pt-36 pb-24 flex flex-col gap-10">
+<!-- Left Column: Cart & Add-ons -->
+<div class="flex-grow mx-auto">
+<!-- Header Section -->
+<div class="mb-12">
+<div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+<div>
+<h1 class="font-display-xl-mobile md:text-8xl uppercase font-black text-ink leading-none">Your Build Cart</h1>
+<p class="font-body-lg text-ink font-bold mt-4 flex items-center gap-2">
+<span class="w-3 h-3 bg-primary block"></span> 3 HARDWARE MODULES DETECTED
+                    </p>
+</div>
+</div>
+</div>
+<!-- Cart Items -->
+<div class="flex flex-col gap-6">
+<!-- Item 1 -->
+<div class="bg-white brutalist-border brutalist-shadow p-6 flex flex-col md:flex-row gap-6 relative group">
+<div class="w-full md:w-40 h-40 brutalist-border bg-surface-container flex-shrink-0 relative overflow-hidden">
+<img alt="Microchip" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-300" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZx7Q0VAolyfpIeVRHF_YPQtNM0fXFCmo3-AlKrSWw4eoGJf5GiT6zCiRO4_WY8_8nhAxB-X_VxVHKkIjJ6Ek6bVM0Y-21GxBd4jnuB8KaBh4DavFX2xUXWR6UkJEH2D6sUCDj3mG8QRMN-_p1tEKycw26b0kYPNXFJ1o00xFC-TWloY2UZF0oNy2VR5hT5jVRWdIOaaBVwNbabV9Ch1e3G1IMPM-ZdesYSTBVTl20oOgR5cmxFuwf9xEqh6_-36lyXiMNBJ-XvzY">
+</div>
+<div class="flex-grow flex flex-col justify-between mx-auto">
+<div>
+<div class="flex justify-between items-start">
+<div>
+<span class="inline-block px-3 py-1 bg-ink text-white font-label-bold text-xs mb-3 uppercase">UNIT_AI_ACCEL</span>
+<h3 class="font-headline-md text-2xl font-black uppercase text-ink">NeuralX AI Accelerator</h3><div class="flex flex-wrap gap-x-4 gap-y-1 mt-3 font-mono text-[10px] tracking-widest text-on-surface-variant/80">
+    <span class="bg-surface-variant px-1.5 py-0.5">ARCH: RISC-V 64-BIT</span>
+    <span class="bg-surface-variant px-1.5 py-0.5">TPU: 4.2 TOPS</span>
+    <span class="bg-surface-variant px-1.5 py-0.5">PWR: 3.3V/500mA</span>
+</div>
+</div>
+<button aria-label="Remove item" class="w-10 h-10 brutalist-border flex items-center justify-center hover:bg-error hover:text-white transition-colors brutalist-active">
+<span class="material-symbols-outlined">delete</span>
+</button>
+</div>
+<div class="mt-2 font-label-bold text-sm text-circuit-teal flex items-center gap-2 uppercase">
+<span class="material-symbols-outlined text-lg">check_circle</span> Status: Operational
+                        </div>
+</div>
+<div class="flex justify-between items-end mt-8">
+<div class="flex brutalist-border h-12 bg-white overflow-hidden">
+<button class="w-12 h-full flex items-center justify-center hover:bg-surface-container border-r-2 border-ink brutalist-active">
+<span class="material-symbols-outlined">remove</span>
+</button>
+<span class="w-12 h-full flex items-center justify-center font-price-tabular text-xl">1</span>
+<button class="w-12 h-full flex items-center justify-center hover:bg-surface-container border-l-2 border-ink brutalist-active">
+<span class="material-symbols-outlined">add</span>
+</button>
+</div>
+<div class="font-price-tabular text-3xl font-black text-primary-container">$129.99</div>
+</div>
+</div>
+</div>
+<!-- Item 2 -->
+<div class="bg-white brutalist-border brutalist-shadow p-6 flex flex-col md:flex-row gap-6 relative group">
+<div class="w-full md:w-40 h-40 brutalist-border bg-surface-container flex-shrink-0 relative overflow-hidden">
+<img alt="Microcontroller" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-300" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCETFwmUzj3YEI7g1b26_A4Q8ntbvHOyL7LS08SPS0ptZIR3471iY19Pkn2Qbek6TqDgo6J2I5WEVSoXj_WWdnyNRjZPrapTk1oTWPXUUWZJRQJG99k9Ae3IjwU_uaptd6_xBoy6-Ss8_RWJKHAjr2xwQF60VmdsKPb11-HsU6znw3_TF3HZpPl77wcWKhdnTF0-6bWs30I8dv0VLR24lfCHA54QWxbCz5r2molimfqRuaSiU-IGFGijfFMqtUSLEAYcLdjsBUDGrY">
+</div>
+<div class="flex-grow flex flex-col justify-between mx-auto">
+<div>
+<div class="flex justify-between items-start">
+<div>
+<span class="inline-block px-3 py-1 bg-ink text-white font-label-bold text-xs mb-3 uppercase">UNIT_MICRO_CTRL</span>
+<h3 class="font-headline-md text-2xl font-black uppercase text-ink">ESP32-WROOM-32D</h3><div class="flex flex-wrap gap-x-4 gap-y-1 mt-3 font-mono text-[10px] tracking-widest text-on-surface-variant/80">
+    <span class="bg-surface-variant px-1.5 py-0.5">MCU: LX6 DUAL-CORE</span>
+    <span class="bg-surface-variant px-1.5 py-0.5">FREQ: 240MHZ</span>
+    <span class="bg-surface-variant px-1.5 py-0.5">FLASH: 4MB</span>
+</div>
+</div>
+<button aria-label="Remove item" class="w-10 h-10 brutalist-border flex items-center justify-center hover:bg-error hover:text-white transition-colors brutalist-active">
+<span class="material-symbols-outlined">delete</span>
+</button>
+</div>
+<div class="mt-2 font-label-bold text-sm text-circuit-teal flex items-center gap-2 uppercase">
+<span class="material-symbols-outlined text-lg">check_circle</span> Status: Operational
+                        </div>
+</div>
+<div class="flex justify-between items-end mt-8">
+<div class="flex brutalist-border h-12 bg-white overflow-hidden">
+<button class="w-12 h-full flex items-center justify-center hover:bg-surface-container border-r-2 border-ink brutalist-active">
+<span class="material-symbols-outlined">remove</span>
+</button>
+<span class="w-12 h-full flex items-center justify-center font-price-tabular text-xl">2</span>
+<button class="w-12 h-full flex items-center justify-center hover:bg-surface-container border-l-2 border-ink brutalist-active">
+<span class="material-symbols-outlined">add</span>
+</button>
+</div>
+<div class="font-price-tabular text-3xl font-black text-primary-container">$17.98</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Delivery Info Box: Schematic Style -->
+<!-- Suggested Add-ons: Schematic Cards -->
+<div class="flex justify-end mb-8">
+  <button class="bg-[#00c2a8] text-ink font-label-bold text-lg py-4 px-10 brutalist-border brutalist-shadow brutalist-hover brutalist-active flex items-center gap-3 group transition-all uppercase">
+    <span class="">PROCEED TO CHECKOUT</span>
+    <span class="material-symbols-outlined font-black group-hover:translate-x-1 transition-transform">arrow_forward</span>
+  </button>
+</div><div class="mt-20">
+<div class="flex items-center justify-between mb-8 border-b-4 border-ink pb-2">
+<h2 class="font-headline-md uppercase font-black">Complementary_Modules</h2>
+<a class="font-label-bold uppercase text-primary-container hover:underline flex items-center gap-2" href="#">Index_All <span class="material-symbols-outlined">arrow_forward</span></a>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-6">
+<!-- Add-on Card 1 -->
+<div class="bg-white brutalist-border p-4 flex flex-col brutalist-hover transition-all cursor-pointer group">
+<div class="aspect-square brutalist-border bg-surface-container mb-4 overflow-hidden">
+<img alt="Jumper Wires" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAjqfa-ivk8AHmH0Q7CTsvNLUlAQgSyI8m1BtuHMCeW-P1UsP3DaF3UycPeSNmUaraCkMVwtu5B69ATeL3_lHH1nz2fPFL9FzvB95aRTz8XIDypilhL-O__lKI5hofhl5H7Nu2vVcus0LinrP_r2LgrjqgCuTh4plV5Mv6W00KhHsDKyBj0Q2OVpD3uUTSTwv_zh-WTibJv4iVENYZO6BxWg4ORD-vGDWJPyg_H-HoF32u81B8UPfqyGukgjNJWtTpUlIh5dgs9Xqs">
+</div>
+<h4 class="font-label-bold text-xs uppercase mb-2 line-clamp-2 min-h-[32px]">Jumper Wires (120pcs)</h4>
+<p class="font-price-tabular text-xl font-black mb-4 text-primary-container">$8.50</p>
+<button class="w-full brutalist-border py-2 font-label-bold uppercase text-xs hover:bg-ink hover:text-white transition-colors brutalist-active">Add_To_Build</button>
+</div>
+<!-- Add-on Card 2 -->
+<div class="bg-white brutalist-border p-4 flex flex-col brutalist-hover transition-all cursor-pointer group">
+<div class="aspect-square brutalist-border bg-surface-container mb-4 overflow-hidden">
+<img alt="Breadboard" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCjhCICAPv5kAJz30kS1Ozm7_yMOygg52OHMi_4WY0QkDnOmYgpsIwOvteThjjNwiSskIcB3JL5_x_L5lk_LUC9ti8c6zznwFZybj0KJoeQBSgJnEhlsSA3py8z6Y8VDnsgy3npQQ2s9p1tjXMXkx9KNueckQ6C3Ope60wFqhZP5J1fy_JCbGDKiLtofw_u4jeg4XBaghVJzHbVBHrGabMnNCgLyHQzZOX7zgTMQ49EbTCtQmQyHVq4EzATxr4xlcZ3YKVEMpMsDZA">
+</div>
+<h4 class="font-label-bold text-xs uppercase mb-2 line-clamp-2 min-h-[32px]">830 Tie-Point Breadboard</h4>
+<p class="font-price-tabular text-xl font-black mb-4 text-primary-container">$5.00</p>
+<button class="w-full brutalist-border py-2 font-label-bold uppercase text-xs hover:bg-ink hover:text-white transition-colors brutalist-active">Add_To_Build</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Procurement Panel -->
+</main>
+<!-- Footer -->
+<footer class="bg-ink text-white w-full py-16 mt-20 brutalist-border border-x-0 border-b-0">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-12 px-6 max-w-[1280px] mx-auto font-label-bold uppercase">
+<!-- Brand & Copyright -->
+<div class="flex flex-col gap-4">
+<div class="font-headline-md text-3xl font-black tracking-tighter">
+                CHIPZO<span class="text-primary-container">_</span>
+</div>
+<p class="text-surface-variant opacity-70 normal-case font-body-md">
+                © 2024 Chipzo Terminal Systems. Hardware acquisition interface for modern engineers.
+            </p>
+</div>
+<!-- Links -->
+<div class="md:col-span-2 flex flex-wrap gap-x-12 gap-y-4 md:justify-end">
+<a class="hover:text-primary-container transition-colors" href="#">Documentation</a>
+<a class="hover:text-primary-container transition-colors" href="#">Logistics</a>
+<a class="hover:text-primary-container transition-colors" href="#">System_Support</a>
+<a class="hover:text-primary-container transition-colors" href="#">Data_Privacy</a>
+<a class="hover:text-primary-container transition-colors" href="#">Core_Terms</a>
+</div>
+</div>
+</footer>
+
+
+</body></html>

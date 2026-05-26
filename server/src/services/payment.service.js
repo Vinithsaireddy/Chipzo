@@ -4,6 +4,7 @@ const crypto = require('crypto');
 const razorpay = require('../config/razorpay');
 const ApiError = require('../utils/ApiError');
 const env = require('../config/env');
+const logger = require('../utils/logger');
 
 /**
  * Creates a Razorpay order.
@@ -41,16 +42,36 @@ const createRazorpayOrder = async ({ amount, receipt }) => {
  * @returns {boolean} true if valid
  */
 const verifySignature = ({ razorpayOrderId, razorpayPaymentId, razorpaySignature }) => {
+  // Development bypass for easy manual/Postman testing with mock signatures
+  if (
+    env.NODE_ENV === 'development' &&
+    (razorpaySignature === 'signature_xxx' || razorpaySignature.startsWith('mock_'))
+  ) {
+    logger.warn('[Payment] ⚠️ DEV BYPASS: Skipping signature verification for mock signature.');
+    return true;
+  }
+
   const body = `${razorpayOrderId}|${razorpayPaymentId}`;
   const expectedSignature = crypto
     .createHmac('sha256', env.RAZORPAY_KEY_SECRET)
     .update(body)
     .digest('hex');
 
-  const isValid = crypto.timingSafeEqual(
-    Buffer.from(expectedSignature, 'hex'),
-    Buffer.from(razorpaySignature, 'hex')
-  );
+  let sigBuffer;
+  try {
+    sigBuffer = Buffer.from(razorpaySignature, 'hex');
+  } catch (err) {
+    throw new ApiError(400, 'Payment verification failed. Invalid signature format.');
+  }
+
+  const expectedBuffer = Buffer.from(expectedSignature, 'hex');
+
+  // timingSafeEqual requires identical buffer lengths. Guard against mismatches.
+  if (sigBuffer.length !== expectedBuffer.length) {
+    throw new ApiError(400, 'Payment verification failed. Invalid signature length.');
+  }
+
+  const isValid = crypto.timingSafeEqual(expectedBuffer, sigBuffer);
 
   if (!isValid) {
     throw new ApiError(400, 'Payment verification failed. Invalid signature.');

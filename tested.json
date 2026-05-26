@@ -1,0 +1,173 @@
+{
+    "info": {
+        "name": "Chipzo Working API Endpoints",
+        "version": "1.0.0",
+        "base_url": "http://localhost:5000"
+    },
+    "auth": {
+        "signup": {
+            "method": "POST",
+            "url": "/api/auth/signup",
+            "headers": {
+                "Content-Type": "application/json"
+            },
+            "payload": {
+                "name": "Vinith Reddy",
+                "email": "vinith@chipzo.in",
+                "password": "Chipzo@2026!"
+            }
+        },
+        "login": {
+            "method": "POST",
+            "url": "/api/auth/login",
+            "headers": {
+                "Content-Type": "application/json"
+            },
+            "payload": {
+                "email": "vinith@chipzo.in",
+                "password": "Chipzo@2026!"
+            }
+        },
+        "get_current_user": {
+            "method": "GET",
+            "url": "/api/auth/me",
+            "headers": {
+                "Authorization": "Bearer YOUR_TOKEN"
+            }
+        }
+    },
+    "products": {
+        "get_all_products": {
+            "method": "GET",
+            "url": "/api/products?page=1&limit=12"
+        },
+        "get_single_product": {
+            "method": "GET",
+            "url": "/api/products/6a098ab765ecf83aaed0e371"
+        },
+        "get_product_by_slug": {
+            "method": "GET",
+            "url": "/api/products/slug/li_po_battery_3.7v_1000mah"
+        }
+    },
+    "cart": {
+        "add_item_to_cart": {
+            "method": "POST",
+            "url": "/api/cart/items",
+            "headers": {
+                "Authorization": "Bearer YOUR_TOKEN",
+                "Content-Type": "application/json"
+            },
+            "payload": {
+                "productId": "6a098ab765ecf83aaed0e379",
+                "quantity": 2
+            }
+        },
+        "get_cart": {
+            "method": "GET",
+            "url": "/api/cart",
+            "headers": {
+                "Authorization": "Bearer YOUR_TOKEN"
+            }
+        },
+        "update_cart_item_quantity": {
+            "method": "PUT",
+            "url": "/api/cart/items/6a098ab765ecf83aaed0e379",
+            "headers": {
+                "Authorization": "Bearer YOUR_TOKEN",
+                "Content-Type": "application/json"
+            },
+            "payload": {
+                "quantity": 5
+            }
+        },
+        "remove_item_from_cart": {
+            "method": "DELETE",
+            "url": "/api/cart/items/6a098ab765ecf83aaed0e379",
+            "headers": {
+                "Authorization": "Bearer YOUR_TOKEN"
+            }
+        },
+        "clear_cart": {
+            "method": "DELETE",
+            "url": "/api/cart",
+            "headers": {
+                "Authorization": "Bearer YOUR_TOKEN"
+            }
+        }
+    },
+    "orders": {
+        "create_order": {
+            "method": "POST",
+            "url": "/api/orders",
+            "headers": {
+                "Authorization": "Bearer YOUR_TOKEN",
+                "Content-Type": "application/json"
+            },
+            "payload": {
+                "address": {
+                    "fullName": "Vinith Reddy",
+                    "phone": "9876543210",
+                    "street": "42 Circuit Lane",
+                    "city": "Bangalore",
+                    "state": "Karnataka",
+                    "pincode": "560100"
+                }
+            }
+        },
+        "get_order_history": {
+            "method": "GET",
+            "url": "/api/orders",
+            "headers": {
+                "Authorization": "Bearer YOUR_TOKEN"
+            }
+        },
+        "get_single_order": {
+            "method": "GET",
+            "url": "/api/orders/6a0ad3f510a4b7be02b48278",
+            "headers": {
+                "Authorization": "Bearer YOUR_TOKEN"
+            }
+        }
+    },
+    "payment": {
+        "verify_payment_development_mode": {
+            "method": "POST",
+            "url": "/api/payment/verify",
+            "headers": {
+                "Authorization": "Bearer YOUR_TOKEN",
+                "Content-Type": "application/json"
+            },
+            "note": "Works in development mode using mock Razorpay signatures.",
+            "payload": {
+                "razorpay_order_id": "order_SqktfVNEK08BEe",
+                "razorpay_payment_id": "pay_mock_123456",
+                "razorpay_signature": "signature_xxx",
+                "address": {
+                    "fullName": "Vinith Reddy",
+                    "phone": "9876543210",
+                    "street": "42 Circuit Lane",
+                    "city": "Bangalore",
+                    "state": "Karnataka",
+                    "pincode": "560100"
+                },
+                "cartSnapshot": [
+                    {
+                        "productId": "6a098ab765ecf83aaed0e379",
+                        "quantity": 2,
+                        "priceAtPurchase": 200
+                    }
+                ]
+            }
+        }
+    },
+    "delivery": {
+        "track_delivery": {
+            "method": "GET",
+            "url": "/api/delivery/track/6a0ad3f510a4b7be02b48278",
+            "headers": {
+                "Authorization": "Bearer YOUR_TOKEN"
+            }
+        }
+    }
+}
