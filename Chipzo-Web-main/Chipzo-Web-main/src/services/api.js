@@ -63,6 +63,19 @@ export const authAPI = {
 
   /** GET /api/auth/me */
   getMe: () => request('/auth/me'),
+
+  /** POST /api/auth/verify-otp */
+  verifyOTP: (otp) =>
+    request('/auth/verify-otp', {
+      method: 'POST',
+      body: JSON.stringify({ otp }),
+    }),
+
+  /** POST /api/auth/resend-otp */
+  resendOTP: () =>
+    request('/auth/resend-otp', {
+      method: 'POST',
+    }),
 };
 
 // ─── Products ─────────────────────────────────────────────────────────────────
@@ -141,6 +154,29 @@ export const ordersAPI = {
 
   /** GET /api/orders/:id */
   getOne: (id) => request(`/orders/${id}`),
+
+  // --- Admin Order Management ---
+  adminGetAll: (params = {}) => {
+    const qs = new URLSearchParams();
+    if (params.page) qs.set('page', params.page);
+    if (params.limit) qs.set('limit', params.limit);
+    if (params.search) qs.set('search', params.search);
+    if (params.status) qs.set('status', params.status);
+    return request(`/orders/admin?${qs.toString()}`);
+  },
+
+  adminGetOne: (id) => request(`/orders/admin/${id}`),
+
+  adminUpdate: (id, updates) =>
+    request(`/orders/admin/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(updates),
+    }),
+
+  adminDelete: (id) =>
+    request(`/orders/admin/${id}`, {
+      method: 'DELETE',
+    }),
 };
 
 // ─── Payment ──────────────────────────────────────────────────────────────────

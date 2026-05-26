@@ -11,13 +11,15 @@ import OrderFailure from './pages/OrderFailure.jsx'
 import Profile from './pages/Profile.jsx'
 import Login from './pages/Login.jsx'
 import Signup from './pages/Signup.jsx'
+import Admin from './pages/Admin.jsx'
+import VerifyOTP from './pages/VerifyOTP.jsx'
 import { useAuth } from './contexts/AuthContext.jsx'
 import { cartAPI } from './services/api.js'
 
 function App() {
   const navigate = useNavigate()
   const location = useLocation()
-  const { isLoggedIn } = useAuth()
+  const { isLoggedIn, user } = useAuth()
   const [completedOrder, setCompletedOrder] = useState(null)
   const [paymentError, setPaymentError] = useState(null)
   const [cart, setCart] = useState([])
@@ -253,6 +255,7 @@ function App() {
       />
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
+      <Route path="/admin" element={<Admin />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )

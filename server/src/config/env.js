@@ -53,4 +53,6 @@ module.exports = Object.freeze({
   RAPIDO_BASE_URL: process.env.RAPIDO_BASE_URL || 'https://api.rapido.bike/v1',
 
   CLIENT_URL: process.env.CLIENT_URL,
+  RESEND_API_KEY: process.env.RESEND_API_KEY || '',
+  EMAIL_FROM: process.env.EMAIL_FROM || 'support@shopchipzo.com',
 });

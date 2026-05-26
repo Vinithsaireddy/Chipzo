@@ -2,13 +2,14 @@
 
 const User = require('../models/User');
 const authService = require('../services/auth.service');
+const emailService = require('../services/emailService');
 const ApiError = require('../utils/ApiError');
 const ApiResponse = require('../utils/ApiResponse');
 const asyncHandler = require('../utils/asyncHandler');
 
 /**
  * POST /api/auth/signup
- * Registers a new user, returns JWT + user object.
+ * Registers a new user, returns JWT + user object, dispatches Welcome/OTP email.
  */
 const signup = asyncHandler(async (req, res) => {
   const { name, email, password, phone, city } = req.body;
@@ -18,13 +19,30 @@ const signup = asyncHandler(async (req, res) => {
     throw new ApiError(409, 'An account with this email already exists.');
   }
 
-  const user = await User.create({ name, email, password, phone, city });
+  const user = await User.create({
+    name,
+    email,
+    password,
+    phone,
+    city,
+    isVerified: true, // Directly verified! No OTP verification step needed.
+    otp: null,
+    otpExpiresAt: null,
+    otpLastSentAt: null,
+  });
+
+  // Asynchronously send the welcome email
+  emailService.sendWelcomeEmail(user.email, user.name).catch((err) => {
+    console.error('[Welcome Email Error] Failed to send welcome mail:', err.message);
+  });
+
   const token = authService.signToken(user._id);
 
   const userObj = user.toObject();
   delete userObj.password;
+  delete userObj.otp;
 
-  return new ApiResponse(201, 'Account created successfully', {
+  return new ApiResponse(201, 'Account created successfully. Verification code dispatched.', {
     token,
     user: userObj,
   }).send(res);
@@ -52,6 +70,7 @@ const login = asyncHandler(async (req, res) => {
 
   const userObj = user.toObject();
   delete userObj.password;
+  delete userObj.otp;
 
   return new ApiResponse(200, 'Login successful', {
     token,
@@ -61,7 +80,7 @@ const login = asyncHandler(async (req, res) => {
 
 /**
  * GET /api/auth/me
- * Returns the currently authenticated user (from req.user set by protect middleware).
+ * Returns the currently authenticated user.
  */
 const getMe = asyncHandler(async (req, res) => {
   return new ApiResponse(200, 'User profile fetched successfully', {
@@ -96,8 +115,14 @@ const updateProfile = asyncHandler(async (req, res) => {
 
   const userObj = user.toObject();
   delete userObj.password;
+  delete userObj.otp;
 
   return new ApiResponse(200, 'Profile updated successfully', { user: userObj }).send(res);
 });
 
-module.exports = { signup, login, getMe, updateProfile };
+module.exports = {
+  signup,
+  login,
+  getMe,
+  updateProfile,
+};

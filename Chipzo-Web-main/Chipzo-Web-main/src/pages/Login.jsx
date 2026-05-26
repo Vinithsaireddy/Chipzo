@@ -22,8 +22,12 @@ export default function Login() {
     setErrorMsg('');
 
     try {
-      await login(email, password);
-      navigate(from, { replace: true });
+      const res = await login(email, password);
+      if (res && res.isAdmin) {
+        navigate('/admin', { replace: true });
+      } else {
+        navigate(from, { replace: true });
+      }
     } catch (err) {
       setErrorMsg(err.message || 'SECURE_CORE_ERROR: Credentials signature mismatch.');
     }
@@ -95,14 +99,14 @@ export default function Login() {
           <form onSubmit={handleLogin} className="space-y-5">
             <div>
               <label className="block text-[10px] font-black uppercase tracking-widest text-[color:var(--chipzo-ink)] mb-1">
-                EMAIL ADDRESS
+                EMAIL OR USERNAME
               </label>
               <input 
-                type="email" 
+                type="text" 
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="ENGINEER@SYS.COM" 
+                placeholder="ENGINEER@SYS.COM OR admin" 
                 className="w-full border-[3px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-surface)] px-4 py-3 text-sm font-bold uppercase tracking-wider text-[color:var(--chipzo-ink)] outline-none focus:border-[color:var(--chipzo-primary)] focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all placeholder:text-[color:var(--chipzo-muted)]" 
               />
             </div>

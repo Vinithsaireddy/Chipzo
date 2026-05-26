@@ -13,9 +13,11 @@ const addressSchema = Joi.object({
       'string.pattern.name': 'Phone must be a valid 10-digit Indian mobile number',
       'any.required': 'Phone number is required',
     }),
-  street: Joi.string().trim().min(5).max(200).required().messages({
+  house: Joi.string().trim().allow('').max(200).optional(),
+  street: Joi.string().trim().min(2).max(200).required().messages({
     'any.required': 'Street address is required',
   }),
+  landmark: Joi.string().trim().allow('').max(200).optional(),
   city: Joi.string().trim().min(2).max(100).required().messages({
     'any.required': 'City is required',
   }),
@@ -29,7 +31,7 @@ const addressSchema = Joi.object({
       'string.pattern.name': 'Pincode must be a valid 6-digit Indian PIN',
       'any.required': 'Pincode is required',
     }),
-});
+}).unknown(true);
 
 const createOrderSchema = Joi.object({
   address: addressSchema.required(),

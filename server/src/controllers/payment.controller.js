@@ -4,6 +4,8 @@ const paymentService = require('../services/payment.service');
 const orderService = require('../services/order.service');
 const cartService = require('../services/cart.service');
 const deliveryService = require('../services/delivery.service');
+const emailService = require('../services/emailService');
+const generateInvoicePdf = require('../utils/generateInvoice');
 const ApiError = require('../utils/ApiError');
 const ApiResponse = require('../utils/ApiResponse');
 const asyncHandler = require('../utils/asyncHandler');
@@ -118,6 +120,15 @@ const verifyPayment = asyncHandler(async (req, res) => {
 
   // ── 5. Clear cart ─────────────────────────────────────────────────────────
   await cartService.clearCart(req.user._id);
+
+  // ── 5.5 Send Order Confirmation Email ──────────────────────────────────────
+  generateInvoicePdf(order)
+    .then((pdfBuffer) => {
+      return emailService.sendOrderConfirmation(req.user.email, req.user.name, order, pdfBuffer);
+    })
+    .catch((err) => {
+      logger.error(`[Order Email Error] Failed to generate/send order confirmation email: ${err.message}`);
+    });
 
   // ── 6. Assign delivery (non-blocking — don't fail order on delivery error) ─
   deliveryService.assignDelivery(order._id.toString()).catch((err) => {
