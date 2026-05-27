@@ -30,6 +30,17 @@ const addressSchema = new mongoose.Schema(
   { _id: false }
 );
 
+// ─── Subdocument: delivery history entry ──────────────────────────────────────
+const deliveryHistorySchema = new mongoose.Schema(
+  {
+    status: { type: String, required: true },
+    location: { type: String, default: '' },
+    description: { type: String, default: '' },
+    updatedAt: { type: Date, default: Date.now },
+  },
+  { _id: false }
+);
+
 // ─── Main Order schema ────────────────────────────────────────────────────────
 const orderSchema = new mongoose.Schema(
   {
@@ -63,7 +74,7 @@ const orderSchema = new mongoose.Schema(
     },
     paymentStatus: {
       type: String,
-      enum: ['pending', 'paid', 'failed'],
+      enum: ['pending', 'paid', 'failed', 'refunded'],
       default: 'pending',
     },
     paymentId: {
@@ -82,10 +93,45 @@ const orderSchema = new mongoose.Schema(
     },
     deliveryStatus: {
       type: String,
-      enum: ['not_assigned', 'assigned', 'in_transit', 'delivered'],
+      enum: [
+        'not_assigned',
+        'order_confirmed',
+        'bike_booked',
+        'pickup_started',
+        'in_transit',
+        'out_for_delivery',
+        'delivered',
+        'cancelled',
+        'failed_delivery',
+      ],
       default: 'not_assigned',
     },
     deliveryTrackingId: {
+      type: String,
+      default: null,
+    },
+    shipmentId: {
+      type: String,
+      default: null,
+    },
+    courierDetails: {
+      name: { type: String, default: null },
+      phone: { type: String, default: null },
+      vehicleType: { type: String, default: null },
+    },
+    estimatedDelivery: {
+      type: Date,
+      default: null,
+    },
+    deliveryHistory: {
+      type: [deliveryHistorySchema],
+      default: [],
+    },
+    cancelledAt: {
+      type: Date,
+      default: null,
+    },
+    cancelReason: {
       type: String,
       default: null,
     },

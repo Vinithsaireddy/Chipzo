@@ -29,9 +29,16 @@ const getPaginatedProducts = async (queryParams) => {
 
   const filter = {};
 
-  // Full-text search on name + description
+  // Regex search across name, description, category, interfaces
   if (search) {
-    filter.$text = { $search: search };
+    const escaped = search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const regex = new RegExp(escaped, 'i');
+    filter.$or = [
+      { name: { $regex: regex } },
+      { description: { $regex: regex } },
+      { category: { $regex: regex } },
+      { interfaces: { $regex: regex } },
+    ];
   }
 
   // Category filter (exact match)
@@ -53,7 +60,7 @@ const getPaginatedProducts = async (queryParams) => {
 
   const [products, totalCount] = await Promise.all([
     Product.find(filter)
-      .sort(search ? { score: { $meta: 'textScore' } } : { createdAt: -1 })
+      .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limitNum)
       .lean(),

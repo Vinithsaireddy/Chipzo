@@ -10,6 +10,7 @@ const orderRoutes = require('./order.routes');
 const paymentRoutes = require('./payment.routes');
 const deliveryRoutes = require('./delivery.routes');
 const addressRoutes = require('./address.routes');
+const webhookRoutes = require('./webhook.routes');
 
 /**
  * Root router — mounts all sub-routers under /api prefix.
@@ -22,6 +23,7 @@ router.use('/orders', orderRoutes);
 router.use('/payment', paymentRoutes);
 router.use('/delivery', deliveryRoutes);
 router.use('/addresses', addressRoutes);
+router.use('/webhook', webhookRoutes);
 
 /**
  * Health check endpoint — useful for load balancers and uptime monitors.

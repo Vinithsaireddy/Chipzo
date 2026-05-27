@@ -1,0 +1,5603 @@
+[{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e369"
+  },
+  "id": "aa_alkaline_battery_1.5v",
+  "name": "AA Alkaline Battery 1.5V",
+  "category": "Battery",
+  "description": "Standard AA alkaline cell for everyday electronics.",
+  "specifications": {
+    "voltage": "1.5V",
+    "chemistry": "Alkaline",
+    "size": "AA (LR6)",
+    "capacity": "~2500mAh"
+  },
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e36a"
+  },
+  "id": "aaa_alkaline_battery_1.5v",
+  "name": "AAA Alkaline Battery 1.5V",
+  "category": "Battery",
+  "description": "Compact AAA alkaline cell for small devices.",
+  "specifications": {
+    "voltage": "1.5V",
+    "chemistry": "Alkaline",
+    "size": "AAA (LR03)",
+    "capacity": "~1200mAh"
+  },
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-24T06:16:23.922Z"
+  },
+  "stock": 199
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e36b"
+  },
+  "id": "9v_alkaline_battery",
+  "name": "9V Alkaline Battery",
+  "category": "Battery",
+  "description": "Rectangular 9V block battery for smoke detectors and test equipment.",
+  "specifications": {
+    "voltage": "9V",
+    "chemistry": "Alkaline",
+    "size": "PP3 / 6LR61",
+    "capacity": "~550mAh"
+  },
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e36c"
+  },
+  "id": "c_size_battery",
+  "name": "C Size Battery",
+  "category": "Battery",
+  "description": "Mid-size alkaline cell for torches and toys.",
+  "specifications": {
+    "voltage": "1.5V",
+    "chemistry": "Alkaline",
+    "size": "C (LR14)",
+    "capacity": "~8000mAh"
+  },
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e36d"
+  },
+  "id": "d_size_battery",
+  "name": "D Size Battery",
+  "category": "Battery",
+  "description": "Large alkaline cell for high-drain devices.",
+  "specifications": {
+    "voltage": "1.5V",
+    "chemistry": "Alkaline",
+    "size": "D (LR20)",
+    "capacity": "~12000mAh"
+  },
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-26T18:24:36.596Z"
+  },
+  "stock": 196
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e36e"
+  },
+  "id": "cr2032_coin_cell",
+  "name": "CR2032 Coin Cell",
+  "category": "Battery",
+  "description": "Popular lithium coin cell for RTC, key fobs and wearables.",
+  "specifications": {
+    "voltage": "3V",
+    "chemistry": "Lithium",
+    "diameter": "20mm",
+    "thickness": "3.2mm",
+    "capacity": "~220mAh"
+  },
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-21T14:09:14.962Z"
+  },
+  "stock": 199
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e36f"
+  },
+  "id": "cr2025_coin_cell",
+  "name": "CR2025 Coin Cell",
+  "category": "Battery",
+  "description": "Slim lithium coin cell, lighter alternative to CR2032.",
+  "specifications": {
+    "voltage": "3V",
+    "chemistry": "Lithium",
+    "diameter": "20mm",
+    "thickness": "2.5mm",
+    "capacity": "~160mAh"
+  },
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e370"
+  },
+  "id": "cr2016_coin_cell",
+  "name": "CR2016 Coin Cell",
+  "category": "Battery",
+  "description": "Ultra-thin lithium coin cell for slim devices.",
+  "specifications": {
+    "voltage": "3V",
+    "chemistry": "Lithium",
+    "diameter": "20mm",
+    "thickness": "1.6mm",
+    "capacity": "~90mAh"
+  },
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e371"
+  },
+  "id": "lr44___ag13_button_cell",
+  "name": "LR44 / AG13 Button Cell",
+  "category": "Battery",
+  "description": "Alkaline button cell for calculators and LED lights.",
+  "specifications": {
+    "voltage": "1.5V",
+    "chemistry": "Alkaline",
+    "diameter": "11.6mm",
+    "capacity": "~150mAh"
+  },
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-24T06:16:23.922Z"
+  },
+  "stock": 199
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e372"
+  },
+  "id": "rechargeable_aa_nimh_battery",
+  "name": "Rechargeable AA NiMH Battery",
+  "category": "Battery",
+  "description": "AA NiMH rechargeable cell, eco-friendly AA replacement.",
+  "specifications": {
+    "voltage": "1.2V",
+    "chemistry": "NiMH",
+    "size": "AA",
+    "capacity": "~2000–2800mAh",
+    "cycles": ">500"
+  },
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e373"
+  },
+  "id": "rechargeable_aaa_nimh_battery",
+  "name": "Rechargeable AAA NiMH Battery",
+  "category": "Battery",
+  "description": "AAA NiMH rechargeable for cameras and remotes.",
+  "specifications": {
+    "voltage": "1.2V",
+    "chemistry": "NiMH",
+    "size": "AAA",
+    "capacity": "~800–1000mAh",
+    "cycles": ">500"
+  },
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-27T09:08:28.499Z"
+  },
+  "stock": 189
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e374"
+  },
+  "id": "18650_li_ion_battery_3.7v",
+  "name": "18650 Li-ion Battery 3.7V",
+  "category": "Battery",
+  "description": "Popular 18650 lithium cell for DIY power packs and flashlights.",
+  "specifications": {
+    "voltage": "3.7V (nominal)",
+    "chemistry": "Li-ion",
+    "size": "18x65mm",
+    "capacity": "2000–3500mAh",
+    "max_charge": "4.2V"
+  },
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e375"
+  },
+  "id": "21700_li_ion_battery",
+  "name": "21700 Li-ion Battery",
+  "category": "Battery",
+  "description": "High-capacity 21700 lithium cell for power tools and EVs.",
+  "specifications": {
+    "voltage": "3.7V (nominal)",
+    "chemistry": "Li-ion",
+    "size": "21x70mm",
+    "capacity": "3000–5000mAh"
+  },
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-24T06:16:23.922Z"
+  },
+  "stock": 199
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e376"
+  },
+  "id": "26650_li_ion_battery",
+  "name": "26650 Li-ion Battery",
+  "category": "Battery",
+  "description": "Larger format Li-ion with high energy density.",
+  "specifications": {
+    "voltage": "3.7V (nominal)",
+    "chemistry": "Li-ion",
+    "size": "26x65mm",
+    "capacity": "4000–5500mAh"
+  },
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e377"
+  },
+  "id": "li_po_battery_3.7v_300mah",
+  "name": "Li-Po Battery 3.7V 300mAh",
+  "category": "Battery",
+  "description": "Lightweight LiPo pack for small drones and wearables.",
+  "specifications": {
+    "voltage": "3.7V",
+    "chemistry": "LiPo",
+    "capacity": "300mAh",
+    "connector": "JST-PH"
+  },
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e378"
+  },
+  "id": "li_po_battery_3.7v_500mah",
+  "name": "Li-Po Battery 3.7V 500mAh",
+  "category": "Battery",
+  "description": "LiPo pack suitable for compact RC cars.",
+  "specifications": {
+    "voltage": "3.7V",
+    "chemistry": "LiPo",
+    "capacity": "500mAh",
+    "connector": "JST-PH"
+  },
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e379"
+  },
+  "id": "li_po_battery_3.7v_1000mah",
+  "name": "Li-Po Battery 3.7V 1000mAh",
+  "category": "Battery",
+  "description": "1S LiPo for mini FPV quads and IoT devices.",
+  "specifications": {
+    "voltage": "3.7V",
+    "chemistry": "LiPo",
+    "capacity": "1000mAh",
+    "connector": "JST-PH"
+  },
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-24T06:16:23.922Z"
+  },
+  "stock": 197
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e37a"
+  },
+  "id": "li_po_battery_3.7v_2200mah",
+  "name": "Li-Po Battery 3.7V 2200mAh",
+  "category": "Battery",
+  "description": "Popular 2200mAh LiPo for medium-size RC/drone projects.",
+  "specifications": {
+    "voltage": "3.7V",
+    "chemistry": "LiPo",
+    "capacity": "2200mAh",
+    "connector": "JST-PH"
+  },
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e37b"
+  },
+  "id": "li_po_battery_7.4v_2s",
+  "name": "Li-Po Battery 7.4V 2S",
+  "category": "Battery",
+  "description": "2-cell LiPo (2S) for higher voltage RC applications.",
+  "specifications": {
+    "voltage": "7.4V",
+    "chemistry": "LiPo",
+    "cells": "2S",
+    "connector": "XT30/XT60"
+  },
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-27T09:08:28.499Z"
+  },
+  "stock": 186
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e37c"
+  },
+  "id": "li_po_battery_11.1v_3s",
+  "name": "Li-Po Battery 11.1V 3S",
+  "category": "Battery",
+  "description": "3-cell LiPo for racing drones and RC aircraft.",
+  "specifications": {
+    "voltage": "11.1V",
+    "chemistry": "LiPo",
+    "cells": "3S",
+    "connector": "XT60"
+  },
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-24T06:16:23.922Z"
+  },
+  "stock": 199
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e37d"
+  },
+  "id": "single_aa_battery_holder",
+  "name": "Single AA Battery Holder",
+  "category": "Battery Holder",
+  "description": "Holds one AA cell with wire leads.",
+  "specifications": {
+    "cells": "1x AA",
+    "output": "1.5V",
+    "leads": "Wire tails"
+  },
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e37e"
+  },
+  "id": "dual_aa_battery_holder",
+  "name": "Dual AA Battery Holder",
+  "category": "Battery Holder",
+  "description": "Holds two AA cells in series.",
+  "specifications": {
+    "cells": "2x AA",
+    "output": "3V",
+    "leads": "Wire tails"
+  },
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e37f"
+  },
+  "id": "quad_aa_battery_holder",
+  "name": "Quad AA Battery Holder",
+  "category": "Battery Holder",
+  "description": "Holds four AA cells in series.",
+  "specifications": {
+    "cells": "4x AA",
+    "output": "6V",
+    "leads": "Wire tails"
+  },
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-21T13:58:57.063Z"
+  },
+  "stock": 195
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e380"
+  },
+  "id": "single_aaa_battery_holder",
+  "name": "Single AAA Battery Holder",
+  "category": "Battery Holder",
+  "description": "Single AAA holder with wire leads.",
+  "specifications": {
+    "cells": "1x AAA",
+    "output": "1.5V"
+  },
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e381"
+  },
+  "id": "dual_aaa_battery_holder",
+  "name": "Dual AAA Battery Holder",
+  "category": "Battery Holder",
+  "description": "Dual AAA holder, 3V output.",
+  "specifications": {
+    "cells": "2x AAA",
+    "output": "3V"
+  },
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e382"
+  },
+  "id": "9v_battery_clip_with_wire",
+  "name": "9V Battery Clip with Wire",
+  "category": "Battery Holder",
+  "description": "Snap-on clip connector for 9V PP3 batteries.",
+  "specifications": {
+    "connector": "PP3 snap",
+    "wire_length": "~150mm"
+  },
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e383"
+  },
+  "id": "cr2032_coin_cell_holder",
+  "name": "CR2032 Coin Cell Holder",
+  "category": "Battery Holder",
+  "description": "PCB-mount coin cell socket for CR2032.",
+  "specifications": {
+    "cell": "CR2032",
+    "mounting": "THT/SMD"
+  },
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e384"
+  },
+  "id": "18650_single_battery_holder",
+  "name": "18650 Single Battery Holder",
+  "category": "Battery Holder",
+  "description": "Single 18650 slot holder with spring contacts.",
+  "specifications": {
+    "cells": "1x 18650",
+    "output": "3.7V"
+  },
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e385"
+  },
+  "id": "18650_dual_battery_holder",
+  "name": "18650 Dual Battery Holder",
+  "category": "Battery Holder",
+  "description": "Dual 18650 holder, can be wired series or parallel.",
+  "specifications": {
+    "cells": "2x 18650",
+    "options": "Series 7.4V / Parallel 3.7V"
+  },
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e386"
+  },
+  "id": "jst_ph_battery_connector",
+  "name": "JST-PH Battery Connector",
+  "category": "Battery Holder",
+  "description": "2-pin JST-PH connector pair for LiPo packs.",
+  "specifications": {
+    "pitch": "2.0mm",
+    "pins": "2",
+    "rating": "2A"
+  },
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e387"
+  },
+  "id": "xt30_connector_pair",
+  "name": "XT30 Connector Pair",
+  "category": "Battery Holder",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e388"
+  },
+  "id": "xt60_connector_pair",
+  "name": "XT60 Connector Pair",
+  "category": "Battery Holder",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e389"
+  },
+  "id": "dc_barrel_jack_female",
+  "name": "DC Barrel Jack Female",
+  "category": "Battery Holder",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e38a"
+  },
+  "id": "dc_barrel_plug_male",
+  "name": "DC Barrel Plug Male",
+  "category": "Battery Holder",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e38b"
+  },
+  "id": "battery_protection_bms_module_3s___1s",
+  "name": "Battery Protection BMS Module (3S / 1S)",
+  "category": "Battery Holder",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e38c"
+  },
+  "id": "battery_voltage_indicator_module",
+  "name": "Battery Voltage Indicator Module",
+  "category": "Battery Holder",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e38d"
+  },
+  "id": "jumper_wire_male_male_pack_of_40",
+  "name": "Jumper Wire Male-Male (Pack of 40)",
+  "category": "Wire",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e38e"
+  },
+  "id": "jumper_wire_male_female_pack_of_40",
+  "name": "Jumper Wire Male-Female (Pack of 40)",
+  "category": "Wire",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e38f"
+  },
+  "id": "jumper_wire_female_female_pack_of_40",
+  "name": "Jumper Wire Female-Female (Pack of 40)",
+  "category": "Wire",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e390"
+  },
+  "id": "dupont_connector_kit",
+  "name": "Dupont Connector Kit",
+  "category": "Wire",
+  "description": "Assorted Dupont connectors and crimping housing kit.",
+  "specifications": {
+    "pitches": "2.54mm",
+    "contents": "Housings, pins, crimps"
+  },
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e391"
+  },
+  "id": "ribbon_cable_10_pin",
+  "name": "Ribbon Cable 10 Pin",
+  "category": "Wire",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e392"
+  },
+  "id": "ribbon_cable_20_pin",
+  "name": "Ribbon Cable 20 Pin",
+  "category": "Wire",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e393"
+  },
+  "id": "single_core_hook_up_wire",
+  "name": "Single Core Hook-up Wire",
+  "category": "Wire",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-19T18:34:39.470Z"
+  },
+  "stock": 199
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e394"
+  },
+  "id": "multi_core_hook_up_wire",
+  "name": "Multi Core Hook-up Wire",
+  "category": "Wire",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e395"
+  },
+  "id": "silicone_wire_red_black",
+  "name": "Silicone Wire Red Black",
+  "category": "Wire",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-19T18:34:39.470Z"
+  },
+  "stock": 199
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e396"
+  },
+  "id": "jst_2_pin_connector",
+  "name": "JST 2 Pin Connector",
+  "category": "Wire",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e397"
+  },
+  "id": "jst_3_pin_connector",
+  "name": "JST 3 Pin Connector",
+  "category": "Wire",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e398"
+  },
+  "id": "screw_terminal_block_2_pin",
+  "name": "Screw Terminal Block 2 Pin",
+  "category": "Wire",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e399"
+  },
+  "id": "screw_terminal_block_3_pin",
+  "name": "Screw Terminal Block 3 Pin",
+  "category": "Wire",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e39a"
+  },
+  "id": "pin_header_male",
+  "name": "Pin Header Male",
+  "category": "Wire",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e39b"
+  },
+  "id": "pin_header_female",
+  "name": "Pin Header Female",
+  "category": "Wire",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e39c"
+  },
+  "id": "ic_socket_assortment",
+  "name": "IC Socket Assortment",
+  "category": "Wire",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e39d"
+  },
+  "id": "usb_type_a_cable",
+  "name": "USB Type A Cable",
+  "category": "Wire",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e39e"
+  },
+  "id": "usb_type_b_cable",
+  "name": "USB Type B Cable",
+  "category": "Wire",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e39f"
+  },
+  "id": "usb_type_c_cable",
+  "name": "USB Type C Cable",
+  "category": "Wire",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3a0"
+  },
+  "id": "usb_to_ttl_converter",
+  "name": "USB to TTL Converter",
+  "category": "Wire",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-21T13:58:57.063Z"
+  },
+  "stock": 199
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3a1"
+  },
+  "id": "arduino_uno_r3",
+  "name": "Arduino Uno R3",
+  "category": "Microcontroller",
+  "description": "The most popular beginner microcontroller board based on ATmega328P.",
+  "specifications": {
+    "mcu": "ATmega328P",
+    "clock": "16MHz",
+    "flash": "32KB",
+    "sram": "2KB",
+    "digital_io": "14",
+    "analog_in": "6",
+    "operating_voltage": "5V"
+  },
+  "interfaces": [
+    "UART",
+    "SPI",
+    "I2C",
+    "PWM",
+    "USB-B"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3a2"
+  },
+  "id": "arduino_nano_with___without_soldering",
+  "name": "Arduino Nano (With / Without Soldering)",
+  "category": "Microcontroller",
+  "description": "Compact Arduino compatible with ATmega328P in mini form factor.",
+  "specifications": {
+    "mcu": "ATmega328P",
+    "clock": "16MHz",
+    "flash": "32KB",
+    "sram": "2KB",
+    "digital_io": "14",
+    "analog_in": "8",
+    "operating_voltage": "5V"
+  },
+  "interfaces": [
+    "UART",
+    "SPI",
+    "I2C",
+    "PWM",
+    "Mini-USB"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3a3"
+  },
+  "id": "arduino_mega_2560",
+  "name": "Arduino Mega 2560",
+  "category": "Microcontroller",
+  "description": "High I/O Arduino with ATmega2560 for large projects.",
+  "specifications": {
+    "mcu": "ATmega2560",
+    "clock": "16MHz",
+    "flash": "256KB",
+    "sram": "8KB",
+    "digital_io": "54",
+    "analog_in": "16",
+    "operating_voltage": "5V"
+  },
+  "interfaces": [
+    "4x UART",
+    "SPI",
+    "I2C",
+    "PWM",
+    "USB-B"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-21T13:58:57.063Z"
+  },
+  "stock": 199
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3a4"
+  },
+  "id": "arduino_pro_mini",
+  "name": "Arduino Pro Mini",
+  "category": "Microcontroller",
+  "description": "Ultra-compact Arduino without USB chip, ideal for embedded use.",
+  "specifications": {
+    "mcu": "ATmega328P",
+    "clock": "8MHz (3.3V) / 16MHz (5V)",
+    "flash": "32KB",
+    "sram": "2KB",
+    "digital_io": "14",
+    "analog_in": "6"
+  },
+  "interfaces": [
+    "UART",
+    "SPI",
+    "I2C",
+    "PWM"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-19T18:46:43.511Z"
+  },
+  "stock": 199
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3a5"
+  },
+  "id": "arduino_leonardo",
+  "name": "Arduino Leonardo",
+  "category": "Microcontroller",
+  "description": "Arduino with built-in USB HID, acts as keyboard/mouse.",
+  "specifications": {
+    "mcu": "ATmega32U4",
+    "clock": "16MHz",
+    "flash": "32KB",
+    "sram": "2.5KB",
+    "usb": "Native USB HID"
+  },
+  "interfaces": [
+    "UART",
+    "SPI",
+    "I2C",
+    "PWM",
+    "Micro-USB"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-21T14:09:14.962Z"
+  },
+  "stock": 199
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3a6"
+  },
+  "id": "esp8266_nodemcu",
+  "name": "ESP8266 NodeMCU",
+  "category": "Microcontroller",
+  "description": "Wi-Fi enabled microcontroller board, great for IoT.",
+  "specifications": {
+    "mcu": "ESP8266",
+    "clock": "80/160MHz",
+    "flash": "4MB",
+    "wifi": "802.11 b/g/n",
+    "operating_voltage": "3.3V",
+    "digital_io": "11"
+  },
+  "interfaces": [
+    "UART",
+    "SPI",
+    "I2C",
+    "Wi-Fi",
+    "Micro-USB"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3a7"
+  },
+  "id": "esp32_development_board",
+  "name": "ESP32 Development Board",
+  "category": "Microcontroller",
+  "description": "Dual-core Wi-Fi & Bluetooth microcontroller for advanced IoT.",
+  "specifications": {
+    "mcu": "ESP32",
+    "cores": "Dual-core Xtensa LX6",
+    "clock": "240MHz",
+    "flash": "4MB",
+    "wifi": "802.11 b/g/n",
+    "bluetooth": "BT 4.2 + BLE",
+    "operating_voltage": "3.3V",
+    "digital_io": "34"
+  },
+  "interfaces": [
+    "UART",
+    "SPI",
+    "I2C",
+    "I2S",
+    "Wi-Fi",
+    "Bluetooth",
+    "BLE",
+    "Micro-USB"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3a8"
+  },
+  "id": "raspberry_pi_5_2gb_ram",
+  "name": "Raspberry Pi 5 (2GB RAM)",
+  "category": "Microcontroller",
+  "description": "Latest Raspberry Pi SBC with 2GB RAM for Linux-based projects.",
+  "specifications": {
+    "soc": "BCM2712 (Arm Cortex-A76)",
+    "clock": "2.4GHz",
+    "ram": "2GB LPDDR4X",
+    "storage": "MicroSD",
+    "os": "Raspberry Pi OS / Linux"
+  },
+  "interfaces": [
+    "USB 3.0",
+    "USB-C",
+    "HDMI",
+    "GPIO",
+    "UART",
+    "SPI",
+    "I2C",
+    "CSI",
+    "DSI",
+    "PCIe",
+    "Gigabit Ethernet"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3a9"
+  },
+  "id": "raspberry_pi_5_4gb_ram",
+  "name": "Raspberry Pi 5 (4GB RAM)",
+  "category": "Microcontroller",
+  "description": "Raspberry Pi 5 with 4GB RAM for desktop and AI workloads.",
+  "specifications": {
+    "soc": "BCM2712",
+    "clock": "2.4GHz",
+    "ram": "4GB LPDDR4X"
+  },
+  "interfaces": [
+    "USB 3.0",
+    "USB-C",
+    "HDMI",
+    "GPIO",
+    "UART",
+    "SPI",
+    "I2C",
+    "CSI",
+    "DSI",
+    "PCIe",
+    "Gigabit Ethernet"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3aa"
+  },
+  "id": "raspberry_pi_5_8gb_ram",
+  "name": "Raspberry Pi 5 (8GB RAM)",
+  "category": "Microcontroller",
+  "description": "Top-spec Raspberry Pi 5 with 8GB RAM.",
+  "specifications": {
+    "soc": "BCM2712",
+    "clock": "2.4GHz",
+    "ram": "8GB LPDDR4X"
+  },
+  "interfaces": [
+    "USB 3.0",
+    "USB-C",
+    "HDMI",
+    "GPIO",
+    "UART",
+    "SPI",
+    "I2C",
+    "CSI",
+    "DSI",
+    "PCIe",
+    "Gigabit Ethernet"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3ab"
+  },
+  "id": "raspberry_pi_zero_2w",
+  "name": "Raspberry Pi Zero 2W",
+  "category": "Microcontroller",
+  "description": "Tiny Raspberry Pi with wireless connectivity.",
+  "specifications": {
+    "soc": "RP3A0 (Cortex-A53)",
+    "clock": "1GHz",
+    "ram": "512MB",
+    "wifi": "802.11 b/g/n",
+    "bluetooth": "BT 4.2 + BLE"
+  },
+  "interfaces": [
+    "Mini HDMI",
+    "USB OTG",
+    "GPIO",
+    "SPI",
+    "I2C",
+    "UART",
+    "Wi-Fi",
+    "Bluetooth"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3ac"
+  },
+  "id": "stm32_blue_pill",
+  "name": "STM32 Blue Pill",
+  "category": "Microcontroller",
+  "description": "Low-cost STM32 ARM Cortex-M3 development board.",
+  "specifications": {
+    "mcu": "STM32F103C8T6",
+    "core": "ARM Cortex-M3",
+    "clock": "72MHz",
+    "flash": "64KB",
+    "sram": "20KB",
+    "operating_voltage": "3.3V"
+  },
+  "interfaces": [
+    "UART",
+    "SPI",
+    "I2C",
+    "USB",
+    "CAN",
+    "PWM"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3ad"
+  },
+  "id": "microbit_v2",
+  "name": "Microbit V2",
+  "category": "Microcontroller",
+  "description": "Educational ARM-based board with onboard sensors and display.",
+  "specifications": {
+    "mcu": "nRF52833",
+    "core": "ARM Cortex-M4",
+    "sensors": "Accelerometer, Compass, Mic, Temp",
+    "display": "5x5 LED matrix"
+  },
+  "interfaces": [
+    "UART",
+    "SPI",
+    "I2C",
+    "Bluetooth",
+    "Edge connector"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3ae"
+  },
+  "id": "teensy_4.0",
+  "name": "Teensy 4.0",
+  "category": "Microcontroller",
+  "description": "High-performance 600MHz ARM Cortex-M7 board.",
+  "specifications": {
+    "mcu": "IMXRT1062",
+    "core": "ARM Cortex-M7",
+    "clock": "600MHz",
+    "flash": "2MB",
+    "ram": "1MB",
+    "usb": "Native USB 2.0"
+  },
+  "interfaces": [
+    "UART",
+    "SPI",
+    "I2C",
+    "I2S",
+    "USB",
+    "CAN",
+    "PWM"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3af"
+  },
+  "id": "bluetooth_module_hc_05",
+  "name": "Bluetooth Module HC-05",
+  "category": "Communication",
+  "description": "Classic Bluetooth 2.0 serial module, master & slave modes.",
+  "specifications": {
+    "bluetooth": "BT 2.0 SPP",
+    "baud": "9600–115200",
+    "voltage": "3.3–5V",
+    "range": "~10m"
+  },
+  "interfaces": [
+    "UART",
+    "AT Commands"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3b0"
+  },
+  "id": "bluetooth_module_hc_06",
+  "name": "Bluetooth Module HC-06",
+  "category": "Communication",
+  "description": "Slave-only Bluetooth serial module for easy wireless UART.",
+  "specifications": {
+    "bluetooth": "BT 2.0 SPP",
+    "baud": "9600 default",
+    "voltage": "3.3–5V"
+  },
+  "interfaces": [
+    "UART"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3b1"
+  },
+  "id": "ble_module_hm_10",
+  "name": "BLE Module HM-10",
+  "category": "Communication",
+  "description": "Bluetooth 4.0 BLE module compatible with iOS and Android.",
+  "specifications": {
+    "bluetooth": "BLE 4.0",
+    "voltage": "3.3V",
+    "range": "~100m",
+    "chip": "CC2541"
+  },
+  "interfaces": [
+    "UART",
+    "AT Commands",
+    "BLE"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3b2"
+  },
+  "id": "wifi_module_esp_01",
+  "name": "WiFi Module ESP-01",
+  "category": "Communication",
+  "description": "Ultra-compact ESP8266 Wi-Fi module for UART-to-WiFi bridging.",
+  "specifications": {
+    "chip": "ESP8266",
+    "wifi": "802.11 b/g/n",
+    "voltage": "3.3V",
+    "flash": "1MB"
+  },
+  "interfaces": [
+    "UART",
+    "AT Commands",
+    "Wi-Fi"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3b3"
+  },
+  "id": "nrf24l01_wireless_module",
+  "name": "NRF24L01 Wireless Module",
+  "category": "Communication",
+  "description": "2.4GHz transceiver module for low-power wireless links.",
+  "specifications": {
+    "frequency": "2.4GHz",
+    "data_rate": "250kbps–2Mbps",
+    "voltage": "1.9–3.6V",
+    "range": "~100m (PA+LNA: ~1km)"
+  },
+  "interfaces": [
+    "SPI"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3b4"
+  },
+  "id": "lora_sx1278_module",
+  "name": "LoRa SX1278 Module",
+  "category": "Communication",
+  "description": "Long-range LoRa module for IoT sensor networks.",
+  "specifications": {
+    "frequency": "433MHz",
+    "range": "~3km urban / 15km LoS",
+    "chip": "SX1278",
+    "voltage": "3.3V"
+  },
+  "interfaces": [
+    "SPI"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3b5"
+  },
+  "id": "gsm_gprs_module_sim800_l_c",
+  "name": "GSM GPRS Module SIM800 L/C",
+  "category": "Communication",
+  "description": "GSM/GPRS module for SMS, calls and data over cellular.",
+  "specifications": {
+    "bands": "Quad-band 850/900/1800/1900MHz",
+    "voltage": "3.4–4.4V",
+    "features": "SMS, Voice, GPRS data"
+  },
+  "interfaces": [
+    "UART",
+    "AT Commands"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3b6"
+  },
+  "id": "gps_module_neo_6m",
+  "name": "GPS Module NEO-6M",
+  "category": "Communication",
+  "description": "GPS receiver module with TTL serial output.",
+  "specifications": {
+    "chip": "u-blox NEO-6M",
+    "voltage": "3.3–5V",
+    "accuracy": "2.5m CEP",
+    "baud": "9600"
+  },
+  "interfaces": [
+    "UART"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3b7"
+  },
+  "id": "rfid_module_rc522",
+  "name": "RFID Module RC522",
+  "category": "Communication",
+  "description": "13.56MHz RFID reader/writer for access control projects.",
+  "specifications": {
+    "frequency": "13.56MHz",
+    "voltage": "3.3V",
+    "range": "~5cm",
+    "cards": "MIFARE"
+  },
+  "interfaces": [
+    "SPI",
+    "I2C",
+    "UART"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3b8"
+  },
+  "id": "nfc_module_pn532",
+  "name": "NFC Module PN532",
+  "category": "Communication",
+  "description": "NFC controller supporting read, write and peer-to-peer.",
+  "specifications": {
+    "frequency": "13.56MHz",
+    "voltage": "3.3V",
+    "modes": "Read/Write, P2P, Card Emulation"
+  },
+  "interfaces": [
+    "SPI",
+    "I2C",
+    "UART"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3b9"
+  },
+  "id": "dht11_temperature_humidity_sensor",
+  "name": "DHT11 Temperature Humidity Sensor",
+  "category": "Sensor",
+  "description": "Low-cost digital temp & humidity sensor.",
+  "specifications": {
+    "temp_range": "0–50°C ±2°C",
+    "humidity_range": "20–80% ±5%",
+    "voltage": "3.3–5V",
+    "output": "Single-wire digital"
+  },
+  "interfaces": [
+    "1-Wire (single-bus)"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3ba"
+  },
+  "id": "dht22_temperature_humidity_sensor",
+  "name": "DHT22 Temperature Humidity Sensor",
+  "category": "Sensor",
+  "description": "Higher accuracy temp & humidity sensor.",
+  "specifications": {
+    "temp_range": "-40–80°C ±0.5°C",
+    "humidity_range": "0–100% ±2–5%",
+    "voltage": "3.3–5V"
+  },
+  "interfaces": [
+    "1-Wire (single-bus)"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3bb"
+  },
+  "id": "ds18b20_waterproof_temperature_sensor",
+  "name": "DS18B20 Waterproof Temperature Sensor",
+  "category": "Sensor",
+  "description": "Waterproof digital temperature sensor on 1m cable.",
+  "specifications": {
+    "temp_range": "-55–125°C ±0.5°C",
+    "voltage": "3.0–5.5V",
+    "resolution": "9–12 bit"
+  },
+  "interfaces": [
+    "1-Wire"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3bc"
+  },
+  "id": "bmp280_pressure_sensor",
+  "name": "BMP280 Pressure Sensor",
+  "category": "Sensor",
+  "description": "Barometric pressure and temperature sensor.",
+  "specifications": {
+    "pressure": "300–1100hPa ±1hPa",
+    "temp": "0–65°C",
+    "voltage": "1.71–3.6V"
+  },
+  "interfaces": [
+    "I2C",
+    "SPI"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3bd"
+  },
+  "id": "bme280_environmental_sensor",
+  "name": "BME280 Environmental Sensor",
+  "category": "Sensor",
+  "description": "Combined pressure, temperature and humidity sensor.",
+  "specifications": {
+    "pressure": "300–1100hPa",
+    "humidity": "0–100%",
+    "temp": "-40–85°C",
+    "voltage": "1.71–3.6V"
+  },
+  "interfaces": [
+    "I2C",
+    "SPI"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3be"
+  },
+  "id": "mq_2_gas_sensor",
+  "name": "MQ-2 Gas Sensor",
+  "category": "Sensor",
+  "description": "Detects combustible gases and smoke.",
+  "specifications": {
+    "detects": "LPG, Propane, Methane, Hydrogen, Smoke",
+    "voltage": "5V",
+    "output": "Analog + Digital"
+  },
+  "interfaces": [
+    "Analog",
+    "GPIO"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3bf"
+  },
+  "id": "mq_3_alcohol_sensor",
+  "name": "MQ-3 Alcohol Sensor",
+  "category": "Sensor",
+  "description": "Alcohol vapour sensor for breathalyser projects.",
+  "specifications": {
+    "detects": "Ethanol/Alcohol",
+    "voltage": "5V",
+    "output": "Analog + Digital"
+  },
+  "interfaces": [
+    "Analog",
+    "GPIO"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3c0"
+  },
+  "id": "mq_6_lpg_gas_sensor",
+  "name": "MQ-6 LPG Gas Sensor",
+  "category": "Sensor",
+  "description": "LPG and propane gas leak detector.",
+  "specifications": {
+    "detects": "LPG, Propane, iso-Butane",
+    "voltage": "5V",
+    "output": "Analog + Digital"
+  },
+  "interfaces": [
+    "Analog",
+    "GPIO"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3c1"
+  },
+  "id": "mq_7_carbon_monoxide_sensor",
+  "name": "MQ-7 Carbon Monoxide Sensor",
+  "category": "Sensor",
+  "description": "Detects carbon monoxide concentration.",
+  "specifications": {
+    "detects": "CO",
+    "range": "20–2000ppm",
+    "voltage": "5V"
+  },
+  "interfaces": [
+    "Analog",
+    "GPIO"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3c2"
+  },
+  "id": "mq_135_air_quality_sensor",
+  "name": "MQ-135 Air Quality Sensor",
+  "category": "Sensor",
+  "description": "Detects CO2, NH3, benzene and other pollutants.",
+  "specifications": {
+    "detects": "CO2, NH3, Benzene, Alcohol",
+    "voltage": "5V"
+  },
+  "interfaces": [
+    "Analog",
+    "GPIO"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3c3"
+  },
+  "id": "ultrasonic_sensor_hc_sr04",
+  "name": "Ultrasonic Sensor HC-SR04",
+  "category": "Sensor",
+  "description": "Non-contact distance measurement using ultrasound.",
+  "specifications": {
+    "range": "2cm–400cm",
+    "accuracy": "3mm",
+    "voltage": "5V",
+    "frequency": "40kHz"
+  },
+  "interfaces": [
+    "GPIO (Trigger/Echo)"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3c4"
+  },
+  "id": "ir_sensor_module",
+  "name": "IR Sensor Module",
+  "category": "Sensor",
+  "description": "Infrared obstacle detection module.",
+  "specifications": {
+    "range": "2–30cm (adjustable)",
+    "voltage": "3.3–5V",
+    "output": "Digital"
+  },
+  "interfaces": [
+    "GPIO"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3c5"
+  },
+  "id": "ldr_light_sensor",
+  "name": "LDR Light Sensor",
+  "category": "Sensor",
+  "description": "Light-dependent resistor for ambient light detection.",
+  "specifications": {
+    "resistance": "1kΩ–1MΩ (dark to light)",
+    "voltage": "3.3–5V"
+  },
+  "interfaces": [
+    "Analog"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3c6"
+  },
+  "id": "flame_sensor_module",
+  "name": "Flame Sensor Module",
+  "category": "Sensor",
+  "description": "Detects flame or fire using IR wavelength sensing.",
+  "specifications": {
+    "wavelength": "760–1100nm",
+    "voltage": "3.3–5V",
+    "output": "Analog + Digital"
+  },
+  "interfaces": [
+    "Analog",
+    "GPIO"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3c7"
+  },
+  "id": "pir_motion_sensor",
+  "name": "PIR Motion Sensor",
+  "category": "Sensor",
+  "description": "Passive infrared human motion detector.",
+  "specifications": {
+    "range": "up to 7m",
+    "angle": "120°",
+    "voltage": "5–12V",
+    "delay": "adjustable"
+  },
+  "interfaces": [
+    "GPIO"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3c8"
+  },
+  "id": "capacitive_soil_moisture_sensor",
+  "name": "Capacitive Soil Moisture Sensor",
+  "category": "Sensor",
+  "description": "Corrosion-resistant soil moisture sensor.",
+  "specifications": {
+    "output": "Analog voltage",
+    "voltage": "3.3–5V",
+    "type": "Capacitive"
+  },
+  "interfaces": [
+    "Analog"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3c9"
+  },
+  "id": "soil_moisture_sensor",
+  "name": "Soil Moisture Sensor",
+  "category": "Sensor",
+  "description": "Resistive soil moisture sensor for garden automation.",
+  "specifications": {
+    "output": "Analog + Digital",
+    "voltage": "3.3–5V",
+    "type": "Resistive"
+  },
+  "interfaces": [
+    "Analog",
+    "GPIO"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3ca"
+  },
+  "id": "rain_sensor_module",
+  "name": "Rain Sensor Module",
+  "category": "Sensor",
+  "description": "Detects rain or surface water presence.",
+  "specifications": {
+    "output": "Analog + Digital",
+    "voltage": "3.3–5V"
+  },
+  "interfaces": [
+    "Analog",
+    "GPIO"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3cb"
+  },
+  "id": "sound_sensor_module",
+  "name": "Sound Sensor Module",
+  "category": "Sensor",
+  "description": "Microphone-based sound/clap detection sensor.",
+  "specifications": {
+    "sensitivity": "Adjustable",
+    "voltage": "3.3–5V",
+    "output": "Analog + Digital"
+  },
+  "interfaces": [
+    "Analog",
+    "GPIO"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3cc"
+  },
+  "id": "vibration_sensor_module",
+  "name": "Vibration Sensor Module",
+  "category": "Sensor",
+  "description": "Detects vibration and shock events.",
+  "specifications": {
+    "voltage": "3.3–5V",
+    "output": "Digital"
+  },
+  "interfaces": [
+    "GPIO"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3cd"
+  },
+  "id": "touch_sensor_module",
+  "name": "Touch Sensor Module",
+  "category": "Sensor",
+  "description": "Capacitive touch detection module.",
+  "specifications": {
+    "voltage": "2.7–5.5V",
+    "output": "Digital"
+  },
+  "interfaces": [
+    "GPIO"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3ce"
+  },
+  "id": "pulse_rate_sensor",
+  "name": "Pulse Rate Sensor",
+  "category": "Sensor",
+  "description": "Optical heart-rate sensor for fingertip or earlobe.",
+  "specifications": {
+    "wavelength": "Green LED 515nm",
+    "voltage": "3.3–5V",
+    "output": "Analog"
+  },
+  "interfaces": [
+    "Analog"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3cf"
+  },
+  "id": "color_sensor_tcs3200",
+  "name": "Color Sensor TCS3200",
+  "category": "Sensor",
+  "description": "Programmable colour-to-frequency converter.",
+  "specifications": {
+    "detects": "RGB + Clear",
+    "voltage": "2.7–5.5V",
+    "output": "Frequency"
+  },
+  "interfaces": [
+    "GPIO"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3d0"
+  },
+  "id": "flex_sensor",
+  "name": "Flex Sensor",
+  "category": "Sensor",
+  "description": "Resistance changes with bend angle.",
+  "specifications": {
+    "resistance": "~25kΩ flat, ~125kΩ bent 90°",
+    "voltage": "5V"
+  },
+  "interfaces": [
+    "Analog"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3d1"
+  },
+  "id": "load_cell_1kg",
+  "name": "Load Cell 1kg",
+  "category": "Sensor",
+  "description": "Strain gauge load cell for weight measurement.",
+  "specifications": {
+    "capacity": "1kg",
+    "output": "mV/V differential",
+    "voltage": "5–12V excitation"
+  },
+  "interfaces": [
+    "Analog (differential)"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3d2"
+  },
+  "id": "hx711_load_cell_amplifier",
+  "name": "HX711 Load Cell Amplifier",
+  "category": "Sensor",
+  "description": "24-bit ADC amplifier designed for load cells.",
+  "specifications": {
+    "resolution": "24-bit",
+    "gain": "32/64/128",
+    "voltage": "2.7–5.5V"
+  },
+  "interfaces": [
+    "2-Wire (CLK/DATA)"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3d3"
+  },
+  "id": "ldr_light_sensor_module",
+  "name": "LDR Light Sensor Module",
+  "category": "Sensor",
+  "description": "LDR breakout module with comparator output.",
+  "specifications": {
+    "voltage": "3.3–5V",
+    "output": "Analog + Digital"
+  },
+  "interfaces": [
+    "Analog",
+    "GPIO"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3d4"
+  },
+  "id": "mpu6050_accelerometer_gyro",
+  "name": "MPU6050 Accelerometer Gyro",
+  "category": "Sensor",
+  "description": "6-axis IMU with accelerometer and gyroscope.",
+  "specifications": {
+    "axes": "3-axis Accel + 3-axis Gyro",
+    "voltage": "3.3–5V",
+    "resolution": "16-bit"
+  },
+  "interfaces": [
+    "I2C"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3d5"
+  },
+  "id": "16x2_lcd_display",
+  "name": "16x2 LCD Display",
+  "category": "Display",
+  "description": "Standard 16-character 2-line alphanumeric LCD.",
+  "specifications": {
+    "resolution": "16x2 characters",
+    "voltage": "5V",
+    "backlight": "LED"
+  },
+  "interfaces": [
+    "Parallel (4/8-bit)",
+    "I2C (with adapter)"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3d6"
+  },
+  "id": "20x4_lcd_display",
+  "name": "20x4 LCD Display",
+  "category": "Display",
+  "description": "Larger 20-character 4-line LCD for more data.",
+  "specifications": {
+    "resolution": "20x4 characters",
+    "voltage": "5V",
+    "backlight": "LED"
+  },
+  "interfaces": [
+    "Parallel (4/8-bit)",
+    "I2C (with adapter)"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3d7"
+  },
+  "id": "oled_display_0.96_inch",
+  "name": "OLED Display 0.96 inch",
+  "category": "Display",
+  "description": "Compact 128x64 OLED screen, high contrast.",
+  "specifications": {
+    "resolution": "128x64 pixels",
+    "size": "0.96 inch",
+    "voltage": "3.3–5V",
+    "driver": "SSD1306"
+  },
+  "interfaces": [
+    "I2C",
+    "SPI"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3d8"
+  },
+  "id": "7_segment_display_1_digit",
+  "name": "7 Segment Display 1 Digit",
+  "category": "Display",
+  "description": "Single-digit 7-segment LED display.",
+  "specifications": {
+    "digits": "1",
+    "voltage": "5V",
+    "type": "Common Anode/Cathode"
+  },
+  "interfaces": [
+    "GPIO"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3d9"
+  },
+  "id": "7_segment_display_4_digit",
+  "name": "7 Segment Display 4 Digit",
+  "category": "Display",
+  "description": "4-digit 7-segment with TM1637 driver.",
+  "specifications": {
+    "digits": "4",
+    "voltage": "5V",
+    "driver": "TM1637"
+  },
+  "interfaces": [
+    "2-Wire (CLK/DIO)"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3da"
+  },
+  "id": "led_matrix_8x8",
+  "name": "LED Matrix 8x8",
+  "category": "Display",
+  "description": "8x8 LED dot matrix with MAX7219 driver.",
+  "specifications": {
+    "resolution": "8x8",
+    "voltage": "5V",
+    "driver": "MAX7219"
+  },
+  "interfaces": [
+    "SPI"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3db"
+  },
+  "id": "tft_lcd_2.4_inch",
+  "name": "TFT LCD 2.4 inch",
+  "category": "Display",
+  "description": "Full colour 240x320 TFT touchscreen display.",
+  "specifications": {
+    "resolution": "240x320 pixels",
+    "size": "2.4 inch",
+    "voltage": "3.3V",
+    "touch": "Resistive",
+    "driver": "ILI9341"
+  },
+  "interfaces": [
+    "SPI"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3dc"
+  },
+  "id": "tft_lcd_3.5_inch",
+  "name": "TFT LCD 3.5 inch",
+  "category": "Display",
+  "description": "Large 320x480 TFT touchscreen display.",
+  "specifications": {
+    "resolution": "320x480 pixels",
+    "size": "3.5 inch",
+    "voltage": "3.3V",
+    "touch": "Resistive"
+  },
+  "interfaces": [
+    "SPI"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3dd"
+  },
+  "id": "e_ink_display_1.54_inch",
+  "name": "E-Ink Display 1.54 inch",
+  "category": "Display",
+  "description": "Ultra-low power e-paper display, retains image without power.",
+  "specifications": {
+    "resolution": "200x200 pixels",
+    "size": "1.54 inch",
+    "voltage": "3.3V",
+    "colors": "Black & White"
+  },
+  "interfaces": [
+    "SPI"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3de"
+  },
+  "id": "nextion_display_2.4_inch",
+  "name": "Nextion Display 2.4 inch",
+  "category": "Display",
+  "description": "Smart serial touch display with built-in GUI editor.",
+  "specifications": {
+    "resolution": "320x240 pixels",
+    "size": "2.4 inch",
+    "voltage": "5V",
+    "touch": "Resistive"
+  },
+  "interfaces": [
+    "UART"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3df"
+  },
+  "id": "ws2812b_led_strip",
+  "name": "WS2812B LED Strip",
+  "category": "Display",
+  "description": "Individually addressable RGB LED strip.",
+  "specifications": {
+    "leds_per_meter": "30/60/144",
+    "voltage": "5V",
+    "protocol": "Single-wire (NZR)"
+  },
+  "interfaces": [
+    "GPIO (Data)"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3e0"
+  },
+  "id": "rgb_led_common_anode",
+  "name": "RGB LED Common Anode",
+  "category": "Display",
+  "description": "5mm RGB LED with common anode.",
+  "specifications": {
+    "voltage": "2.0–3.5V per channel",
+    "type": "Through-hole",
+    "legs": "4 (R, G, B, +)"
+  },
+  "interfaces": [
+    "GPIO"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3e1"
+  },
+  "id": "rgb_led_common_cathode",
+  "name": "RGB LED Common Cathode",
+  "category": "Display",
+  "description": "5mm RGB LED with common cathode.",
+  "specifications": {
+    "voltage": "2.0–3.5V per channel",
+    "type": "Through-hole",
+    "legs": "4 (R, G, B, -)"
+  },
+  "interfaces": [
+    "GPIO"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3e2"
+  },
+  "id": "dc_motor",
+  "name": "DC Motor",
+  "category": "Motor",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3e3"
+  },
+  "id": "servo_motor",
+  "name": "Servo Motor",
+  "category": "Motor",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3e4"
+  },
+  "id": "stepper_motor_nema17",
+  "name": "Stepper Motor NEMA17",
+  "category": "Motor",
+  "description": "Bipolar NEMA17 stepper for 3D printers and CNC.",
+  "specifications": {
+    "voltage": "12–24V",
+    "step_angle": "1.8°",
+    "type": "Bipolar",
+    "current": "~1.5A"
+  },
+  "interfaces": [
+    "Step/Dir (via driver)"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3e5"
+  },
+  "id": "gear_motor",
+  "name": "Gear Motor",
+  "category": "Motor",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3e6"
+  },
+  "id": "vibration_motor",
+  "name": "Vibration Motor",
+  "category": "Motor",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3e7"
+  },
+  "id": "l298n_motor_driver",
+  "name": "L298N Motor Driver",
+  "category": "Motor",
+  "description": "Dual H-bridge driver for two DC motors or one stepper.",
+  "specifications": {
+    "voltage": "5–35V",
+    "current": "2A per channel",
+    "logic": "5V"
+  },
+  "interfaces": [
+    "GPIO",
+    "PWM"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3e8"
+  },
+  "id": "l293d_motor_driver_shield",
+  "name": "L293D Motor Driver Shield",
+  "category": "Motor",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3e9"
+  },
+  "id": "a4988_stepper_driver",
+  "name": "A4988 Stepper Driver",
+  "category": "Motor",
+  "description": "Popular 1/16 micro-step driver for 3D printing.",
+  "specifications": {
+    "voltage": "8–35V",
+    "current": "2A",
+    "microstep": "1/16"
+  },
+  "interfaces": [
+    "Step/Dir",
+    "GPIO"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3ea"
+  },
+  "id": "drv8825_stepper_driver",
+  "name": "DRV8825 Stepper Driver",
+  "category": "Motor",
+  "description": "Micro-stepping driver for NEMA steppers.",
+  "specifications": {
+    "voltage": "8.2–45V",
+    "current": "2.2A",
+    "microstep": "1/32"
+  },
+  "interfaces": [
+    "Step/Dir",
+    "GPIO"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3eb"
+  },
+  "id": "tb6600_stepper_driver",
+  "name": "TB6600 Stepper Driver",
+  "category": "Motor",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3ec"
+  },
+  "id": "cooling_fan_12v",
+  "name": "Cooling Fan 12V",
+  "category": "Motor",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3ed"
+  },
+  "id": "robot_wheel_plastic",
+  "name": "Robot Wheel Plastic",
+  "category": "Robotics",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3ee"
+  },
+  "id": "robot_wheel_rubber",
+  "name": "Robot Wheel Rubber",
+  "category": "Robotics",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3ef"
+  },
+  "id": "robot_chassis_2wd",
+  "name": "Robot Chassis 2WD",
+  "category": "Robotics",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3f0"
+  },
+  "id": "robot_chassis_4wd",
+  "name": "Robot Chassis 4WD",
+  "category": "Robotics",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-19T18:46:43.511Z"
+  },
+  "stock": 199
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3f1"
+  },
+  "id": "motor_coupler",
+  "name": "Motor Coupler",
+  "category": "Robotics",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3f2"
+  },
+  "id": "encoder_wheel",
+  "name": "Encoder Wheel",
+  "category": "Robotics",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3f3"
+  },
+  "id": "servo_horn_set",
+  "name": "Servo Horn Set",
+  "category": "Robotics",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3f4"
+  },
+  "id": "caster_wheel",
+  "name": "Caster Wheel",
+  "category": "Robotics",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3f5"
+  },
+  "id": "robot_arm_kit",
+  "name": "Robot Arm Kit",
+  "category": "Robotics",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3f6"
+  },
+  "id": "drone_frame_f450",
+  "name": "Drone Frame F450",
+  "category": "Drone",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3f7"
+  },
+  "id": "drone_frame_f550",
+  "name": "Drone Frame F550",
+  "category": "Drone",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3f8"
+  },
+  "id": "brushless_motor_1000kv",
+  "name": "Brushless Motor 1000KV",
+  "category": "Drone",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3f9"
+  },
+  "id": "brushless_motor_2200kv",
+  "name": "Brushless Motor 2200KV",
+  "category": "Drone",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3fa"
+  },
+  "id": "esc_30a",
+  "name": "ESC 30A",
+  "category": "Drone",
+  "description": "30A electronic speed controller for brushless motors.",
+  "specifications": {
+    "voltage": "2–6S LiPo",
+    "current": "30A continuous",
+    "signal": "PWM"
+  },
+  "interfaces": [
+    "PWM"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3fb"
+  },
+  "id": "esc_40a",
+  "name": "ESC 40A",
+  "category": "Drone",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3fc"
+  },
+  "id": "drone_propeller_8045",
+  "name": "Drone Propeller 8045",
+  "category": "Drone",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3fd"
+  },
+  "id": "drone_propeller_5045",
+  "name": "Drone Propeller 5045",
+  "category": "Drone",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3fe"
+  },
+  "id": "power_distribution_board",
+  "name": "Power Distribution Board",
+  "category": "Drone",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e3ff"
+  },
+  "id": "flight_controller_naze32",
+  "name": "Flight Controller NAZE32",
+  "category": "Drone",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e400"
+  },
+  "id": "drone_landing_gear",
+  "name": "Drone Landing Gear",
+  "category": "Drone",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e401"
+  },
+  "id": "push_button",
+  "name": "Push Button",
+  "category": "Switch",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e402"
+  },
+  "id": "tactile_switch",
+  "name": "Tactile Switch",
+  "category": "Switch",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e403"
+  },
+  "id": "slide_switch",
+  "name": "Slide Switch",
+  "category": "Switch",
+  "description": "Compact slide switch for small electronics.",
+  "specifications": {
+    "type": "SPDT",
+    "voltage": "12V DC",
+    "current": "0.5A"
+  },
+  "interfaces": [
+    "GPIO"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-19T18:46:43.511Z"
+  },
+  "stock": 199
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e404"
+  },
+  "id": "toggle_switch",
+  "name": "Toggle Switch",
+  "category": "Switch",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e405"
+  },
+  "id": "rotary_encoder",
+  "name": "Rotary Encoder",
+  "category": "Switch",
+  "description": "Mechanical rotary encoder with push button.",
+  "specifications": {
+    "resolution": "20 pulses/rev",
+    "type": "Incremental",
+    "voltage": "5V"
+  },
+  "interfaces": [
+    "GPIO"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e406"
+  },
+  "id": "potentiometer_10k",
+  "name": "Potentiometer 10k",
+  "category": "Switch",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-21T13:57:20.285Z"
+  },
+  "stock": 198
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e407"
+  },
+  "id": "potentiometer_100k",
+  "name": "Potentiometer 100k",
+  "category": "Switch",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e408"
+  },
+  "id": "joystick_module",
+  "name": "Joystick Module",
+  "category": "Switch",
+  "description": "Dual-axis joystick with push button.",
+  "specifications": {
+    "axes": "X, Y (analog)",
+    "button": "Digital",
+    "voltage": "3.3–5V"
+  },
+  "interfaces": [
+    "Analog",
+    "GPIO"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e409"
+  },
+  "id": "keypad_4x4",
+  "name": "Keypad 4x4",
+  "category": "Switch",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e40a"
+  },
+  "id": "active_buzzer",
+  "name": "Active Buzzer",
+  "category": "Output",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e40b"
+  },
+  "id": "passive_buzzer",
+  "name": "Passive Buzzer",
+  "category": "Output",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e40c"
+  },
+  "id": "speaker_8_ohm",
+  "name": "Speaker 8 Ohm",
+  "category": "Output",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e40d"
+  },
+  "id": "relay_module_1_channel",
+  "name": "Relay Module 1 Channel",
+  "category": "Output",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e40e"
+  },
+  "id": "relay_module_2_channel",
+  "name": "Relay Module 2 Channel",
+  "category": "Output",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e40f"
+  },
+  "id": "relay_module_4_channel",
+  "name": "Relay Module 4 Channel",
+  "category": "Output",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e410"
+  },
+  "id": "breadboard_400_points",
+  "name": "Breadboard 400 Points",
+  "category": "Tool",
+  "description": "Half-size solderless breadboard.",
+  "specifications": {
+    "points": "400"
+  },
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e411"
+  },
+  "id": "breadboard_830_points",
+  "name": "Breadboard 830 Points",
+  "category": "Tool",
+  "description": "Standard full-size solderless breadboard.",
+  "specifications": {
+    "points": "830",
+    "voltage": "Max 5V@1A (approx)"
+  },
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e412"
+  },
+  "id": "multimeter",
+  "name": "Multimeter",
+  "category": "Tool",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e413"
+  },
+  "id": "soldering_iron_25w",
+  "name": "Soldering Iron 25W",
+  "category": "Tool",
+  "description": "25W electric soldering iron for PCB work.",
+  "specifications": {
+    "power": "25W",
+    "tip_temp": "~450°C"
+  },
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e414"
+  },
+  "id": "solder_wire_reel",
+  "name": "Solder Wire Reel",
+  "category": "Tool",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e415"
+  },
+  "id": "wire_stripper",
+  "name": "Wire Stripper",
+  "category": "Tool",
+  "description": "Adjustable wire stripper for 10–22AWG wire.",
+  "specifications": {
+    "gauge": "10–22 AWG"
+  },
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e416"
+  },
+  "id": "tweezer_set",
+  "name": "Tweezer Set",
+  "category": "Tool",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e417"
+  },
+  "id": "helping_hand_with_magnifier",
+  "name": "Helping Hand with Magnifier",
+  "category": "Tool",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e418"
+  },
+  "id": "anti_static_wrist_strap",
+  "name": "Anti-static Wrist Strap",
+  "category": "Tool",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e419"
+  },
+  "id": "desoldering_pump",
+  "name": "Desoldering Pump",
+  "category": "Tool",
+  "description": "Spring-loaded solder sucker for component removal.",
+  "specifications": {
+    "type": "Manual pump"
+  },
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e41a"
+  },
+  "id": "screwdriver_set",
+  "name": "Screwdriver Set",
+  "category": "Tool",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e41b"
+  },
+  "id": "pliers",
+  "name": "Pliers",
+  "category": "Tool",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e41c"
+  },
+  "id": "cutter",
+  "name": "Cutter",
+  "category": "Tool",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e41d"
+  },
+  "id": "glue_gun",
+  "name": "Glue Gun",
+  "category": "Tool",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e41e"
+  },
+  "id": "hot_glue_sticks",
+  "name": "Hot Glue Sticks",
+  "category": "Tool",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e41f"
+  },
+  "id": "arduino_starter_kit",
+  "name": "Arduino Starter Kit",
+  "category": "Kit",
+  "description": "All-in-one beginner kit with Arduino Uno and components.",
+  "specifications": {
+    "includes": "Arduino Uno, breadboard, LEDs, resistors, sensors, jumpers"
+  },
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e420"
+  },
+  "id": "sensor_kit_37_in_1",
+  "name": "Sensor Kit 37 in 1",
+  "category": "Kit",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e421"
+  },
+  "id": "resistor_kit",
+  "name": "Resistor Kit",
+  "category": "Kit",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e422"
+  },
+  "id": "capacitor_kit",
+  "name": "Capacitor Kit",
+  "category": "Kit",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e423"
+  },
+  "id": "transistor_kit",
+  "name": "Transistor Kit",
+  "category": "Kit",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e424"
+  },
+  "id": "led_kit",
+  "name": "LED Kit",
+  "category": "Kit",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e425"
+  },
+  "id": "diode_kit",
+  "name": "Diode Kit",
+  "category": "Kit",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e426"
+  },
+  "id": "screw_nut_kit",
+  "name": "Screw Nut Kit",
+  "category": "Kit",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e427"
+  },
+  "id": "resistor_220_ohm",
+  "name": "Resistor 220 Ohm",
+  "category": "Passive",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e428"
+  },
+  "id": "resistor_1k_ohm",
+  "name": "Resistor 1k Ohm",
+  "category": "Passive",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e429"
+  },
+  "id": "resistor_10k_ohm",
+  "name": "Resistor 10k Ohm",
+  "category": "Passive",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e42a"
+  },
+  "id": "resistor_100k_ohm",
+  "name": "Resistor 100k Ohm",
+  "category": "Passive",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e42b"
+  },
+  "id": "capacitor_10uf",
+  "name": "Capacitor 10uF",
+  "category": "Passive",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e42c"
+  },
+  "id": "capacitor_100uf",
+  "name": "Capacitor 100uF",
+  "category": "Passive",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e42d"
+  },
+  "id": "capacitor_100nf",
+  "name": "Capacitor 100nF",
+  "category": "Passive",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e42e"
+  },
+  "id": "inductor_100uh",
+  "name": "Inductor 100uH",
+  "category": "Passive",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e42f"
+  },
+  "id": "crystal_oscillator_16mhz",
+  "name": "Crystal Oscillator 16MHz",
+  "category": "Passive",
+  "description": "16MHz quartz crystal for microcontrollers.",
+  "specifications": {
+    "frequency": "16MHz",
+    "package": "HC-49S"
+  },
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e430"
+  },
+  "id": "crystal_oscillator_32.768khz",
+  "name": "Crystal Oscillator 32.768kHz",
+  "category": "Passive",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e431"
+  },
+  "id": "fuse_500ma",
+  "name": "Fuse 500mA",
+  "category": "Passive",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e432"
+  },
+  "id": "fuse_1a",
+  "name": "Fuse 1A",
+  "category": "Passive",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e433"
+  },
+  "id": "fuse_holder",
+  "name": "Fuse Holder",
+  "category": "Passive",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e434"
+  },
+  "id": "potentiometer_knob",
+  "name": "Potentiometer Knob",
+  "category": "Passive",
+  "description": "",
+  "specifications": {},
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e435"
+  },
+  "id": "555_timer_ic",
+  "name": "555 Timer IC",
+  "category": "IC",
+  "description": "Versatile timer IC for oscillator and monostable circuits.",
+  "specifications": {
+    "package": "DIP-8",
+    "voltage": "4.5–15V",
+    "output_current": "200mA"
+  },
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e436"
+  },
+  "id": "lm358_op_amp",
+  "name": "LM358 Op-Amp",
+  "category": "IC",
+  "description": "Dual op-amp for amplifier and comparator circuits.",
+  "specifications": {
+    "package": "DIP-8",
+    "voltage": "3–32V",
+    "channels": "2"
+  },
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e437"
+  },
+  "id": "lm324_op_amp",
+  "name": "LM324 Op-Amp",
+  "category": "IC",
+  "description": "Quad op-amp, 4 channels in one package.",
+  "specifications": {
+    "package": "DIP-14",
+    "voltage": "3–32V",
+    "channels": "4"
+  },
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e438"
+  },
+  "id": "74hc595_shift_register",
+  "name": "74HC595 Shift Register",
+  "category": "IC",
+  "description": "8-bit serial-in parallel-out shift register.",
+  "specifications": {
+    "package": "DIP-16",
+    "voltage": "2–6V",
+    "outputs": "8"
+  },
+  "interfaces": [
+    "SPI"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e439"
+  },
+  "id": "atmega328p_microcontroller",
+  "name": "ATmega328P Microcontroller",
+  "category": "IC",
+  "description": "Standalone DIP AVR MCU used in Arduino Uno.",
+  "specifications": {
+    "package": "DIP-28",
+    "clock": "16MHz",
+    "flash": "32KB",
+    "sram": "2KB"
+  },
+  "interfaces": [
+    "UART",
+    "SPI",
+    "I2C",
+    "PWM"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e43a"
+  },
+  "id": "attiny85_microcontroller",
+  "name": "ATtiny85 Microcontroller",
+  "category": "IC",
+  "description": "Compact 8-pin AVR MCU for small embedded projects.",
+  "specifications": {
+    "package": "DIP-8",
+    "clock": "8MHz",
+    "flash": "8KB",
+    "sram": "512B"
+  },
+  "interfaces": [
+    "UART",
+    "SPI",
+    "I2C"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e43b"
+  },
+  "id": "uln2003_motor_driver_ic",
+  "name": "ULN2003 Motor Driver IC",
+  "category": "IC",
+  "description": "7-channel Darlington transistor array for stepper motors.",
+  "specifications": {
+    "package": "DIP-16",
+    "voltage": "50V",
+    "current": "500mA per channel"
+  },
+  "interfaces": [
+    "GPIO"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e43c"
+  },
+  "id": "l7805_voltage_regulator",
+  "name": "L7805 Voltage Regulator",
+  "category": "IC",
+  "description": "5V linear regulator, TO-220.",
+  "specifications": {
+    "output": "5V",
+    "input_max": "35V",
+    "current": "1A"
+  },
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e43d"
+  },
+  "id": "l7812_voltage_regulator",
+  "name": "L7812 Voltage Regulator",
+  "category": "IC",
+  "description": "12V linear regulator.",
+  "specifications": {
+    "output": "12V",
+    "input_max": "35V",
+    "current": "1A"
+  },
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e43e"
+  },
+  "id": "ams1117_3.3v_regulator",
+  "name": "AMS1117 3.3V Regulator",
+  "category": "IC",
+  "description": "3.3V LDO regulator popular in 3.3V MCU boards.",
+  "specifications": {
+    "output": "3.3V",
+    "input_max": "15V",
+    "current": "800mA",
+    "package": "SOT-223"
+  },
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e43f"
+  },
+  "id": "optocoupler_pc817",
+  "name": "Optocoupler PC817",
+  "category": "IC",
+  "description": "Phototransistor optocoupler for electrical isolation.",
+  "specifications": {
+    "package": "DIP-4",
+    "ctr": "80–300%",
+    "voltage": "80V"
+  },
+  "interfaces": [],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e440"
+  },
+  "id": "max7219_led_driver",
+  "name": "MAX7219 LED Driver",
+  "category": "IC",
+  "description": "Serial LED driver for 7-segment and dot matrix displays.",
+  "specifications": {
+    "package": "DIP-24",
+    "digits": "8",
+    "voltage": "4–5.5V"
+  },
+  "interfaces": [
+    "SPI"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+},
+{
+  "_id": {
+    "$oid": "6a098ab765ecf83aaed0e441"
+  },
+  "id": "ft232rl_usb_to_serial",
+  "name": "FT232RL USB to Serial",
+  "category": "IC",
+  "description": "USB-to-UART bridge IC for serial communication with PC.",
+  "specifications": {
+    "package": "SSOP-28",
+    "baud": "300–3Mbps",
+    "usb": "USB 2.0 Full Speed"
+  },
+  "interfaces": [
+    "USB",
+    "UART"
+  ],
+  "price": 200,
+  "currency": "INR",
+  "in_stock": true,
+  "images": [],
+  "createdAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-17T09:30:25.317Z"
+  },
+  "stock": 200
+}]

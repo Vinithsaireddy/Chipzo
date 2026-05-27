@@ -52,5 +52,10 @@ module.exports = Object.freeze({
   RAPIDO_API_KEY: process.env.RAPIDO_API_KEY || '',
   RAPIDO_BASE_URL: process.env.RAPIDO_BASE_URL || 'https://api.rapido.bike/v1',
 
+  SHIPROCKET_EMAIL: process.env.SHIPROCKET_EMAIL || '',
+  SHIPROCKET_PASSWORD: process.env.SHIPROCKET_PASSWORD || '',
+  SHIPROCKET_API_KEY: process.env.SHIPROCKET_API_KEY || '',
+  SHIPROCKET_BASE_URL: process.env.SHIPROCKET_BASE_URL || 'https://apiv2.shiprocket.in/v1/external',
+
   CLIENT_URL: process.env.CLIENT_URL,
 });
