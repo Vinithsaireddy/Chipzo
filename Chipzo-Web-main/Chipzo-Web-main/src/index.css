@@ -337,4 +337,44 @@ button:focus-visible {
   }
 }
 
+@keyframes chipzo-shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.animate-chipzo-shimmer {
+  animation: chipzo-shimmer 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.skeleton-pulse {
+  animation: chipzo-shimmer 2.4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.skeleton-base {
+  position: relative;
+  overflow: hidden;
+  background-color: color-mix(in oklch, var(--chipzo-rule) 60%, transparent);
+  border-radius: 2px;
+}
+
+.skeleton-base::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    color-mix(in oklch, var(--chipzo-primary) 6%, transparent) 45%,
+    color-mix(in oklch, var(--chipzo-primary) 8%, transparent) 50%,
+    color-mix(in oklch, var(--chipzo-primary) 6%, transparent) 55%,
+    transparent 100%
+  );
+  animation: chipzo-shimmer 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  pointer-events: none;
+}
+
 

@@ -3,6 +3,8 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import { ChevronLeft, ChevronRight, ChevronDown, ShoppingCart, RefreshCw, AlertOctagon, Clock, Ban } from 'lucide-react'
 import SmoothScroll from '../components/SmoothScroll.jsx'
 import Navbar from '../components/Navbar.jsx'
+import ProductQuickViewModal from '../components/ProductQuickViewModal.jsx'
+import { ProductCardSkeleton, ProductTableRowSkeleton } from '../components/ProductCardSkeleton.jsx'
 import { productsAPI } from '../services/api.js'
 
 const SHOP_CATEGORIES = [
@@ -119,6 +121,7 @@ export default function Shop({ onNavigate, activeCategory, setActiveCategory, ca
   const [maxVoltage, setMaxVoltage]   = useState('12')
   const [search, setSearch]           = useState(() => new URLSearchParams(location.search).get('search') || '')
   const [categoryOpen, setCategoryOpen] = useState(false)
+  const [quickViewProduct, setQuickViewProduct] = useState(null)
 
   // Live products state
   const [products, setProducts]   = useState([])
@@ -441,11 +444,29 @@ export default function Shop({ onNavigate, activeCategory, setActiveCategory, ca
 
             {/* ===== LOADING SKELETON ===== */}
             {isLoading && (
-              <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4 mb-6">
-                {Array.from({ length: 8 }).map((_, i) => (
-                  <div key={i} className="brutal-border bg-[color:var(--chipzo-surface)] h-48 animate-pulse" />
-                ))}
-              </div>
+              <>
+                {/* Mobile card skeletons */}
+                <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:hidden mb-6">
+                  {Array.from({ length: 8 }).map((_, i) => (
+                    <ProductCardSkeleton key={i} />
+                  ))}
+                </div>
+                {/* Desktop table skeletons */}
+                <div className="hidden lg:block overflow-x-auto brutal-border brutal-shadow bg-[color:var(--chipzo-surface)] mb-6">
+                  <div className="min-w-[1120px]">
+                    <div className="grid grid-cols-[120px_2fr_1.5fr_1fr_140px] border-b-[3px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-ink)] text-xs font-black uppercase tracking-[0.16em] text-[color:var(--chipzo-paper)]">
+                      <div className="border-r-[2px] border-[color:var(--chipzo-paper)]/20 px-3 py-3">Schematic</div>
+                      <div className="border-r-[2px] border-[color:var(--chipzo-paper)]/20 px-4 py-3">Part Number / Description</div>
+                      <div className="border-r-[2px] border-[color:var(--chipzo-paper)]/20 px-4 py-3">Specs (V/A/O)</div>
+                      <div className="border-r-[2px] border-[color:var(--chipzo-paper)]/20 px-4 py-3">Price (Unit)</div>
+                      <div className="px-3 py-3">Action</div>
+                    </div>
+                    {Array.from({ length: 8 }).map((_, i) => (
+                      <ProductTableRowSkeleton key={i} index={i} total={8} />
+                    ))}
+                  </div>
+                </div>
+              </>
             )}
 
             {/* ===== MOBILE CARD VIEW (< lg) ===== */}
@@ -474,10 +495,11 @@ export default function Shop({ onNavigate, activeCategory, setActiveCategory, ca
                   </button>
                 </div>
               ) : (
-                filteredProducts.map((product) => (
+                  filteredProducts.map((product) => (
                   <div
                     key={product.id}
-                    className="brutal-border brutal-shadow bg-[color:var(--chipzo-paper)] overflow-hidden flex flex-col justify-between"
+                    onClick={() => setQuickViewProduct(product)}
+                    className="brutal-border brutal-shadow bg-[color:var(--chipzo-paper)] overflow-hidden flex flex-col justify-between cursor-pointer transition-all hover:-translate-y-[1px] hover:shadow-[6px_6px_0_var(--chipzo-ink)]"
                   >
                     {/* Visual schematic preview with absolute status badge at top */}
                     <div className="bg-[color:var(--chipzo-surface)] border-b-[2px] border-[color:var(--chipzo-ink)] flex items-center justify-center p-3 relative h-24 sm:h-28 shrink-0">
@@ -510,7 +532,8 @@ export default function Shop({ onNavigate, activeCategory, setActiveCategory, ca
                         </div>
                         <button
                           type="button"
-                          onClick={() => {
+                          onClick={(e) => {
+                            e.stopPropagation()
                             onAddToCart?.({
                               id: product.id,
                               _backendProductId: product._id,
@@ -576,8 +599,9 @@ export default function Shop({ onNavigate, activeCategory, setActiveCategory, ca
                   filteredProducts.map((product, index) => (
                     <div
                       key={product.id}
+                      onClick={() => setQuickViewProduct(product)}
                       className={[
-                        'grid grid-cols-[120px_2fr_1.5fr_1fr_140px] items-stretch bg-[color:var(--chipzo-paper)] transition-colors hover:bg-[color:var(--chipzo-surface)]',
+                        'grid grid-cols-[120px_2fr_1.5fr_1fr_140px] items-stretch bg-[color:var(--chipzo-paper)] transition-colors hover:bg-[color:var(--chipzo-surface)] cursor-pointer',
                         index < filteredProducts.length - 1 ? 'border-b-[2px] border-[color:var(--chipzo-rule)]' : '',
                       ].join(' ')}
                     >
@@ -613,7 +637,8 @@ export default function Shop({ onNavigate, activeCategory, setActiveCategory, ca
                       <div className="flex items-center justify-center px-3 py-4">
                         <button
                           type="button"
-                          onClick={() => {
+                          onClick={(e) => {
+                            e.stopPropagation()
                             onAddToCart?.({
                               id: product.id,
                               _backendProductId: product._id,
@@ -733,6 +758,13 @@ export default function Shop({ onNavigate, activeCategory, setActiveCategory, ca
           </div>
         </footer>
       </div>
+
+      <ProductQuickViewModal
+        product={quickViewProduct}
+        isOpen={!!quickViewProduct}
+        onClose={() => setQuickViewProduct(null)}
+        onAddToCart={onAddToCart}
+      />
     </SmoothScroll>
   )
 }
