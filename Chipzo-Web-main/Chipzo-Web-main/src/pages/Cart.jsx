@@ -1,7 +1,9 @@
-import { Trash2, Minus, Plus, ArrowRight, ShoppingBag, Check } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { Trash2, Minus, Plus, ArrowRight, ShoppingBag, Check, Ban, Clock, CheckCircle } from 'lucide-react'
 import SmoothScroll from '../components/SmoothScroll.jsx'
 import Navbar from '../components/Navbar.jsx'
 import Footer from '../components/Footer.jsx'
+import { getOrderStatus } from '../utils/orderValidation.js'
 
 const COMPLEMENTARY_ITEMS = [
   {
@@ -49,6 +51,12 @@ const COMPLEMENTARY_ITEMS = [
 export default function Cart({ onNavigate, activeCategory, cart = [], onUpdateQuantity, onRemoveFromCart, onAddToCart }) {
   const cartCount = cart.reduce((total, item) => total + item.quantity, 0)
   const subtotal = cart.reduce((total, item) => total + (item.price * item.quantity), 0)
+  const [orderStatus, setOrderStatus] = useState(getOrderStatus())
+
+  useEffect(() => {
+    const interval = setInterval(() => setOrderStatus(getOrderStatus()), 60000)
+    return () => clearInterval(interval)
+  }, [])
 
   return (
     <SmoothScroll>
@@ -298,8 +306,15 @@ export default function Cart({ onNavigate, activeCategory, cart = [], onUpdateQu
                         <span className="tabular-prices">₹{subtotal.toFixed(2)}</span>
                       </div>
 
-                      <div className="mt-1 p-2 border-2 border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-cyan)] text-[color:var(--chipzo-ink)] flex items-center gap-2 text-[9px] font-black uppercase tracking-widest shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
-                        <span className="w-1.5 h-1.5 bg-[color:var(--chipzo-ink)] animate-pulse"></span> FAST DELIVERY ACTIVE
+                      <div className={`mt-1 p-2 border-2 border-[color:var(--chipzo-ink)] flex items-center gap-2 text-[9px] font-black uppercase tracking-widest shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] ${
+                        orderStatus.type === 'success'
+                          ? 'bg-emerald-50 text-emerald-700'
+                          : orderStatus.type === 'warning'
+                          ? 'bg-amber-50 text-amber-700'
+                          : 'bg-red-50 text-red-700'
+                      }`}>
+                        {orderStatus.type === 'success' ? <CheckCircle size={10} /> : orderStatus.type === 'warning' ? <Clock size={10} /> : <Ban size={10} />}
+                        {orderStatus.label}
                       </div>
                       
                       <button 
@@ -319,22 +334,34 @@ export default function Cart({ onNavigate, activeCategory, cart = [], onUpdateQu
           
         </main>
 
-        {/* Mobile Sticky Checkout Bar */}
+          {/* Mobile Sticky Checkout Bar */}
         {cart.length > 0 && (
           <div className="fixed bottom-0 left-0 right-0 z-40 border-t-[3px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-paper)] px-4 py-3 shadow-[0_-4px_0_rgba(0,0,0,1)] lg:hidden">
-            <div className="flex items-center justify-between gap-4">
-              <div>
-                <p className="text-[9px] font-black uppercase tracking-[0.15em] text-[color:var(--chipzo-muted)]">Order Total</p>
-                <p className="tabular-prices text-xl font-black text-[color:var(--chipzo-ink)] leading-none">₹{subtotal.toFixed(2)}</p>
+            <div className="flex flex-col gap-2">
+              <div className={`flex items-center gap-1.5 text-[9px] font-black uppercase tracking-wider px-1 ${
+                orderStatus.type === 'success'
+                  ? 'text-emerald-600'
+                  : orderStatus.type === 'warning'
+                  ? 'text-amber-600'
+                  : 'text-red-600'
+              }`}>
+                {orderStatus.type === 'success' ? <CheckCircle size={10} /> : orderStatus.type === 'warning' ? <Clock size={10} /> : <Ban size={10} />}
+                {orderStatus.label}
               </div>
-              <button
-                type="button"
-                onClick={() => onNavigate?.('checkout')}
-                className="flex flex-1 items-center justify-center gap-2 border-[3px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-lime)] py-3 text-sm font-black uppercase tracking-[0.1em] text-[color:var(--chipzo-ink)] shadow-[3px_3px_0_rgba(0,0,0,1)] transition-all hover:bg-[color:var(--chipzo-ink)] hover:text-[color:var(--chipzo-lime)] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none"
-              >
-                <span>Proceed to Checkout</span>
-                <ArrowRight size={16} strokeWidth={3} />
-              </button>
+              <div className="flex items-center justify-between gap-4">
+                <div>
+                  <p className="text-[9px] font-black uppercase tracking-[0.15em] text-[color:var(--chipzo-muted)]">Order Total</p>
+                  <p className="tabular-prices text-xl font-black text-[color:var(--chipzo-ink)] leading-none">₹{subtotal.toFixed(2)}</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => onNavigate?.('checkout')}
+                  className="flex flex-1 items-center justify-center gap-2 border-[3px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-lime)] py-3 text-sm font-black uppercase tracking-[0.1em] text-[color:var(--chipzo-ink)] shadow-[3px_3px_0_rgba(0,0,0,1)] transition-all hover:bg-[color:var(--chipzo-ink)] hover:text-[color:var(--chipzo-lime)] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none"
+                >
+                  <span>Proceed to Checkout</span>
+                  <ArrowRight size={16} strokeWidth={3} />
+                </button>
+              </div>
             </div>
           </div>
         )}

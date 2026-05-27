@@ -1,15 +1,11 @@
-/**
- * Chipzo API Service Layer
- * Central fetch wrapper — attaches auth token, handles errors uniformly.
- * All paths are relative (/api/...) so Vite proxy routes them to port 5000.
- */
-
 const BASE = import.meta.env.VITE_API_BASE_URL || '/api';
 
-// ─── Core fetch wrapper ───────────────────────────────────────────────────────
+function resolveToken() {
+  return localStorage.getItem('chipzo_token');
+}
 
 async function request(path, options = {}) {
-  const token = localStorage.getItem('chipzo_token');
+  const token = resolveToken();
 
   const headers = {
     'Content-Type': 'application/json',
@@ -19,7 +15,6 @@ async function request(path, options = {}) {
 
   const res = await fetch(`${BASE}${path}`, { ...options, headers });
 
-  // Try to parse JSON body for both success and error responses
   let data;
   try {
     data = await res.json();
@@ -37,31 +32,25 @@ async function request(path, options = {}) {
   return data;
 }
 
-// ─── Auth ─────────────────────────────────────────────────────────────────────
-
 export const authAPI = {
-  /** POST /api/auth/login */
   login: (email, password) =>
     request('/auth/login', {
       method: 'POST',
       body: JSON.stringify({ email, password }),
     }),
 
-  /** POST /api/auth/signup */
   signup: (name, email, password) =>
     request('/auth/signup', {
       method: 'POST',
       body: JSON.stringify({ name, email, password }),
     }),
 
-  /** PUT /api/auth/profile */
   updateProfile: (data) =>
     request('/auth/profile', {
       method: 'PUT',
       body: JSON.stringify(data),
     }),
 
-  /** GET /api/auth/me */
   getMe: () => request('/auth/me'),
 
   /** POST /api/auth/verify-otp */
@@ -78,10 +67,7 @@ export const authAPI = {
     }),
 };
 
-// ─── Products ─────────────────────────────────────────────────────────────────
-
 export const productsAPI = {
-  /** GET /api/products?page=1&limit=20&category=X&search=X */
   getAll: (params = {}) => {
     const qs = new URLSearchParams();
     if (params.page) qs.set('page', params.page);
@@ -91,68 +77,47 @@ export const productsAPI = {
     return request(`/products?${qs.toString()}`);
   },
 
-  /** GET /api/products/:id */
   getOne: (id) => request(`/products/${id}`),
 
-  /** GET /api/products/slug/:slug */
   getBySlug: (slug) => request(`/products/slug/${slug}`),
 };
 
-// ─── Cart ─────────────────────────────────────────────────────────────────────
-
 export const cartAPI = {
-  /** GET /api/cart */
   get: () => request('/cart'),
 
-  /** POST /api/cart/items */
   addItem: (productId, quantity = 1) =>
     request('/cart/items', {
       method: 'POST',
       body: JSON.stringify({ productId, quantity }),
     }),
 
-  /** PUT /api/cart/items/:productId */
   updateItem: (productId, quantity) =>
     request(`/cart/items/${productId}`, {
       method: 'PUT',
       body: JSON.stringify({ quantity }),
     }),
 
-  /** DELETE /api/cart/items/:productId */
   removeItem: (productId) =>
     request(`/cart/items/${productId}`, { method: 'DELETE' }),
 
-  /** DELETE /api/cart */
   clear: () => request('/cart', { method: 'DELETE' }),
 };
 
-// ─── Orders ───────────────────────────────────────────────────────────────────
-
 export const ordersAPI = {
-  /**
-   * POST /api/orders
-   * Creates a Razorpay order. Returns { razorpay_order_id, amount, currency }
-   */
   create: (address) =>
     request('/orders', {
       method: 'POST',
       body: JSON.stringify({ address }),
     }),
 
-  /**
-   * POST /api/orders/cod
-   * Creates a COD order directly (no Razorpay).
-   */
   createCOD: (address) =>
     request('/orders/cod', {
       method: 'POST',
       body: JSON.stringify({ address }),
     }),
 
-  /** GET /api/orders */
   getAll: () => request('/orders'),
 
-  /** GET /api/orders/:id */
   getOne: (id) => request(`/orders/${id}`),
 
   // --- Admin Order Management ---
@@ -179,31 +144,19 @@ export const ordersAPI = {
     }),
 };
 
-// ─── Payment ──────────────────────────────────────────────────────────────────
-
 export const paymentAPI = {
-  /**
-   * POST /api/payment/verify
-   * Verifies Razorpay signature and creates the final DB order.
-   */
   verify: (payload) =>
     request('/payment/verify', {
       method: 'POST',
       body: JSON.stringify(payload),
     }),
 
-  /**
-   * POST /api/payment/failure
-   * Reports a payment failure/cancellation to the backend.
-   */
   reportFailure: ({ razorpayOrderId, razorpayPaymentId, reason, step }) =>
     request('/payment/failure', {
       method: 'POST',
       body: JSON.stringify({ razorpay_order_id: razorpayOrderId, razorpayPaymentId, reason, step }),
     }),
 };
-
-// ─── Address ──────────────────────────────────────────────────────────────────
 
 export const addressAPI = {
   getAll: () => request('/addresses'),
@@ -214,9 +167,12 @@ export const addressAPI = {
   setDefault: (id) => request(`/addresses/${id}/default`, { method: 'PATCH' }),
 };
 
-// ─── Delivery ─────────────────────────────────────────────────────────────────
-
 export const deliveryAPI = {
-  /** GET /api/delivery/track/:orderId */
   track: (orderId) => request(`/delivery/track/${orderId}`),
+
+  cancel: (orderId, reason = '') =>
+    request(`/delivery/cancel/${orderId}`, {
+      method: 'POST',
+      body: JSON.stringify({ reason }),
+    }),
 };

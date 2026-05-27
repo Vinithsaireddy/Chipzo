@@ -172,7 +172,7 @@ button:focus-visible {
 }
 
 .animate-marquee {
-  animation: marquee 20s linear infinite;
+  animation: marquee 35s linear infinite;
 }
 
 @keyframes hardGlow {
