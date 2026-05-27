@@ -35,10 +35,21 @@ app.use(
   })
 );
 
-// ─── CORS: whitelist only CLIENT_URL ─────────────────────────────────────────
+// ─── CORS: whitelist CLIENT_URL (comma-separated, supports multiple origins) ─
+const allowedOrigins = (env.CLIENT_URL || '')
+  .split(',')
+  .map(s => s.trim())
+  .filter(Boolean);
+
 app.use(
   cors({
-    origin: env.CLIENT_URL,
+    origin: function (origin, cb) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        cb(null, true);
+      } else {
+        cb(null, false);
+      }
+    },
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
