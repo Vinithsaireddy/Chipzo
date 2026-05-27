@@ -11,4 +11,7 @@ router.use(protect);
 /** GET /api/delivery/track/:orderId — Get tracking status for an order */
 router.get('/track/:orderId', deliveryController.trackDelivery);
 
+/** POST /api/delivery/cancel/:orderId — Cancel an order's delivery (if eligible) */
+router.post('/cancel/:orderId', deliveryController.cancelDelivery);
+
 module.exports = router;

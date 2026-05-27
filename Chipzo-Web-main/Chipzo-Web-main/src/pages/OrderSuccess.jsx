@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import SmoothScroll from '../components/SmoothScroll.jsx';
 import Navbar from '../components/Navbar.jsx';
 import Footer from '../components/Footer.jsx';
-import { CheckCircle, ShoppingBag, Eye, ArrowLeft, MapPin, Package } from 'lucide-react';
+import { CheckCircle, ShoppingBag, Eye, ArrowLeft, MapPin, Package, Truck } from 'lucide-react';
 
 export default function OrderSuccess({ onNavigate, activeCategory, orderData }) {
   const [visible, setVisible] = useState(false);
@@ -109,6 +109,18 @@ export default function OrderSuccess({ onNavigate, activeCategory, orderData }) 
             </section>
           )}
 
+          {/* Tracking Link */}
+          {order.orderId && (
+            <div className={`transition-all duration-700 delay-450 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+              <button
+                onClick={() => onNavigate(`tracking?orderId=${order.orderId}`)}
+                className="w-full bg-emerald-500 text-white font-black uppercase py-4 px-8 brutal-border border-emerald-700 brutal-shadow cursor-pointer flex items-center justify-center gap-3 text-sm hover:-translate-y-[1px] transition-all"
+              >
+                <Truck size={18} strokeWidth={3} /> Track Delivery
+              </button>
+            </div>
+          )}
+
           {/* Action Buttons */}
           <div className={`flex flex-col sm:flex-row gap-4 transition-all duration-700 delay-500 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
             <button
@@ -116,6 +128,12 @@ export default function OrderSuccess({ onNavigate, activeCategory, orderData }) 
               className="flex-1 bg-[color:var(--chipzo-primary)] text-[color:var(--chipzo-ink)] font-black uppercase py-4 px-8 brutal-border brutal-shadow cursor-pointer flex items-center justify-center gap-3 text-sm hover:-translate-y-[1px] transition-all"
             >
               <Eye size={18} strokeWidth={3} /> View Orders
+            </button>
+            <button
+              onClick={() => onNavigate('tracking')}
+              className="flex-1 bg-[color:var(--chipzo-surface)] text-[color:var(--chipzo-ink)] font-black uppercase py-4 px-8 brutal-border brutal-shadow cursor-pointer flex items-center justify-center gap-3 text-sm hover:-translate-y-[1px] transition-all"
+            >
+              <Truck size={18} strokeWidth={3} /> Track Order
             </button>
             <button
               onClick={() => onNavigate('shop')}
