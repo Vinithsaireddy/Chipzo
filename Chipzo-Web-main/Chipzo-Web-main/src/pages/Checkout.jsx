@@ -8,24 +8,14 @@ import {
 } from 'lucide-react';
 import { ordersAPI, paymentAPI, addressAPI } from '../services/api.js';
 import { useAuth } from '../contexts/AuthContext.jsx';
-
-const INDIAN_STATES = [
-  'Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar', 'Chhattisgarh',
-  'Goa', 'Gujarat', 'Haryana', 'Himachal Pradesh', 'Jharkhand',
-  'Karnataka', 'Kerala', 'Madhya Pradesh', 'Maharashtra', 'Manipur',
-  'Meghalaya', 'Mizoram', 'Nagaland', 'Odisha', 'Punjab',
-  'Rajasthan', 'Sikkim', 'Tamil Nadu', 'Telangana', 'Tripura',
-  'Uttar Pradesh', 'Uttarakhand', 'West Bengal',
-  'Andaman and Nicobar Islands', 'Chandigarh',
-  'Dadra and Nagar Haveli and Daman and Diu',
-  'Delhi', 'Jammu and Kashmir', 'Ladakh', 'Lakshadweep', 'Puducherry',
-];
+import AlertModal from '../components/AlertModal.jsx';
+import { checkSunday, checkTime, checkBangalore } from '../utils/orderValidation.js';
 
 const fallbackOrderId = () => `CPZ-ORD-${Date.now()}`;
 
 const EMPTY_FORM = {
   fullName: '', phone: '', house: '', street: '',
-  landmark: '', city: '', state: '', pincode: '',
+  landmark: '', city: '', state: 'Karnataka', pincode: '',
 };
 
 export default function Checkout({ onNavigate, activeCategory, cart = [], onCheckoutComplete, onPaymentFailed }) {
@@ -46,7 +36,32 @@ export default function Checkout({ onNavigate, activeCategory, cart = [], onChec
   const [formData, setFormData] = useState(EMPTY_FORM);
   const [formErrors, setFormErrors] = useState({});
   const [isSavingAddress, setIsSavingAddress] = useState(false);
+  const [alertModal, setAlertModal] = useState({ open: false, title: '', message: '', type: 'default' });
   const isSubmitting = useRef(false);
+
+  const showAlert = (title, message, type) => setAlertModal({ open: true, title, message, type })
+  const closeAlert = () => setAlertModal({ open: false, title: '', message: '', type: 'default' })
+
+  const runValidations = (addr) => {
+    const sunday = checkSunday()
+    if (sunday.blocked) {
+      showAlert('Sunday Orders Unavailable', sunday.message, 'sunday')
+      return false
+    }
+    const time = checkTime()
+    if (time.blocked) {
+      showAlert('Outside Operating Hours', time.message, 'time')
+      return false
+    }
+    if (addr) {
+      const bangalore = checkBangalore(addr.city, addr.pincode)
+      if (bangalore.blocked) {
+        showAlert('Location Not Supported', bangalore.message, 'location')
+        return false
+      }
+    }
+    return true
+  }
 
   // Fetch saved addresses on mount
   useEffect(() => {
@@ -79,7 +94,6 @@ export default function Checkout({ onNavigate, activeCategory, cart = [], onChec
     else if (!/^[6-9]\d{9}$/.test(formData.phone.trim())) errors.phone = 'Invalid 10-digit number';
     if (!formData.street.trim()) errors.street = 'Required';
     if (!formData.city.trim()) errors.city = 'Required';
-    if (!formData.state) errors.state = 'Required';
     if (!formData.pincode.trim()) errors.pincode = 'Required';
     else if (!/^\d{6}$/.test(formData.pincode.trim())) errors.pincode = 'Invalid 6-digit pincode';
     setFormErrors(errors);
@@ -216,6 +230,12 @@ export default function Checkout({ onNavigate, activeCategory, cart = [], onChec
       setErrorMessage('No delivery address selected.');
       return;
     }
+
+    if (!runValidations(addr)) {
+      setIsProcessing(false);
+      return;
+    }
+
     isSubmitting.current = true;
     setIsProcessing(true);
     setErrorMessage('');
@@ -455,7 +475,6 @@ export default function Checkout({ onNavigate, activeCategory, cart = [], onChec
                                     formErrors={formErrors}
                                     onChange={handleInputChange}
                                     inputCls={inputCls}
-                                    states={INDIAN_STATES}
                                   />
                                   <div className="flex gap-2 mt-4">
                                     <button type="button" onClick={handleSaveAddress} disabled={isSavingAddress}
@@ -542,13 +561,12 @@ export default function Checkout({ onNavigate, activeCategory, cart = [], onChec
                       {showAddForm && (
                         <div className="brutal-border bg-[color:var(--chipzo-paper)] p-4 border-[color:var(--chipzo-primary)]">
                           <p className="text-[10px] font-black uppercase tracking-wider text-[color:var(--chipzo-primary)] mb-3">NEW ADDRESS</p>
-                          <AddressFormFields
-                            formData={formData}
-                            formErrors={formErrors}
-                            onChange={handleInputChange}
-                            inputCls={inputCls}
-                            states={INDIAN_STATES}
-                          />
+                              <AddressFormFields
+                                formData={formData}
+                                formErrors={formErrors}
+                                onChange={handleInputChange}
+                                inputCls={inputCls}
+                              />
                           <div className="flex gap-2 mt-4">
                             <button type="button" onClick={handleSaveAddress} disabled={isSavingAddress}
                               className="flex-1 brutal-border bg-[color:var(--chipzo-primary)] py-2.5 text-xs font-black uppercase cursor-pointer flex items-center justify-center gap-2 hover:-translate-y-[1px] transition-all disabled:opacity-50">
@@ -673,7 +691,9 @@ export default function Checkout({ onNavigate, activeCategory, cart = [], onChec
                 </button>
               )}
               {currentStep === 'review' && (
-                <button type="button" onClick={() => setCurrentStep('payment')}
+                <button type="button" onClick={() => {
+                  if (runValidations(selectedAddr)) setCurrentStep('payment')
+                }}
                   className="bg-[color:var(--chipzo-primary)] text-[color:var(--chipzo-ink)] font-black uppercase py-4 px-8 brutal-border brutal-shadow cursor-pointer flex items-center gap-3 text-lg hover:-translate-y-[1px] transition-all">
                   PROCEED TO PAYMENT <ArrowRight strokeWidth={3} />
                 </button>
@@ -702,7 +722,9 @@ export default function Checkout({ onNavigate, activeCategory, cart = [], onChec
                   </button>
                 )}
                 {currentStep === 'review' && (
-                  <button type="button" onClick={() => setCurrentStep('payment')}
+                  <button type="button" onClick={() => {
+                    if (runValidations(selectedAddr)) setCurrentStep('payment')
+                  }}
                     className="flex flex-1 items-center justify-center gap-2 border-[3px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-primary)] py-3 px-4 text-xs font-black uppercase shadow-[3px_3px_0_rgba(0,0,0,1)] cursor-pointer">
                     TO PAYMENT <ArrowRight size={14} strokeWidth={3} />
                   </button>
@@ -720,12 +742,20 @@ export default function Checkout({ onNavigate, activeCategory, cart = [], onChec
 
         <Footer />
       </div>
+
+      <AlertModal
+        isOpen={alertModal.open}
+        onClose={closeAlert}
+        title={alertModal.title}
+        message={alertModal.message}
+        type={alertModal.type}
+      />
     </SmoothScroll>
   );
 }
 
 /* ─── Address Form Sub-Component ─── */
-function AddressFormFields({ formData, formErrors, onChange, inputCls, states }) {
+function AddressFormFields({ formData, formErrors, onChange, inputCls }) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div className="flex flex-col gap-1.5 md:col-span-2">
@@ -762,12 +792,11 @@ function AddressFormFields({ formData, formErrors, onChange, inputCls, states })
         {formErrors.city && <p className="text-[9px] font-bold text-red-500">{formErrors.city}</p>}
       </div>
       <div className="flex flex-col gap-1.5">
-        <label className="text-[10px] font-black uppercase tracking-widest text-[color:var(--chipzo-muted)]">STATE *</label>
-        <select required name="state" value={formData.state} onChange={onChange} className={`${inputCls('state')} appearance-none cursor-pointer`}>
-          <option value="">SELECT STATE</option>
-          {states.map(s => <option key={s} value={s}>{s}</option>)}
-        </select>
-        {formErrors.state && <p className="text-[9px] font-bold text-red-500">{formErrors.state}</p>}
+        <label className="text-[10px] font-black uppercase tracking-widest text-[color:var(--chipzo-muted)]">STATE</label>
+        <div className="w-full border-[3px] border-[color:var(--chipzo-muted)] bg-[color:var(--chipzo-surface)] px-4 py-3 text-sm font-bold text-[color:var(--chipzo-muted)] opacity-70 cursor-not-allowed">
+          Karnataka
+        </div>
+        <input type="hidden" name="state" value="Karnataka" />
       </div>
     </div>
   );

@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react'
 import { X, Box, Settings, MapPin, LogOut, Cpu, Wifi, Navigation, ArrowLeft, Trash2, Edit2, CheckCircle, Bell, Shield, Sliders, User } from 'lucide-react'
+import { useAuth } from '../contexts/AuthContext.jsx'
 
 export default function ProfilePanel({ isOpen, onClose, onNavigate }) {
+  const { logout } = useAuth()
   const [activeSection, setActiveSection] = useState('main')
   const [showAddAddress, setShowAddAddress] = useState(false)
   const [newAddress, setNewAddress] = useState({ name: '', fullName: '', phone: '', pincode: '', address: '', landmark: '', city: '' })
@@ -579,7 +581,7 @@ export default function ProfilePanel({ isOpen, onClose, onNavigate }) {
           <button onClick={onClose} className="mb-2 w-full border-[3px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-lime)] py-3 text-sm font-black uppercase tracking-[0.1em] text-[color:var(--chipzo-ink)] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all hover:-translate-y-[2px] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] active:translate-y-0 active:shadow-none">
             Continue Building →
           </button>
-          <button onClick={() => { localStorage.removeItem('chipzo_cart'); onClose(); onNavigate && onNavigate('login'); }} className="flex w-full items-center justify-center gap-2 py-2 text-[10px] font-black uppercase tracking-widest text-[color:var(--chipzo-muted)] hover:text-[color:var(--chipzo-ink)] transition-colors">
+          <button onClick={() => { localStorage.removeItem('chipzo_cart'); logout(); onClose(); onNavigate && onNavigate('/'); }} className="flex w-full items-center justify-center gap-2 py-2 text-[10px] font-black uppercase tracking-widest text-[color:var(--chipzo-muted)] hover:text-[color:var(--chipzo-ink)] transition-colors">
             <LogOut size={14} />
             Sign Out
           </button>

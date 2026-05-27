@@ -1,108 +1,96 @@
-import { createContext, useContext, useState, useCallback, useEffect } from 'react';
-import { authAPI } from '../services/api.js';
+import { createContext, useContext, useCallback, useState, useEffect } from 'react'
+import { authAPI } from '../services/api.js'
 
-// ─── Context ──────────────────────────────────────────────────────────────────
-
-const AuthContext = createContext(null);
-
-// ─── Provider ─────────────────────────────────────────────────────────────────
+const AuthContext = createContext(null)
 
 export function AuthProvider({ children }) {
-  const [user, setUser]   = useState(() => {
-    try { return JSON.parse(localStorage.getItem('chipzo_user')); }
-    catch { return null; }
-  });
-  const [token, setToken] = useState(() => localStorage.getItem('chipzo_token') || null);
-  const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState(null)
+  const [token, setToken] = useState(localStorage.getItem('chipzo_token'))
+  const [loading, setLoading] = useState(true)
 
-  const isLoggedIn = Boolean(token && user);
+  const isLoggedIn = !!user && !!token
 
-  // ── Persist helpers ──────────────────────────────────────────────────────────
-  const persist = useCallback((tok, usr) => {
-    localStorage.setItem('chipzo_token', tok);
-    localStorage.setItem('chipzo_user', JSON.stringify(usr));
-    setToken(tok);
-    setUser(usr);
-  }, []);
-
-  const clear = useCallback(() => {
-    localStorage.removeItem('chipzo_token');
-    localStorage.removeItem('chipzo_user');
-    setToken(null);
-    setUser(null);
-  }, []);
-
-  // ── Re-validate token on mount (optional — keeps profile fresh) ──────────────
   useEffect(() => {
-    if (!token) return;
+    if (!token) {
+      setLoading(false)
+      return
+    }
+    let cancelled = false
     authAPI.getMe()
       .then(data => {
-        const freshUser = data.data?.user || data.user || data;
-        localStorage.setItem('chipzo_user', JSON.stringify(freshUser));
-        setUser(freshUser);
+        if (cancelled) return
+        const u = data?.data?.user || data?.user || data
+        setUser(u)
+        localStorage.setItem('chipzo_user', JSON.stringify(u))
       })
       .catch(() => {
-        // Token expired or invalid — log out silently
-        clear();
-      });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // run once on mount
+        if (!cancelled) {
+          localStorage.removeItem('chipzo_token')
+          localStorage.removeItem('chipzo_user')
+          setToken(null)
+          setUser(null)
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false)
+      })
+    return () => { cancelled = true }
+  }, [token])
 
-  // ── Login ────────────────────────────────────────────────────────────────────
   const login = useCallback(async (email, password) => {
-    setLoading(true);
-    try {
-      const normalizedEmail = email.trim().toLowerCase();
-      if ((normalizedEmail === 'admin' || normalizedEmail === 'admin@chipzo.in') && password === 'admin123') {
-        const tok = 'admin-secret-token';
-        const usr = { name: 'System Admin', email: 'admin@chipzo.in', role: 'admin' };
-        persist(tok, usr);
-        return { success: true, isAdmin: true };
-      }
-
-      const data = await authAPI.login(email, password);
-      // Backend wraps: { success, data: { token, user } }
-      const tok  = data.data?.token || data.token;
-      const usr  = data.data?.user || data.user;
-      if (!tok) throw new Error('No token returned from server.');
-      persist(tok, usr);
-      return { success: true, isAdmin: false };
-    } finally {
-      setLoading(false);
+    const normalizedEmail = email.trim().toLowerCase();
+    if ((normalizedEmail === 'admin' || normalizedEmail === 'admin@chipzo.in') && password === 'admin123') {
+      const tok = 'admin-secret-token';
+      const usr = { name: 'System Admin', email: 'admin@chipzo.in', role: 'admin' };
+      localStorage.setItem('chipzo_token', tok)
+      localStorage.setItem('chipzo_user', JSON.stringify(usr))
+      setToken(tok)
+      setUser(usr)
+      return usr
     }
-  }, [persist]);
 
-  // ── Signup ───────────────────────────────────────────────────────────────────
+    const data = await authAPI.login(email, password)
+    const t = data?.data?.token || data?.token
+    const u = data?.data?.user || data?.user
+    if (!t) throw new Error(data?.message || 'Login failed')
+    localStorage.setItem('chipzo_token', t)
+    localStorage.setItem('chipzo_user', JSON.stringify(u))
+    setToken(t)
+    setUser(u)
+    return u
+  }, [])
+
   const signup = useCallback(async (name, email, password) => {
-    setLoading(true);
-    try {
-      const data = await authAPI.signup(name, email, password);
-      const tok  = data.data?.token || data.token;
-      const usr  = data.data?.user || data.user;
-      if (!tok) throw new Error('No token returned from server.');
-      persist(tok, usr);
-      return { success: true };
-    } finally {
-      setLoading(false);
-    }
-  }, [persist]);
+    const data = await authAPI.signup(name, email, password)
+    const t = data?.data?.token || data?.token
+    const u = data?.data?.user || data?.user
+    if (!t) throw new Error(data?.message || 'Signup failed')
+    localStorage.setItem('chipzo_token', t)
+    localStorage.setItem('chipzo_user', JSON.stringify(u))
+    setToken(t)
+    setUser(u)
+    return u
+  }, [])
 
-  // ── Logout ───────────────────────────────────────────────────────────────────
   const logout = useCallback(() => {
-    clear();
-  }, [clear]);
+    localStorage.removeItem('chipzo_token')
+    localStorage.removeItem('chipzo_user')
+    localStorage.removeItem('chipzo_cart')
+    setToken(null)
+    setUser(null)
+  }, [])
+
+  const getToken = useCallback(() => token, [token])
 
   return (
-    <AuthContext.Provider value={{ user, token, isLoggedIn, loading, login, signup, logout }}>
+    <AuthContext.Provider value={{ user, token, isLoggedIn, loading, login, signup, logout, getToken }}>
       {children}
     </AuthContext.Provider>
-  );
+  )
 }
 
-// ─── Hook ─────────────────────────────────────────────────────────────────────
-
 export function useAuth() {
-  const ctx = useContext(AuthContext);
-  if (!ctx) throw new Error('useAuth must be used inside <AuthProvider>');
-  return ctx;
+  const ctx = useContext(AuthContext)
+  if (!ctx) throw new Error('useAuth must be used inside <AuthProvider>')
+  return ctx
 }

@@ -1,37 +1,48 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Cpu, TerminalSquare, AlertTriangle, ArrowLeft } from 'lucide-react';
-import { useAuth } from '../contexts/AuthContext.jsx';
+import { useState } from 'react'
+import { useNavigate, useLocation } from 'react-router-dom'
+import { Cpu, ArrowLeft, UserPlus, AlertTriangle, Loader } from 'lucide-react'
+import { useAuth } from '../contexts/AuthContext.jsx'
 
 export default function Signup() {
-  const navigate = useNavigate();
-  const { signup, loading } = useAuth();
-  const goBack = () => {
-    if (window.history.length > 1) window.history.back();
-    else navigate('/');
-  };
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [errorMsg, setErrorMsg] = useState('');
+  const navigate = useNavigate()
+  const location = useLocation()
+  const { signup } = useAuth()
+  const from = location.state?.from || '/'
 
-  const handleSignup = async (e) => {
-    e.preventDefault();
-    setErrorMsg('');
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [errorMsg, setErrorMsg] = useState('')
+  const [loading, setLoading] = useState(false)
+
+  const handleSignUp = async (e) => {
+    e.preventDefault()
+    setErrorMsg('')
+    setLoading(true)
 
     try {
-      await signup(name, email, password);
-      navigate('/');
+      await signup(name, email, password)
+      navigate(from, { replace: true })
     } catch (err) {
-      setErrorMsg(err.message || 'SECURE_CORE_ERROR: Parameter registration signature mismatch.');
+      const msg = err?.data?.message || err.message || 'SECURE_CORE_ERROR: Registration failed.'
+      setErrorMsg(msg)
+    } finally {
+      setLoading(false)
     }
-  };
+  }
+
+  const goBack = () => {
+    if (window.history.length > 1) {
+      window.history.back()
+    } else {
+      navigate('/')
+    }
+  }
 
   return (
     <div className="min-h-screen bg-[color:var(--chipzo-surface)] flex items-center justify-center p-4 py-8">
       <div className="w-full max-w-4xl flex flex-col md:flex-row-reverse border-[3px] border-[color:var(--chipzo-ink)] shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] bg-[color:var(--chipzo-paper)] overflow-hidden">
-        
-        {/* Right Informational Panel (Hidden on Mobile) */}
+        {/* Right Informational Panel */}
         <div className="hidden md:flex flex-col justify-between w-1/2 border-l-[3px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-ink)] p-8 text-[color:var(--chipzo-paper)]">
           <div>
             <div className="flex h-12 w-12 items-center justify-center border-[2px] border-[color:var(--chipzo-lime)] bg-[color:var(--chipzo-ink)] shadow-[4px_4px_0px_0px_var(--chipzo-lime)] mb-8">
@@ -81,16 +92,16 @@ export default function Signup() {
           </div>
 
           {errorMsg && (
-            <div className="mb-6 border-[3px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-danger)] text-white p-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex items-start gap-3">
+            <div className="mb-6 border-[3px] border-[color:var(--chipzo-ink)] bg-red-700 text-white p-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex items-start gap-3">
               <AlertTriangle className="shrink-0 mt-0.5" size={16} />
               <div>
-                <p className="text-xs font-black uppercase tracking-wider">REGISTRATION REJECTED</p>
+                <p className="text-xs font-black uppercase tracking-wider">REGISTRATION SIGNAL REJECTED</p>
                 <p className="text-[10px] font-bold mt-0.5 opacity-90">{errorMsg}</p>
               </div>
             </div>
           )}
 
-          <form onSubmit={handleSignup} className="space-y-4">
+          <form onSubmit={handleSignUp} className="space-y-5">
             <div>
               <label className="block text-[10px] font-black uppercase tracking-widest text-[color:var(--chipzo-ink)] mb-1">
                 FULL NAME
@@ -100,11 +111,10 @@ export default function Signup() {
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="ADA LOVELACE"
-                className="w-full border-[3px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-surface)] px-4 py-2 text-sm font-bold uppercase tracking-wider text-[color:var(--chipzo-ink)] outline-none focus:border-[color:var(--chipzo-primary)] focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all placeholder:text-[color:var(--chipzo-muted)]"
+                placeholder="JANE DOE"
+                className="w-full border-[3px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-surface)] px-4 py-3 text-sm font-bold uppercase tracking-wider text-[color:var(--chipzo-ink)] outline-none focus:border-[color:var(--chipzo-primary)] focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all placeholder:text-[color:var(--chipzo-muted)]"
               />
             </div>
-
             <div>
               <label className="block text-[10px] font-black uppercase tracking-widest text-[color:var(--chipzo-ink)] mb-1">
                 EMAIL ADDRESS
@@ -115,10 +125,9 @@ export default function Signup() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="ENGINEER@SYS.COM"
-                className="w-full border-[3px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-surface)] px-4 py-2 text-sm font-bold uppercase tracking-wider text-[color:var(--chipzo-ink)] outline-none focus:border-[color:var(--chipzo-primary)] focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all placeholder:text-[color:var(--chipzo-muted)]"
+                className="w-full border-[3px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-surface)] px-4 py-3 text-sm font-bold uppercase tracking-wider text-[color:var(--chipzo-ink)] outline-none focus:border-[color:var(--chipzo-primary)] focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all placeholder:text-[color:var(--chipzo-muted)]"
               />
             </div>
-
             <div>
               <label className="block text-[10px] font-black uppercase tracking-widest text-[color:var(--chipzo-ink)] mb-1">
                 PASSWORD
@@ -126,10 +135,11 @@ export default function Signup() {
               <input
                 type="password"
                 required
+                minLength={8}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full border-[3px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-surface)] px-4 py-2 text-sm font-bold tracking-wider text-[color:var(--chipzo-ink)] outline-none focus:border-[color:var(--chipzo-primary)] focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all placeholder:text-[color:var(--chipzo-muted)]"
+                className="w-full border-[3px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-surface)] px-4 py-3 text-sm font-bold tracking-wider text-[color:var(--chipzo-ink)] outline-none focus:border-[color:var(--chipzo-primary)] focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all placeholder:text-[color:var(--chipzo-muted)]"
               />
             </div>
 
@@ -138,7 +148,11 @@ export default function Signup() {
               disabled={loading}
               className="mt-6 w-full border-[3px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-primary)] py-4 text-sm font-black uppercase tracking-[0.1em] text-[color:var(--chipzo-paper)] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all hover:-translate-y-[2px] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] active:translate-y-0 active:translate-x-[2px] active:shadow-none flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <TerminalSquare size={16} /> {loading ? 'INITIALIZING NODE...' : 'INITIALIZE ACCOUNT →'}
+              {loading ? (
+                <><Loader size={16} className="animate-spin" /> PROCESSING...</>
+              ) : (
+                <><UserPlus size={16} /> INITIALIZE →</>
+              )}
             </button>
           </form>
 
@@ -147,11 +161,11 @@ export default function Signup() {
               onClick={() => navigate('/login')}
               className="text-xs font-black uppercase tracking-widest text-[color:var(--chipzo-primary)] hover:text-[color:var(--chipzo-ink)] transition-colors"
             >
-              ALREADY REGISTERED? ACCESS SYSTEM
+              ALREADY HAVE ACCESS? LOGIN
             </button>
           </div>
         </div>
       </div>
     </div>
-  );
+  )
 }

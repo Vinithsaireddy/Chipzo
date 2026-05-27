@@ -1,34 +1,27 @@
 import { useState, useEffect } from 'react'
-import { ChevronLeft, ChevronRight, ShoppingCart, RefreshCw, AlertOctagon } from 'lucide-react'
+import { useNavigate, useLocation } from 'react-router-dom'
+import { ChevronLeft, ChevronRight, ChevronDown, ShoppingCart, RefreshCw, AlertOctagon, Clock, Ban } from 'lucide-react'
 import SmoothScroll from '../components/SmoothScroll.jsx'
 import Navbar from '../components/Navbar.jsx'
 import { productsAPI } from '../services/api.js'
 
-const CATEGORY_MAP = {
-  'Sensors': 'Sensor',
-  'Microcontrollers': 'Microcontroller',
-  'Power': 'Power Supply',
-  'Robotics': 'Motor & Driver',
-  'Communication': 'Communication Module',
-  'Displays': 'Display',
-  'ICs': 'Semiconductor',
-  'Modules': 'Other',
-}
-
-const BACKEND_CATEGORIES = [
-  'Battery', 'Battery Holder', 'Wire', 'Sensor', 'Display',
-  'Microcontroller', 'Motor & Driver', 'Power Supply',
-  'Relay & Switch', 'Communication Module', 'Prototyping',
-  'Tool', 'Passive Component', 'Semiconductor', 'LED & Lighting', 'Other',
+const SHOP_CATEGORIES = [
+  { label: 'All Categories', value: '' },
+  { label: 'Sensors', value: 'Sensor' },
+  { label: 'Motors', value: 'Motor & Driver' },
+  { label: 'Microcontrollers', value: 'Microcontroller' },
+  { label: 'Power Supply', value: 'Power Supply' },
+  { label: 'Batteries', value: 'Battery' },
+  { label: 'Modules', value: 'Communication Module' },
+  { label: 'Drivers', value: 'Motor & Driver' },
+  { label: 'IoT Components', value: 'Communication Module' },
+  { label: 'Tools', value: 'Tool' },
+  { label: 'Accessories', value: 'Other' },
 ]
 
-const statusItems = [
-  'Critical Component Supply Active',
-  'Next-day Delivery for Makers',
-  'New RISC-V Silicon in Stock',
-  'Voltage Regulators Now 20% Off',
-  'Support Decentralized Engineering',
-  'Global Shipping Online',
+const announcements = [
+  { text: 'Accepting orders only from 10:00 AM to 7:30 PM', icon: Clock },
+  { text: 'Not accepting orders on Sundays and special occasions', icon: Ban },
 ]
 
 // ─── Helper: map a backend product to the UI shape ───────────────────────────
@@ -121,14 +114,16 @@ function statusTone(tone) {
 }
 
 export default function Shop({ onNavigate, activeCategory, setActiveCategory, cartCount, onAddToCart }) {
+  const navigate = useNavigate()
+  const location = useLocation()
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages]   = useState(1)
   const [totalCount, setTotalCount]   = useState(0)
-  const [search, setSearch]           = useState('')
   const [prevActiveCategory, setPrevActiveCategory] = useState(activeCategory)
   const [activeProtocols, setActiveProtocols] = useState([])
   const [minVoltage, setMinVoltage]   = useState('0')
   const [maxVoltage, setMaxVoltage]   = useState('12')
+  const [search, setSearch]           = useState(() => new URLSearchParams(location.search).get('search') || '')
   const [categoryOpen, setCategoryOpen] = useState(false)
 
   // Live products state
@@ -137,6 +132,13 @@ export default function Shop({ onNavigate, activeCategory, setActiveCategory, ca
   const [apiError, setApiError]   = useState('')
   const [retryKey, setRetryKey]   = useState(0)
 
+  // Sync search state from URL
+  useEffect(() => {
+    const params = new URLSearchParams(location.search)
+    const q = params.get('search') || ''
+    setSearch(q)
+  }, [location.search])
+
   // Fetch products from backend
   useEffect(() => {
     let cancelled = false
@@ -144,12 +146,11 @@ export default function Shop({ onNavigate, activeCategory, setActiveCategory, ca
       setIsLoading(true)
       setApiError('')
       try {
-        const backendCategory = CATEGORY_MAP[activeCategory] || activeCategory
         const params = {
           page: currentPage,
           limit: ITEMS_PER_PAGE,
-          ...(backendCategory ? { category: backendCategory } : {}),
-          ...(search.trim()  ? { search: search.trim() }  : {}),
+          ...(activeCategory ? { category: activeCategory } : {}),
+          ...(search ? { search } : {}),
         }
         const data = await productsAPI.getAll(params)
         if (cancelled) return
@@ -167,16 +168,15 @@ export default function Shop({ onNavigate, activeCategory, setActiveCategory, ca
       }
     })()
     return () => { cancelled = true }
-  }, [currentPage, activeCategory, search, retryKey])
+  }, [currentPage, activeCategory, retryKey, search])
 
   // Sync filter state when global activeCategory changes during render
   if (activeCategory !== prevActiveCategory) {
     setPrevActiveCategory(activeCategory)
-    setSearch('')
     setMinVoltage('0')
     setMaxVoltage('12')
     setCurrentPage(1)
-    if (activeCategory === 'Sensor' || activeCategory === 'Sensors') {
+    if (activeCategory === 'Sensor') {
       setActiveProtocols(['I2C', 'SPI'])
     } else {
       setActiveProtocols([])
@@ -208,13 +208,21 @@ export default function Shop({ onNavigate, activeCategory, setActiveCategory, ca
         <Navbar onNavigate={onNavigate} currentPage="shop" activeCategory={activeCategory} cartCount={cartCount} />
 
         <main className="pt-28 sm:pt-32">
-          <section className="border-y-[3px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-ink)] py-2 text-[10px] font-black uppercase tracking-[0.18em] text-[color:var(--chipzo-paper)] sm:text-xs">
+          <section className="border-y-[3px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-ink)] py-2 text-[10px] font-black uppercase tracking-[0.18em] text-[color:var(--chipzo-paper)] sm:text-xs group">
             <div className="marquee-container">
-              <div className="marquee-content animate-marquee gap-8">
-                {[...statusItems, ...statusItems].map((item, index) => (
-                  <span key={`${item}-${index}`} className="inline-flex items-center gap-3 whitespace-nowrap">
-                    <span className="text-[color:var(--chipzo-primary)]">{item}</span>
-                    <span className="text-[color:var(--chipzo-lime)]">//</span>
+              <div className="marquee-content animate-marquee gap-6 group-hover:[animation-play-state:paused]">
+                {[...Array(4)].map((_, i) => (
+                  <span key={i} className="inline-flex items-center gap-6 whitespace-nowrap">
+                    {announcements.map((item, j) => {
+                      const Icon = item.icon
+                      return (
+                        <span key={j} className="inline-flex items-center gap-2">
+                          <Icon size={14} strokeWidth={2.5} className="shrink-0 text-[color:var(--chipzo-primary)]" />
+                          {item.text}
+                          <span className="text-[color:var(--chipzo-lime)] ml-2">//</span>
+                        </span>
+                      )
+                    })}
                   </span>
                 ))}
               </div>
@@ -223,170 +231,147 @@ export default function Shop({ onNavigate, activeCategory, setActiveCategory, ca
 
           <section className="section-frame py-4 sm:py-6 relative z-30">
             <div className="relative z-40 brutal-border brutal-shadow bg-[color:var(--chipzo-surface)]">
-              {/* UNIFIED SEARCH & FILTER CONTROL CONSOLE */}
-              <div className="flex flex-col border-b-[3px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-paper)] divide-y-[3px] divide-[color:var(--chipzo-ink)] lg:flex-row lg:divide-y-0 lg:divide-x-[3px] items-stretch">
-                
-                {/* Search Input Box */}
-                <div className="relative flex flex-1 items-stretch min-h-[60px]">
-                  <div className="flex items-center justify-center border-r-[3px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-ink)] px-4 text-[10px] font-black uppercase tracking-[0.2em] text-[color:var(--chipzo-paper)] sm:px-6">
-                    <span>QUERY &gt;</span>
-                  </div>
-                  <div className="relative flex-1 flex items-center">
-                    <input
-                      type="text"
-                      placeholder="SEARCH PARTS OR SPECS..."
-                      value={search}
-                      onChange={(e) => {
-                        setSearch(e.target.value)
-                        setCurrentPage(1)
-                      }}
-                      className="h-full w-full bg-transparent px-4 text-xs font-black uppercase tracking-[0.1em] text-[color:var(--chipzo-ink)] placeholder:text-[color:var(--chipzo-muted)] focus:bg-[color:var(--chipzo-surface)] focus:outline-none"
-                    />
-                    {search && (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setSearch('')
-                          setCurrentPage(1)
-                        }}
-                        className="absolute right-4 border-[2px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-paper)] px-2 py-0.5 text-[8px] font-black uppercase tracking-[0.1em] hover:bg-[color:var(--chipzo-primary)] hover:text-[color:var(--chipzo-paper)] active:translate-y-[1px]"
-                      >
-                        ✖
-                      </button>
-                    )}
-                  </div>
-                </div>
+              {/* FILTER CONTROLS ROW — Category Dropdown | Voltage + Protocols */}
+              <div className="flex flex-col border-b-[3px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-paper)] lg:flex-row">
 
-                {/* Category Dropdown */}
-                <div className="relative flex flex-col justify-center px-4 py-2.5 min-w-[190px]">
-                  <p className="mb-1 text-[8px] font-black uppercase tracking-[0.16em] text-[color:var(--chipzo-muted)]">Category</p>
-                  <div className="relative">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setCategoryOpen(!categoryOpen)
-                      }}
-                      className={[
-                        "flex w-full items-center justify-between border-[2px] border-[color:var(--chipzo-ink)] px-2.5 py-1 text-[9px] font-black uppercase tracking-[0.1em] transition-all hover:bg-[color:var(--chipzo-surface)]",
-                        activeCategory 
-                          ? "bg-[color:var(--chipzo-primary)] text-[color:var(--chipzo-paper)] border-[color:var(--chipzo-primary)]" 
-                          : "bg-[color:var(--chipzo-paper)] text-[color:var(--chipzo-ink)]"
-                      ].join(" ")}
-                    >
-                      <span className="truncate">{activeCategory || 'ALL CATEGORIES'}</span>
-                      <svg className={`ml-2 h-3 w-3 flex-shrink-0 transition-transform ${categoryOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                      </svg>
-                    </button>
-                    {categoryOpen && (
-                      <div className="absolute left-0 top-full z-50 mt-1 w-full border-[3px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-surface)] shadow-[4px_4px_0_var(--chipzo-ink)] max-h-72 overflow-y-auto">
-                        {['All Categories', ...BACKEND_CATEGORIES].map((cat) => (
+                {/* Large Category Dropdown (left) */}
+                <div className="relative flex-1 border-b-[3px] border-[color:var(--chipzo-ink)] lg:border-b-0 lg:border-r-[3px]">
+                  <button
+                    type="button"
+                    onClick={() => setCategoryOpen(!categoryOpen)}
+                    className="flex w-full items-center justify-between px-5 py-3 lg:py-3.5 border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-ink)] text-left focus:outline-none focus:ring-2 focus:ring-inset focus:ring-[color:var(--chipzo-lime)] cursor-pointer"
+                  >
+                    <span className="text-xs font-black uppercase tracking-[0.22em] text-[color:var(--chipzo-lime)]">
+                      CATEGORY &gt;
+                    </span>
+                    <span className="flex items-center gap-2">
+                      {activeCategory ? (
+                        <span className="text-xs font-black uppercase tracking-[0.12em] text-[color:var(--chipzo-paper)]">
+                          {SHOP_CATEGORIES.find(c => c.value === activeCategory)?.label || activeCategory}
+                        </span>
+                      ) : (
+                        <span className="text-xs font-black uppercase tracking-[0.12em] text-[color:var(--chipzo-muted)]">
+                          ALL
+                        </span>
+                      )}
+                      <ChevronDown
+                        size={16}
+                        strokeWidth={3}
+                        className={`shrink-0 text-[color:var(--chipzo-lime)] transition-transform duration-200 ${categoryOpen ? 'rotate-180' : ''}`}
+                      />
+                    </span>
+                  </button>
+
+                  {/* Dropdown Panel */}
+                  <div
+                    className={`absolute left-0 right-0 z-50 border-x-[3px] border-b-[3px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-surface)] shadow-[6px_8px_0_0_rgba(0,0,0,1)] transition-all duration-200 origin-top ${
+                      categoryOpen
+                        ? 'visible scale-y-100 opacity-100'
+                        : 'invisible scale-y-95 opacity-0 pointer-events-none'
+                    }`}
+                  >
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+                      {SHOP_CATEGORIES.map((cat) => {
+                        const isActive = activeCategory === cat.value
+                        return (
                           <button
-                            key={cat}
+                            key={cat.label}
                             type="button"
                             onClick={() => {
-                              setActiveCategory(cat === 'All Categories' ? '' : cat)
-                              setCategoryOpen(false)
+                              setActiveCategory(cat.value)
                               setCurrentPage(1)
+                              setCategoryOpen(false)
                             }}
                             className={[
-                              "w-full px-3 py-1.5 text-left text-[9px] font-bold uppercase tracking-[0.1em] transition-colors border-b border-[color:var(--chipzo-rule)] last:border-b-0",
-                              (activeCategory === cat || (cat === 'All Categories' && !activeCategory))
-                                ? "bg-[color:var(--chipzo-ink)] text-[color:var(--chipzo-paper)]"
-                                : "hover:bg-[color:var(--chipzo-primary)] hover:text-[color:var(--chipzo-paper)] text-[color:var(--chipzo-ink)]"
-                            ].join(" ")}
+                              'border-[2px] border-transparent px-4 py-3 text-center text-[10px] font-black uppercase tracking-[0.14em] transition-all cursor-pointer',
+                              'hover:border-[color:var(--chipzo-ink)] hover:bg-[color:var(--chipzo-ink)] hover:text-[color:var(--chipzo-paper)]',
+                              isActive
+                                ? 'border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-ink)] text-[color:var(--chipzo-lime)] shadow-[2px_2px_0_0_rgba(0,0,0,1)]'
+                                : 'text-[color:var(--chipzo-ink)] bg-transparent',
+                            ].join(' ')}
                           >
-                            {cat}
+                            {cat.label}
                           </button>
-                        ))}
+                        )
+                      })}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Voltage + Protocols (right) */}
+                <div className="flex flex-wrap items-stretch divide-x-[3px] divide-[color:var(--chipzo-ink)]">
+                  {/* Voltage Range Limits */}
+                  <div className="flex flex-col justify-center px-3 py-2.5 lg:px-4">
+                    <p className="mb-1 text-[8px] font-black uppercase tracking-[0.16em] text-[color:var(--chipzo-muted)]">Voltage Limits (V)</p>
+                    <div className="flex items-center gap-1.5">
+                      <div className="flex items-center border-[2px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-paper)] h-[28px] focus-within:border-[color:var(--chipzo-primary)] transition-all">
+                        <span className="flex h-full items-center justify-center bg-[color:var(--chipzo-ink)] px-2 text-[7px] font-black uppercase tracking-[0.1em] text-[color:var(--chipzo-paper)] border-r-[2px] border-[color:var(--chipzo-ink)] select-none">
+                          MIN
+                        </span>
+                        <input
+                          type="number" min="0" max="24" step="0.1" placeholder="0.0"
+                          value={minVoltage}
+                          onChange={(e) => { setMinVoltage(e.target.value); setCurrentPage(1) }}
+                          className="h-full w-14 bg-transparent text-center text-[10px] font-black uppercase text-[color:var(--chipzo-ink)] focus:outline-none focus:bg-[color:var(--chipzo-surface)] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                        />
                       </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* Voltage Range Limits */}
-                <div className="flex flex-col justify-center px-4 py-2.5">
-                  <p className="mb-1 text-[8px] font-black uppercase tracking-[0.16em] text-[color:var(--chipzo-muted)]">Voltage Limits (V)</p>
-                  <div className="flex items-center gap-1.5">
-                    
-                    {/* MIN Voltage Input Group */}
-                    <div className="flex items-center border-[2px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-paper)] h-[28px] focus-within:border-[color:var(--chipzo-primary)] transition-all">
-                      <span className="flex h-full items-center justify-center bg-[color:var(--chipzo-ink)] px-2 text-[7px] font-black uppercase tracking-[0.1em] text-[color:var(--chipzo-paper)] border-r-[2px] border-[color:var(--chipzo-ink)] select-none">
-                        MIN
-                      </span>
-                      <input
-                        type="number"
-                        min="0"
-                        max="24"
-                        step="0.1"
-                        placeholder="0.0"
-                        value={minVoltage}
-                        onChange={(e) => {
-                          setMinVoltage(e.target.value)
-                          setCurrentPage(1)
-                        }}
-                        className="h-full w-16 bg-transparent text-center text-[10px] font-black uppercase text-[color:var(--chipzo-ink)] focus:outline-none focus:bg-[color:var(--chipzo-surface)] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                      />
+                      <span className="text-[10px] font-black text-[color:var(--chipzo-ink)]">⇄</span>
+                      <div className="flex items-center border-[2px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-paper)] h-[28px] focus-within:border-[color:var(--chipzo-primary)] transition-all">
+                        <span className="flex h-full items-center justify-center bg-[color:var(--chipzo-ink)] px-2 text-[7px] font-black uppercase tracking-[0.1em] text-[color:var(--chipzo-paper)] border-r-[2px] border-[color:var(--chipzo-ink)] select-none">
+                          MAX
+                        </span>
+                        <input
+                          type="number" min="0" max="24" step="0.1" placeholder="12.0"
+                          value={maxVoltage}
+                          onChange={(e) => { setMaxVoltage(e.target.value); setCurrentPage(1) }}
+                          className="h-full w-14 bg-transparent text-center text-[10px] font-black uppercase text-[color:var(--chipzo-ink)] focus:outline-none focus:bg-[color:var(--chipzo-surface)] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                        />
+                      </div>
                     </div>
-
-                    <span className="text-[10px] font-black text-[color:var(--chipzo-ink)]">⇄</span>
-
-                    {/* MAX Voltage Input Group */}
-                    <div className="flex items-center border-[2px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-paper)] h-[28px] focus-within:border-[color:var(--chipzo-primary)] transition-all">
-                      <span className="flex h-full items-center justify-center bg-[color:var(--chipzo-ink)] px-2 text-[7px] font-black uppercase tracking-[0.1em] text-[color:var(--chipzo-paper)] border-r-[2px] border-[color:var(--chipzo-ink)] select-none">
-                        MAX
-                      </span>
-                      <input
-                        type="number"
-                        min="0"
-                        max="24"
-                        step="0.1"
-                        placeholder="12.0"
-                        value={maxVoltage}
-                        onChange={(e) => {
-                          setMaxVoltage(e.target.value)
-                          setCurrentPage(1)
-                        }}
-                        className="h-full w-16 bg-transparent text-center text-[10px] font-black uppercase text-[color:var(--chipzo-ink)] focus:outline-none focus:bg-[color:var(--chipzo-surface)] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                      />
-                    </div>
-
                   </div>
-                </div>
 
-                {/* Interface Protocols Multi-Select */}
-                <div className="flex flex-col justify-center px-4 py-2.5 lg:pr-6">
-                  <p className="mb-1 text-[8px] font-black uppercase tracking-[0.16em] text-[color:var(--chipzo-muted)]">Interface Protocols</p>
-                  <div className="flex gap-1">
-                    {['I2C', 'SPI', 'UART', 'CAN'].map((protocol) => {
-                      const isActive = activeProtocols.includes(protocol)
-                      return (
-                        <button
-                          key={protocol}
-                          type="button"
-                          onClick={() => {
-                            setCurrentPage(1)
-                            if (isActive) {
-                              setActiveProtocols(activeProtocols.filter((p) => p !== protocol))
-                            } else {
-                              setActiveProtocols([...activeProtocols, protocol])
-                            }
-                          }}
-                          className={[
-                            'border-[2px] px-2 py-1 text-[9px] font-black uppercase tracking-[0.1em] transition-all shadow-[1px_1px_0_var(--chipzo-ink)] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none cursor-pointer',
-                            isActive
-                              ? 'border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-ink)] text-[color:var(--chipzo-paper)]'
-                              : 'border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-paper)] text-[color:var(--chipzo-ink)] hover:bg-[color:var(--chipzo-lime)]',
-                          ].join(' ')}
-                        >
-                          {protocol}
-                        </button>
-                      )
-                    })}
+                  {/* Interface Protocols */}
+                  <div className="flex flex-col justify-center px-3 py-2.5 lg:px-4 lg:pr-6">
+                    <p className="mb-1 text-[8px] font-black uppercase tracking-[0.16em] text-[color:var(--chipzo-muted)]">Interface Protocols</p>
+                    <div className="flex gap-1">
+                      {['I2C', 'SPI', 'UART', 'CAN'].map((protocol) => {
+                        const isActive = activeProtocols.includes(protocol)
+                        return (
+                          <button
+                            key={protocol}
+                            type="button"
+                            onClick={() => {
+                              setCurrentPage(1)
+                              if (isActive) {
+                                setActiveProtocols(activeProtocols.filter((p) => p !== protocol))
+                              } else {
+                                setActiveProtocols([...activeProtocols, protocol])
+                              }
+                            }}
+                            className={[
+                              'border-[2px] px-2 py-1 text-[9px] font-black uppercase tracking-[0.1em] transition-all shadow-[1px_1px_0_var(--chipzo-ink)] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none cursor-pointer',
+                              isActive
+                                ? 'border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-ink)] text-[color:var(--chipzo-paper)]'
+                                : 'border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-paper)] text-[color:var(--chipzo-ink)] hover:bg-[color:var(--chipzo-lime)]',
+                            ].join(' ')}
+                          >
+                            {protocol}
+                          </button>
+                        )
+                      })}
+                    </div>
                   </div>
                 </div>
 
               </div>
+
+              {/* Click-outside to close category dropdown */}
+              {categoryOpen && (
+                <div
+                  className="fixed inset-0 z-40"
+                  onClick={() => setCategoryOpen(false)}
+                />
+              )}
 
               {/* FILTER CHAIN STATE STRIP */}
               <div className="flex flex-col border-b-[3px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-surface)] px-5 py-3 lg:flex-row lg:items-center lg:justify-between lg:px-6">
@@ -403,10 +388,15 @@ export default function Shop({ onNavigate, activeCategory, setActiveCategory, ca
                     <div className="flex flex-wrap items-center gap-1.5">
                       {search && (
                         <button
-                          onClick={() => setSearch('')}
+                          onClick={() => {
+                            setSearch('')
+                            const p = new URLSearchParams(location.search)
+                            p.delete('search')
+                            navigate(`${location.pathname}?${p.toString()}${p.toString() ? '' : ''}`, { replace: true })
+                          }}
                           className="flex items-center gap-1 border border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-paper)] px-2 py-0.5 text-[8px] font-bold uppercase tracking-[0.05em] hover:bg-[color:var(--chipzo-primary)] hover:text-[color:var(--chipzo-paper)]"
                         >
-                          Q: "{search}" <span className="text-[9px]">✖</span>
+                          SEARCH: {search} <span className="text-[9px]">✖</span>
                         </button>
                       )}
                       {activeCategory && (
@@ -445,12 +435,15 @@ export default function Shop({ onNavigate, activeCategory, setActiveCategory, ca
                   <button
                     type="button"
                     onClick={() => {
-                      setSearch('')
                       setActiveCategory('')
                       setActiveProtocols([])
                       setMinVoltage('0')
                       setMaxVoltage('12')
+                      setSearch('')
                       setCurrentPage(1)
+                      const p = new URLSearchParams(location.search)
+                      p.delete('search')
+                      navigate(`${location.pathname}?${p.toString()}${p.toString() ? '' : ''}`, { replace: true })
                     }}
                     className="mt-2 inline-flex items-center border-[2px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-lime)] px-2.5 py-0.5 text-[9px] font-black uppercase tracking-[0.15em] text-[color:var(--chipzo-ink)] hover:bg-[color:var(--chipzo-ink)] hover:text-[color:var(--chipzo-paper)] lg:mt-0 cursor-pointer shadow-[1px_1px_0_var(--chipzo-ink)]"
                   >
@@ -497,10 +490,20 @@ export default function Shop({ onNavigate, activeCategory, setActiveCategory, ca
                 <div className="col-span-2 flex flex-col items-center justify-center brutal-border brutal-shadow bg-[color:var(--chipzo-paper)] py-14 px-5 text-center">
                   <p className="text-xs font-black uppercase tracking-[0.2em] text-[color:var(--chipzo-primary)]">Zero Results</p>
                   <h3 className="mt-2 text-xl font-black uppercase tracking-tight text-[color:var(--chipzo-ink)]">No Components Match</h3>
-                  <p className="mt-2 text-xs font-medium leading-relaxed text-[color:var(--chipzo-muted)]">Refine your search or reset filters.</p>
+                  <p className="mt-2 text-xs font-medium leading-relaxed text-[color:var(--chipzo-muted)]">Adjust filters or choose a different category.</p>
                   <button
                     type="button"
-                    onClick={() => { setSearch(''); setActiveCategory(''); setActiveProtocols([]); setMinVoltage('0'); setMaxVoltage('12'); setCurrentPage(1) }}
+                    onClick={() => {
+                      setActiveCategory('')
+                      setActiveProtocols([])
+                      setMinVoltage('0')
+                      setMaxVoltage('12')
+                      setSearch('')
+                      setCurrentPage(1)
+                      const p = new URLSearchParams(location.search)
+                      p.delete('search')
+                      navigate(`${location.pathname}?${p.toString()}${p.toString() ? '' : ''}`, { replace: true })
+                    }}
                     className="mt-5 border-[3px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-lime)] px-4 py-2 text-xs font-black uppercase tracking-[0.12em] shadow-[2px_2px_0_var(--chipzo-ink)]"
                   >
                     Reset Filters
@@ -587,17 +590,20 @@ export default function Shop({ onNavigate, activeCategory, setActiveCategory, ca
                     <p className="text-xs font-black uppercase tracking-[0.2em] text-[color:var(--chipzo-primary)]">Zero Results</p>
                     <h3 className="mt-2 text-2xl font-black uppercase tracking-[-0.03em] text-[color:var(--chipzo-ink)]">No Components Match Your Schema</h3>
                     <p className="mt-2 max-w-[45ch] text-xs font-medium leading-relaxed text-[color:var(--chipzo-muted)]">
-                      Refine your search keywords, clear active protocol tokens, or adjust your voltage ranges in the primary console.
+                      Adjust your category, protocol, or voltage filters.
                     </p>
                     <button
                       type="button"
                       onClick={() => {
-                        setSearch('')
                         setActiveCategory('')
                         setActiveProtocols([])
                         setMinVoltage('0')
                         setMaxVoltage('12')
+                        setSearch('')
                         setCurrentPage(1)
+                        const p = new URLSearchParams(location.search)
+                        p.delete('search')
+                        navigate(`${location.pathname}?${p.toString()}${p.toString() ? '' : ''}`, { replace: true })
                       }}
                       className="mt-6 border-[3px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-lime)] px-4 py-2 text-xs font-black uppercase tracking-[0.12em] shadow-[2px_2px_0_var(--chipzo-ink)] transition-all hover:-translate-y-0.5 hover:shadow-[3px_3px_0_var(--chipzo-ink)] active:translate-y-0"
                     >
