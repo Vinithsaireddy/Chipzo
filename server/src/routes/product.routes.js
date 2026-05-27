@@ -21,6 +21,28 @@ const upload = multer({
   },
 });
 
+const parseMultipartJsonField = (value, fallback) => {
+  if (value === undefined || value === null || value === '') {
+    return fallback;
+  }
+
+  const rawValue = Array.isArray(value) ? value[value.length - 1] : value;
+
+  if (typeof rawValue === 'string') {
+    try {
+      return JSON.parse(rawValue);
+    } catch (error) {
+      return fallback;
+    }
+  }
+
+  if (typeof rawValue === 'object') {
+    return rawValue;
+  }
+
+  return fallback;
+};
+
 // ── Public routes ─────────────────────────────────────────────────────────────
 
 /** GET /api/products — Paginated product listing with filters */
@@ -29,8 +51,39 @@ router.get('/', productController.getProducts);
 /** GET /api/products/slug/:slug — Lookup by inventory slug (e.g. "arduino_uno_r3") */
 router.get('/slug/:slug', productController.getProductBySlug);
 
+/** GET /api/products/images/* — Streams product images from Cloudflare R2 */
+router.get('/images/*', productController.getProductImage);
+
 /** GET /api/products/:id — Single product by MongoDB _id */
 router.get('/:id', productController.getProduct);
+
+// ── Preprocessing Middleware for Multipart Form Data ────────────────────────
+const preprocessMultipartProduct = (req, res, next) => {
+  // Coerce numeric / boolean fields that arrive as multipart strings
+  if (req.body.price !== undefined && req.body.price !== null && req.body.price !== '') {
+    req.body.price = parseFloat(req.body.price);
+  }
+  if (req.body.stock !== undefined && req.body.stock !== null && req.body.stock !== '') {
+    req.body.stock = parseInt(req.body.stock, 10);
+  }
+  if (req.body.in_stock !== undefined) {
+    req.body.in_stock = req.body.in_stock === 'true' || req.body.in_stock === true;
+  }
+  
+  // Multipart fields can arrive as JSON strings or repeated values.
+  req.body.specifications = parseMultipartJsonField(req.body.specifications, {});
+
+  const parsedInterfaces = parseMultipartJsonField(req.body.interfaces, []);
+  req.body.interfaces = Array.isArray(parsedInterfaces) ? parsedInterfaces : [];
+  
+  // If files were uploaded via multipart, Multer populates req.files.
+  // We remove raw/file strings from req.body.images so Joi doesn't fail on .uri() check.
+  if (req.files && req.files.length > 0) {
+    delete req.body.images;
+  }
+
+  next();
+};
 
 // ── Protected routes ──────────────────────────────────────────────────────────
 
@@ -42,6 +95,7 @@ router.post(
   '/',
   protect,
   upload.array('images', 5),
+  preprocessMultipartProduct,
   validate(createProductSchema),
   productController.createProduct
 );
@@ -54,6 +108,7 @@ router.put(
   '/:id',
   protect,
   upload.array('images', 5),
+  preprocessMultipartProduct,
   validate(updateProductSchema),
   productController.updateProduct
 );

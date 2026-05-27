@@ -2,9 +2,53 @@
 
 const productService = require('../services/product.service');
 const cloudflareService = require('../services/cloudflare.service');
+const env = require('../config/env');
 const ApiResponse = require('../utils/ApiResponse');
 const ApiError = require('../utils/ApiError');
 const asyncHandler = require('../utils/asyncHandler');
+
+const publicImageBase = (() => {
+  try {
+    return new URL(env.CLOUDFLARE_PUBLIC_URL);
+  } catch (error) {
+    return null;
+  }
+})();
+
+const rewriteImageUrl = (imageUrl) => {
+  if (!imageUrl || !publicImageBase) {
+    return imageUrl;
+  }
+
+  try {
+    const parsedUrl = new URL(imageUrl);
+    if (parsedUrl.origin !== publicImageBase.origin) {
+      return imageUrl;
+    }
+
+    const basePath = publicImageBase.pathname.replace(/\/+$/, '');
+    const imagePath = parsedUrl.pathname;
+    const relativePath = basePath && imagePath.startsWith(basePath)
+      ? imagePath.slice(basePath.length)
+      : imagePath;
+    const key = relativePath.replace(/^\/+/, '');
+
+    return key ? `/api/products/images/${key}` : imageUrl;
+  } catch (error) {
+    return imageUrl;
+  }
+};
+
+const serializeProduct = (product) => {
+  if (!product) {
+    return product;
+  }
+
+  return {
+    ...product,
+    images: Array.isArray(product.images) ? product.images.map(rewriteImageUrl) : [],
+  };
+};
 
 /**
  * GET /api/products
@@ -13,7 +57,7 @@ const asyncHandler = require('../utils/asyncHandler');
 const getProducts = asyncHandler(async (req, res) => {
   const result = await productService.getPaginatedProducts(req.query);
 
-  return new ApiResponse(200, 'Products fetched successfully', result.products, {
+  return new ApiResponse(200, 'Products fetched successfully', result.products.map(serializeProduct), {
     currentPage: result.currentPage,
     totalPages: result.totalPages,
     totalCount: result.totalCount,
@@ -27,7 +71,7 @@ const getProducts = asyncHandler(async (req, res) => {
  */
 const getProduct = asyncHandler(async (req, res) => {
   const product = await productService.getProductById(req.params.id);
-  return new ApiResponse(200, 'Product fetched successfully', { product }).send(res);
+  return new ApiResponse(200, 'Product fetched successfully', { product: serializeProduct(product) }).send(res);
 });
 
 /**
@@ -36,7 +80,7 @@ const getProduct = asyncHandler(async (req, res) => {
  */
 const getProductBySlug = asyncHandler(async (req, res) => {
   const product = await productService.getProductBySlug(req.params.slug);
-  return new ApiResponse(200, 'Product fetched successfully', { product }).send(res);
+  return new ApiResponse(200, 'Product fetched successfully', { product: serializeProduct(product) }).send(res);
 });
 
 /**
@@ -79,7 +123,7 @@ const createProduct = asyncHandler(async (req, res) => {
   }
 
   const product = await productService.createProduct(productData);
-  return new ApiResponse(201, 'Product created successfully', { product }).send(res);
+  return new ApiResponse(201, 'Product created successfully', { product: serializeProduct(product.toObject ? product.toObject() : product) }).send(res);
 });
 
 /**
@@ -106,19 +150,18 @@ const updateProduct = asyncHandler(async (req, res) => {
     updates.interfaces = JSON.parse(updates.interfaces);
   }
 
-  // Upload new images (if any) and append their URLs
+  // Upload new images (if any) and make them the primary product images.
   if (req.files && req.files.length > 0) {
     const newUrls = [];
     for (const file of req.files) {
       const { url } = await cloudflareService.uploadImage(file);
       newUrls.push(url);
     }
-    // $push semantics — merge in service layer via $push or replace with full array
-    updates._appendImages = newUrls;
+    updates._prependImages = newUrls;
   }
 
   const product = await productService.updateProduct(req.params.id, updates);
-  return new ApiResponse(200, 'Product updated successfully', { product }).send(res);
+  return new ApiResponse(200, 'Product updated successfully', { product: serializeProduct(product.toObject ? product.toObject() : product) }).send(res);
 });
 
 /**
@@ -133,7 +176,7 @@ const addImages = asyncHandler(async (req, res) => {
   }
 
   const product = await productService.addImages(req.params.id, images);
-  return new ApiResponse(200, 'Images added successfully', { product }).send(res);
+  return new ApiResponse(200, 'Images added successfully', { product: serializeProduct(product.toObject ? product.toObject() : product) }).send(res);
 });
 
 /**
@@ -148,7 +191,25 @@ const removeImage = asyncHandler(async (req, res) => {
   }
 
   const product = await productService.removeImage(req.params.id, url);
-  return new ApiResponse(200, 'Image removed successfully', { product }).send(res);
+  return new ApiResponse(200, 'Image removed successfully', { product: serializeProduct(product.toObject ? product.toObject() : product) }).send(res);
+});
+
+const getProductImage = asyncHandler(async (req, res) => {
+  const key = req.params[0];
+  if (!key) {
+    throw new ApiError(400, 'Image key is required');
+  }
+
+  const image = await cloudflareService.getImage(key);
+  if (image.contentType) {
+    res.setHeader('Content-Type', image.contentType);
+  }
+  if (image.contentLength) {
+    res.setHeader('Content-Length', image.contentLength);
+  }
+  res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+
+  image.body.pipe(res);
 });
 
 /**
@@ -176,6 +237,7 @@ module.exports = {
   getProducts,
   getProduct,
   getProductBySlug,
+  getProductImage,
   createProduct,
   updateProduct,
   addImages,

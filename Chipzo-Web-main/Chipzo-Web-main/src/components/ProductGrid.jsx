@@ -172,7 +172,7 @@ export default function ProductGrid({ dark = false, onNavigate, onAddToCart }) {
                   </div>
                   <div className="mt-auto flex items-end justify-between gap-3 border-t-2 border-dashed border-[color:var(--chipzo-rule)] pt-3">
                     <div>
-                      <p className="tabular-prices text-3xl font-black tracking-[-0.05em] text-[color:var(--chipzo-primary)]">${item.price.toFixed(2)}</p>
+                      <p className="tabular-prices text-3xl font-black tracking-[-0.05em] text-[color:var(--chipzo-primary)]">₹{item.price.toFixed(2)}</p>
                       <p className="text-xs font-black uppercase tracking-[0.1em] text-[color:var(--chipzo-primary)]">Arrives in 90 min</p>
                     </div>
                     <button
@@ -227,7 +227,7 @@ export default function ProductGrid({ dark = false, onNavigate, onAddToCart }) {
                 </div>
                 <div className="mt-auto flex items-end justify-between gap-3 border-t-2 border-dashed border-[color:var(--chipzo-rule)] pt-3">
                   <div>
-                    <p className="tabular-prices text-3xl font-black tracking-[-0.05em] text-[color:var(--chipzo-primary)]">${item.price.toFixed(2)}</p>
+                    <p className="tabular-prices text-3xl font-black tracking-[-0.05em] text-[color:var(--chipzo-primary)]">₹{item.price.toFixed(2)}</p>
                     <p className="text-xs font-black uppercase tracking-[0.1em] text-[color:var(--chipzo-primary)]">Arrives in 90 min</p>
                   </div>
                   <button

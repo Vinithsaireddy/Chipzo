@@ -103,12 +103,12 @@ const createProduct = async (productData) => {
 };
 
 /**
- * Partially updates a product. Handles _appendImages from controller.
+ * Partially updates a product. Handles _prependImages from controller.
  * @param {string}  productId
  * @param {object}  updates
  */
 const updateProduct = async (productId, updates) => {
-  const { _appendImages, ...setFields } = updates;
+  const { _prependImages, ...setFields } = updates;
 
   const mongoUpdate = {};
 
@@ -116,8 +116,8 @@ const updateProduct = async (productId, updates) => {
     mongoUpdate.$set = setFields;
   }
 
-  if (_appendImages && _appendImages.length > 0) {
-    mongoUpdate.$push = { images: { $each: _appendImages } };
+  if (_prependImages && _prependImages.length > 0) {
+    mongoUpdate.$push = { images: { $each: _prependImages, $position: 0 } };
   }
 
   const product = await Product.findByIdAndUpdate(productId, mongoUpdate, {

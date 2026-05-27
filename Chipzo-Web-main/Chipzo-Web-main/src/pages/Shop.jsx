@@ -96,6 +96,20 @@ function SchematicPreview({ code }) {
   )
 }
 
+function ProductVisual({ image, code, title, className = '' }) {
+  if (image) {
+    return (
+      <img
+        src={image}
+        alt={title}
+        className={`h-full w-full object-contain ${className}`.trim()}
+      />
+    )
+  }
+
+  return <SchematicPreview code={code} />
+}
+
 function statusTone(tone) {
   if (tone === 'primary') {
     return 'border-[color:var(--chipzo-primary)] text-[color:var(--chipzo-primary)]'
@@ -500,8 +514,8 @@ export default function Shop({ onNavigate, activeCategory, setActiveCategory, ca
                   >
                     {/* Visual schematic preview with absolute status badge at top */}
                     <div className="bg-[color:var(--chipzo-surface)] border-b-[2px] border-[color:var(--chipzo-ink)] flex items-center justify-center p-3 relative h-24 sm:h-28 shrink-0">
-                      <div className="scale-75 sm:scale-90">
-                        <SchematicPreview code={product.code} />
+                      <div className="flex h-full w-full items-center justify-center scale-75 sm:scale-90">
+                        <ProductVisual image={product.image} code={product.code} title={product.title} />
                       </div>
                       <span className={`absolute top-2 left-2 inline-flex border-[1.5px] border-[color:var(--chipzo-ink)] px-1 py-0.5 text-[7px] font-extrabold uppercase tracking-[0.05em] leading-none ${statusTone(product.tone)}`}>
                         {product.status}
@@ -600,7 +614,7 @@ export default function Shop({ onNavigate, activeCategory, setActiveCategory, ca
                       ].join(' ')}
                     >
                       <div className="flex items-center justify-center border-r-[2px] border-[color:var(--chipzo-rule)] p-3">
-                        <SchematicPreview code={product.code} />
+                        <ProductVisual image={product.image} code={product.code} title={product.title} className="max-h-20" />
                       </div>
 
                       <div className="border-r-[2px] border-[color:var(--chipzo-rule)] px-4 py-4">

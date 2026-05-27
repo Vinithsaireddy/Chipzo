@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Search, ShoppingCart, UserRound, Menu, X } from 'lucide-react'
+import { Search, ShoppingCart, UserRound, Menu, X, Store } from 'lucide-react'
 import ProfilePanel from './ProfilePanel'
 import { useAuth } from '../contexts/AuthContext.jsx'
 
@@ -133,7 +133,17 @@ export default function Navbar({ onNavigate, currentPage = 'home', activeCategor
               )}
             </button>
 
-            {/* Account */}
+            {/* Shop — Mobile Only */}
+            <button
+              type="button"
+              aria-label="Shop"
+              onClick={() => handleNavClick('shop')}
+              className="group relative flex h-9 w-9 items-center justify-center border-[3px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-primary)] text-[color:var(--chipzo-paper)] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all sm:h-11 sm:w-11 hover:-translate-x-[2px] hover:-translate-y-[2px] hover:bg-[color:var(--chipzo-ink)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] lg:hidden"
+            >
+              <Store strokeWidth={2.5} className="h-[18px] w-[18px] transition-transform group-hover:scale-110 sm:h-[22px] sm:w-[22px]" />
+            </button>
+
+            {/* Account — Desktop Only */}
             <button
               type="button"
               aria-label="Account"
@@ -144,7 +154,7 @@ export default function Navbar({ onNavigate, currentPage = 'home', activeCategor
                   handleNavClick('login');
                 }
               }}
-              className="group relative flex h-9 w-9 items-center justify-center border-[3px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-primary)] text-[color:var(--chipzo-paper)] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all sm:h-11 sm:w-11 hover:-translate-x-[2px] hover:-translate-y-[2px] hover:bg-[color:var(--chipzo-ink)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)]"
+              className="group relative hidden lg:flex h-9 w-9 items-center justify-center border-[3px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-primary)] text-[color:var(--chipzo-paper)] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all sm:h-11 sm:w-11 hover:-translate-x-[2px] hover:-translate-y-[2px] hover:bg-[color:var(--chipzo-ink)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)]"
             >
               <UserRound strokeWidth={2.5} className="h-[18px] w-[18px] transition-transform group-hover:scale-110 sm:h-[22px] sm:w-[22px]" />
             </button>

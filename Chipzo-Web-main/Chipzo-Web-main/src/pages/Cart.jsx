@@ -174,7 +174,7 @@ export default function Cart({ onNavigate, activeCategory, cart = [], onUpdateQu
 
                           {/* Dynamic Price */}
                           <div className="tabular-prices text-lg font-black text-[color:var(--chipzo-primary)] leading-none tracking-tight">
-                            ${(item.price * item.quantity).toFixed(2)}
+                            ₹{(item.price * item.quantity).toFixed(2)}
                           </div>
                         </div>
                       </div>
@@ -224,7 +224,7 @@ export default function Cart({ onNavigate, activeCategory, cart = [], onUpdateQu
                                   {compItem.title}
                                 </h4>
                                 <p className="tabular-prices text-sm font-black text-[color:var(--chipzo-primary)]">
-                                  ${compItem.price.toFixed(2)}
+                                  ₹{compItem.price.toFixed(2)}
                                 </p>
                               </div>
                             </div>
@@ -268,7 +268,7 @@ export default function Cart({ onNavigate, activeCategory, cart = [], onUpdateQu
                     <div className="p-5 flex flex-col gap-4">
                       <div className="flex justify-between font-black text-xs uppercase text-[color:var(--chipzo-ink)]">
                         <span>SUBTOTAL</span>
-                        <span className="tabular-prices">${subtotal.toFixed(2)}</span>
+                        <span className="tabular-prices">₹{subtotal.toFixed(2)}</span>
                       </div>
                       <div className="flex justify-between font-black text-xs uppercase text-[color:var(--chipzo-ink)]">
                         <span>DELIVERY FEE</span>
@@ -276,7 +276,7 @@ export default function Cart({ onNavigate, activeCategory, cart = [], onUpdateQu
                       </div>
                       <div className="flex justify-between font-black text-xs uppercase text-[color:var(--chipzo-primary)]">
                         <span>DYNAMIC DISCOUNT</span>
-                        <span className="tabular-prices">-$0.00</span>
+                        <span className="tabular-prices">-₹0.00</span>
                       </div>
                       
                       {/* Coupon Code Input */}
@@ -295,7 +295,7 @@ export default function Cart({ onNavigate, activeCategory, cart = [], onUpdateQu
                       
                       <div className="flex justify-between font-black text-xl uppercase text-[color:var(--chipzo-ink)]">
                         <span>TOTAL</span>
-                        <span className="tabular-prices">${subtotal.toFixed(2)}</span>
+                        <span className="tabular-prices">₹{subtotal.toFixed(2)}</span>
                       </div>
 
                       <div className="mt-1 p-2 border-2 border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-cyan)] text-[color:var(--chipzo-ink)] flex items-center gap-2 text-[9px] font-black uppercase tracking-widest shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
@@ -325,7 +325,7 @@ export default function Cart({ onNavigate, activeCategory, cart = [], onUpdateQu
             <div className="flex items-center justify-between gap-4">
               <div>
                 <p className="text-[9px] font-black uppercase tracking-[0.15em] text-[color:var(--chipzo-muted)]">Order Total</p>
-                <p className="tabular-prices text-xl font-black text-[color:var(--chipzo-ink)] leading-none">${subtotal.toFixed(2)}</p>
+                <p className="tabular-prices text-xl font-black text-[color:var(--chipzo-ink)] leading-none">₹{subtotal.toFixed(2)}</p>
               </div>
               <button
                 type="button"

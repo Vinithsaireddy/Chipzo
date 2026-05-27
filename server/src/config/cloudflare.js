@@ -6,14 +6,14 @@ const env = require('./env');
 /**
  * Cloudflare R2 is S3-compatible.
  * We point the S3 client at the Cloudflare endpoint using the Account ID.
- * Authentication uses API Token as the secret key (standard Cloudflare R2 pattern).
+ * Authentication uses an R2 Access Key ID + Secret Access Key pair.
  */
 const r2Client = new S3Client({
   region: 'auto',
-  endpoint: `https://${env.CLOUDFLARE_ACCOUNT_ID}.r2.cloudflarestorage.com`,
+  endpoint: env.CLOUDFLARE_ENDPOINT || `https://${env.CLOUDFLARE_ACCOUNT_ID}.r2.cloudflarestorage.com`,
   credentials: {
-    accessKeyId: env.CLOUDFLARE_API_TOKEN || 'placeholder',
-    secretAccessKey: env.CLOUDFLARE_API_TOKEN || 'placeholder',
+    accessKeyId: env.CLOUDFLARE_ACCESS_KEY_ID || 'placeholder',
+    secretAccessKey: env.CLOUDFLARE_SECRET_ACCESS_KEY || 'placeholder',
   },
 });
 

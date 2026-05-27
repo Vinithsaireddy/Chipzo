@@ -171,7 +171,8 @@ All required — server will not start without them:
 | `RAZORPAY_KEY_ID` | Razorpay dashboard key |
 | `RAZORPAY_KEY_SECRET` | Razorpay dashboard secret |
 | `CLOUDFLARE_ACCOUNT_ID` | Your CF account ID |
-| `CLOUDFLARE_API_TOKEN` | R2 API token |
+| `CLOUDFLARE_ACCESS_KEY_ID` | R2 S3 access key ID |
+| `CLOUDFLARE_SECRET_ACCESS_KEY` | R2 S3 secret access key |
 | `CLOUDFLARE_BUCKET_NAME` | R2 bucket name |
 | `CLOUDFLARE_PUBLIC_URL` | Public URL of bucket (e.g. `https://pub-xxx.r2.dev`) |
 | `CLIENT_URL` | Allowed CORS origin |

@@ -16,8 +16,24 @@ const logger = require('./utils/logger');
 
 const app = express();
 
+const publicImageOrigin = (() => {
+  try {
+    return new URL(env.CLOUDFLARE_PUBLIC_URL).origin;
+  } catch (error) {
+    return null;
+  }
+})();
+
 // ─── Security: HTTP headers ───────────────────────────────────────────────────
-app.use(helmet());
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        imgSrc: ["'self'", 'data:', publicImageOrigin].filter(Boolean),
+      },
+    },
+  })
+);
 
 // ─── CORS: whitelist only CLIENT_URL ─────────────────────────────────────────
 app.use(

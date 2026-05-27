@@ -1,11 +1,12 @@
 'use strict';
 
-const { PutObjectCommand, DeleteObjectCommand } = require('@aws-sdk/client-s3');
+const { PutObjectCommand, DeleteObjectCommand, GetObjectCommand } = require('@aws-sdk/client-s3');
 const { v4: uuidv4 } = require('uuid');
 const path = require('path');
 const r2Client = require('../config/cloudflare');
 const env = require('../config/env');
 const ApiError = require('../utils/ApiError');
+const logger = require('../utils/logger');
 
 const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
 const MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024; // 5 MB
@@ -38,8 +39,27 @@ const uploadImage = async (file) => {
   const key = `products/${uuidv4()}${ext}`;
 
   try {
-    if (!env.CLOUDFLARE_BUCKET_NAME || env.CLOUDFLARE_BUCKET_NAME === 'dummy_r2_bucket_name' || env.CLOUDFLARE_ACCOUNT_ID === 'dummy_cloudflare_account_id') {
-      throw new Error('Development environment uses mock Cloudflare R2 configurations.');
+    if (
+      env.CLOUDFLARE_API_TOKEN &&
+      (!env.CLOUDFLARE_ACCESS_KEY_ID || !env.CLOUDFLARE_SECRET_ACCESS_KEY)
+    ) {
+      throw new ApiError(
+        500,
+        'Cloudflare R2 uploads require CLOUDFLARE_ACCESS_KEY_ID and CLOUDFLARE_SECRET_ACCESS_KEY. CLOUDFLARE_API_TOKEN alone is not valid for S3 uploads.'
+      );
+    }
+
+    if (
+      !env.CLOUDFLARE_BUCKET_NAME ||
+      env.CLOUDFLARE_BUCKET_NAME === 'dummy_r2_bucket_name' ||
+      env.CLOUDFLARE_ACCOUNT_ID === 'dummy_cloudflare_account_id' ||
+      !env.CLOUDFLARE_ACCESS_KEY_ID ||
+      !env.CLOUDFLARE_SECRET_ACCESS_KEY
+    ) {
+      throw new ApiError(
+        500,
+        'Cloudflare R2 is not configured correctly. Set CLOUDFLARE_ACCESS_KEY_ID and CLOUDFLARE_SECRET_ACCESS_KEY.'
+      );
     }
 
     const command = new PutObjectCommand({
@@ -54,12 +74,13 @@ const uploadImage = async (file) => {
     const url = `${env.CLOUDFLARE_PUBLIC_URL}/${key}`;
     return { url, key };
   } catch (error) {
-    const logger = require('../utils/logger');
-    logger.warn(`[R2 Service] Bypassing upload: ${error.message}. Returning fallback stock image.`);
-    
-    // Return a premium electronics placeholder
-    const url = 'https://images.unsplash.com/photo-1591453089816-0fbb971b454c?w=500&auto=format&fit=crop&q=80';
-    return { url, key };
+    logger.error(`[R2 Service] Upload failed for "${key}": ${error.message}`);
+
+    if (error instanceof ApiError) {
+      throw error;
+    }
+
+    throw new ApiError(502, 'Failed to upload image to Cloudflare R2.');
   }
 };
 
@@ -88,5 +109,33 @@ const deleteImage = async (key) => {
   }
 };
 
-module.exports = { uploadImage, deleteImage };
+/**
+ * Reads an image object from Cloudflare R2.
+ * @param {string} key
+ * @returns {Promise<{ body: NodeJS.ReadableStream, contentType?: string, contentLength?: number }>}
+ */
+const getImage = async (key) => {
+  try {
+    const command = new GetObjectCommand({
+      Bucket: env.CLOUDFLARE_BUCKET_NAME,
+      Key: key,
+    });
+
+    const result = await r2Client.send(command);
+    return {
+      body: result.Body,
+      contentType: result.ContentType,
+      contentLength: result.ContentLength,
+    };
+  } catch (error) {
+    if (error.name === 'NoSuchKey' || error.$metadata?.httpStatusCode === 404) {
+      throw new ApiError(404, 'Image not found');
+    }
+
+    logger.error(`[R2 Service] Read failed for "${key}": ${error.message}`);
+    throw new ApiError(502, 'Failed to read image from Cloudflare R2.');
+  }
+};
+
+module.exports = { uploadImage, deleteImage, getImage };
 

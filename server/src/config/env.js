@@ -9,6 +9,8 @@
 const path = require('path');
 require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
 
+const getEnv = (...keys) => keys.find((key) => process.env[key]) ? process.env[keys.find((key) => process.env[key])] : '';
+
 const REQUIRED_KEYS = [
   'PORT',
   'NODE_ENV',
@@ -17,13 +19,24 @@ const REQUIRED_KEYS = [
   'JWT_EXPIRES_IN',
   'RAZORPAY_KEY_ID',
   'RAZORPAY_KEY_SECRET',
-  'CLOUDFLARE_ACCOUNT_ID',
-  'CLOUDFLARE_BUCKET_NAME',
-  'CLOUDFLARE_PUBLIC_URL',
   'CLIENT_URL',
 ];
 
 const missingKeys = REQUIRED_KEYS.filter((key) => !process.env[key]);
+
+const cloudflareAccountId = getEnv('CLOUDFLARE_ACCOUNT_ID', 'R2_ACCOUNT_ID');
+const cloudflareBucketName = getEnv('CLOUDFLARE_BUCKET_NAME', 'R2_BUCKET_NAME');
+const cloudflarePublicUrl = getEnv('CLOUDFLARE_PUBLIC_URL', 'R2_PUBLIC_URL');
+
+if (!cloudflareAccountId || !cloudflareBucketName || !cloudflarePublicUrl) {
+  missingKeys.push(
+    ...[
+      !cloudflareAccountId && 'CLOUDFLARE_ACCOUNT_ID or R2_ACCOUNT_ID',
+      !cloudflareBucketName && 'CLOUDFLARE_BUCKET_NAME or R2_BUCKET_NAME',
+      !cloudflarePublicUrl && 'CLOUDFLARE_PUBLIC_URL or R2_PUBLIC_URL',
+    ].filter(Boolean)
+  );
+}
 
 if (missingKeys.length > 0) {
   console.error(
@@ -62,10 +75,13 @@ module.exports = Object.freeze({
   RAZORPAY_KEY_ID: process.env.RAZORPAY_KEY_ID,
   RAZORPAY_KEY_SECRET: process.env.RAZORPAY_KEY_SECRET,
 
-  CLOUDFLARE_ACCOUNT_ID: process.env.CLOUDFLARE_ACCOUNT_ID,
+  CLOUDFLARE_ACCOUNT_ID: cloudflareAccountId,
   CLOUDFLARE_API_TOKEN: process.env.CLOUDFLARE_API_TOKEN || '',
-  CLOUDFLARE_BUCKET_NAME: process.env.CLOUDFLARE_BUCKET_NAME,
-  CLOUDFLARE_PUBLIC_URL: process.env.CLOUDFLARE_PUBLIC_URL,
+  CLOUDFLARE_ACCESS_KEY_ID: getEnv('CLOUDFLARE_ACCESS_KEY_ID', 'R2_ACCESS_KEY_ID'),
+  CLOUDFLARE_SECRET_ACCESS_KEY: getEnv('CLOUDFLARE_SECRET_ACCESS_KEY', 'R2_SECRET_ACCESS_KEY'),
+  CLOUDFLARE_BUCKET_NAME: cloudflareBucketName,
+  CLOUDFLARE_PUBLIC_URL: cloudflarePublicUrl,
+  CLOUDFLARE_ENDPOINT: getEnv('CLOUDFLARE_ENDPOINT', 'R2_ENDPOINT'),
 
   RAPIDO_API_KEY: process.env.RAPIDO_API_KEY || '',
   RAPIDO_BASE_URL: process.env.RAPIDO_BASE_URL || 'https://api.rapido.bike/v1',

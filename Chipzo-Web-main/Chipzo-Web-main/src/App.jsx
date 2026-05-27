@@ -15,6 +15,7 @@ import Admin from './pages/Admin.jsx'
 import VerifyOTP from './pages/VerifyOTP.jsx'
 import { useAuth } from './contexts/AuthContext.jsx'
 import { cartAPI } from './services/api.js'
+import Toast from './components/Toast.jsx'
 
 function App() {
   const navigate = useNavigate()
@@ -23,6 +24,7 @@ function App() {
   const [completedOrder, setCompletedOrder] = useState(null)
   const [paymentError, setPaymentError] = useState(null)
   const [cart, setCart] = useState([])
+  const [toastProduct, setToastProduct] = useState(null)
 
   const PROTECTED_PATHS = ['/checkout', '/profile', '/orders']
   const activeCategory = new URLSearchParams(location.search).get('category') || ''
@@ -99,6 +101,13 @@ function App() {
       }
       return [...prev, { ...product, quantity: 1 }]
     })
+    
+    // Trigger toast notification with micro-feedback resetting
+    setToastProduct(null)
+    setTimeout(() => {
+      setToastProduct(product)
+    }, 50)
+
     if (isLoggedIn && product._backendProductId) {
       try {
         await cartAPI.addItem(product._backendProductId, 1)
@@ -165,7 +174,8 @@ function App() {
 
   // ── Page routes ──────────────────────────────────────────────────────────────
   return (
-    <Routes>
+    <>
+      <Routes>
       <Route
         path="/"
         element={
@@ -258,6 +268,13 @@ function App() {
       <Route path="/admin" element={<Admin />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
+    {toastProduct && (
+      <Toast
+        product={toastProduct}
+        onClose={() => setToastProduct(null)}
+      />
+    )}
+    </>
   )
 }
 
