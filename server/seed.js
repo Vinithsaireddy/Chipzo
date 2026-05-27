@@ -19,42 +19,42 @@ const CATEGORY_IMAGES = {
   'Microcontroller': [
     'https://images.unsplash.com/photo-1608564697071-ddf911d81370?w=500&auto=format&fit=crop&q=80',
   ],
+  'Communication': [
+    'https://images.unsplash.com/photo-1562408590-e32931084e23?w=500&auto=format&fit=crop&q=80',
+  ],
   'Sensor': [
     'https://images.unsplash.com/photo-1555664424-778a1e5e1b48?w=500&auto=format&fit=crop&q=80',
   ],
   'Display': [
     'https://images.unsplash.com/photo-1517059224940-d4af9eec41b7?w=500&auto=format&fit=crop&q=80',
   ],
-  'Motor & Driver': [
+  'Motor': [
     'https://images.unsplash.com/photo-1563770660941-20978e870e26?w=500&auto=format&fit=crop&q=80',
   ],
-  'Power Supply': [
-    'https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=500&auto=format&fit=crop&q=80',
+  'Robotics': [
+    'https://images.unsplash.com/photo-1563770660941-20978e870e26?w=500&auto=format&fit=crop&q=80',
   ],
-  'Relay & Switch': [
+  'Drone': [
+    'https://images.unsplash.com/photo-1507582020474-9a35b7d455d9?w=500&auto=format&fit=crop&q=80',
+  ],
+  'Switch': [
     'https://images.unsplash.com/photo-1610569265279-c9502a63682c?w=500&auto=format&fit=crop&q=80',
   ],
-  'Communication Module': [
-    'https://images.unsplash.com/photo-1562408590-e32931084e23?w=500&auto=format&fit=crop&q=80',
-  ],
-  'Prototyping': [
-    'https://images.unsplash.com/photo-1553406830-ef2513678893?w=500&auto=format&fit=crop&q=80',
+  'Output': [
+    'https://images.unsplash.com/photo-1565814636199-ae8133055c1c?w=500&auto=format&fit=crop&q=80',
   ],
   'Tool': [
     'https://images.unsplash.com/photo-1504148455328-c376907d081c?w=500&auto=format&fit=crop&q=80',
   ],
-  'Passive Component': [
+  'Kit': [
+    'https://images.unsplash.com/photo-1553406830-ef2513678893?w=500&auto=format&fit=crop&q=80',
+  ],
+  'Passive': [
     'https://images.unsplash.com/photo-1591453089816-0fbb971b454c?w=500&auto=format&fit=crop&q=80',
   ],
-  'Semiconductor': [
+  'IC': [
     'https://images.unsplash.com/photo-1518770660439-4636190af475?w=500&auto=format&fit=crop&q=80',
   ],
-  'LED & Lighting': [
-    'https://images.unsplash.com/photo-1565814636199-ae8133055c1c?w=500&auto=format&fit=crop&q=80',
-  ],
-  'Other': [
-    'https://images.unsplash.com/photo-1591453089816-0fbb971b454c?w=500&auto=format&fit=crop&q=80',
-  ]
 };
 
 const getRealisticPrice = (category, name) => {
@@ -149,27 +149,13 @@ const seed = async () => {
       const products = categoryItem.products || [];
 
       for (const prod of products) {
-        // Map category if it is different
         let finalCategory = categoryName;
-        // Map to exact enum values supported by model:
-        // 'Battery', 'Battery Holder', 'Wire', 'Microcontroller', 'Sensor', 'Display',
-        // 'Motor & Driver', 'Power Supply', 'Relay & Switch', 'Communication Module',
-        // 'Prototyping', 'Tool', 'Passive Component', 'Semiconductor', 'LED & Lighting', 'Other'
-        if (categoryName === 'Communication') finalCategory = 'Communication Module';
-        else if (categoryName === 'Motor') finalCategory = 'Motor & Driver';
-        else if (categoryName === 'Switch') finalCategory = 'Relay & Switch';
-        else if (categoryName === 'Output') finalCategory = 'Other';
-        else if (categoryName === 'Robotics') finalCategory = 'Motor & Driver';
-        else if (categoryName === 'Drone') finalCategory = 'Other';
-        else if (categoryName === 'Passive') finalCategory = 'Passive Component';
-        else if (categoryName === 'IC') finalCategory = 'Semiconductor';
-        else if (categoryName === 'Kit') finalCategory = 'Prototyping';
 
         const price = getRealisticPrice(finalCategory, prod.name);
         const stock = Math.floor(Math.random() * 140) + 15; // 15 to 155 units
         
         // Select matching image or default
-        const imgList = CATEGORY_IMAGES[finalCategory] || CATEGORY_IMAGES['Other'];
+        const imgList = CATEGORY_IMAGES[finalCategory] || CATEGORY_IMAGES['Battery'];
         const images = imgList;
 
         productsToInsert.push({

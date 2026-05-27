@@ -34,7 +34,12 @@ function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }, [location.pathname])
 
-  // ── Sync cart from backend whenever user logs in ─────────────────────────────
+  // ── Clear cart immediately when user logs out (token/user become null) ────────
+  useEffect(() => {
+    if (!isLoggedIn) setCart([])
+  }, [isLoggedIn])
+
+  // ── Sync cart from backend on login ───────────────────────────────────────────
   useEffect(() => {
     if (!isLoggedIn) return
     let cancelled = false
@@ -43,23 +48,32 @@ function App() {
         const data = await cartAPI.get()
         if (cancelled) return
         const items = data?.data?.cart?.items || data?.cart?.items || []
-        const mapped = items.map(item => {
-          const product = item.product || {}
-          const specsObj = product.specifications || {}
-          const specs = Object.entries(specsObj).map(([k, v]) => `${k}: ${v}`)
-          return {
-            id: product._id || item.productId,
-            _backendProductId: product._id || item.productId,
-            code: product.id || product._id?.toString().slice(-8).toUpperCase() || 'CPZ-ITEM',
-            title: product.name || 'Component',
-            category: product.category || 'Other',
-            specs,
-            price: item.priceAtTime || product.price || 0,
-            quantity: item.quantity,
-            image: product.images?.length ? product.images[0] : '',
-            status: 'Operational',
-          }
-        })
+        const mapped = items
+          .filter(item => item.productId && item.productId.name)
+          .map(item => {
+            const product = item.productId
+            const price = item.priceAtTime || product.price
+            let rawImage = product.images?.length ? product.images[0] : ''
+            // Rewrite raw R2 URL to local proxy URL
+            if (rawImage.includes('.r2.dev/')) {
+              const key = rawImage.split('.r2.dev/')[1]
+              rawImage = `/api/products/images/${key}`
+            }
+            const specsObj = product.specifications || {}
+            const specs = Object.entries(specsObj).map(([k, v]) => `${k}: ${v}`)
+            return {
+              id: `prod-${product._id}`,
+              _backendProductId: product._id || item.productId,
+              code: product.id || product._id?.toString().slice(-8).toUpperCase() || 'CPZ-ITEM',
+              title: product.name || 'Component',
+              category: product.category || 'Other',
+              specs,
+              price: price > 0 ? price : 0,
+              quantity: item.quantity,
+              image: rawImage,
+              status: 'Operational',
+            }
+          })
         setCart(mapped)
       } catch (err) {
         console.warn('[Cart] Could not fetch backend cart:', err.message)

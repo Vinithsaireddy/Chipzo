@@ -118,7 +118,7 @@ function DesktopHero() {
         scrollTrigger: {
           trigger: sectionRef.current,
           start: 'top top',
-          end: '+=700%',
+          end: '+=350%',
           scrub: 1.2,
           pin: containerRef.current,
           anticipatePin: 1,
@@ -174,11 +174,14 @@ function DesktopHero() {
   )
 }
 
-// Mobile Static Stacked Experience
+// Mobile Static Stacked Experience with Interactive Looping Exploded View Canvas
 function MobileHero() {
   const containerRef = useRef(null)
+  const canvasRef = useRef(null)
   const [activeIndex, setActiveIndex] = useState(0)
   const [dimensions, setDimensions] = useState({ cardWidth: 280, gap: 20 })
+
+  const { render, isLoaded } = useImageSequence({ canvasRef, frameCount: 240 })
 
   const cards = [
     { label: 'RUNNING OUT OF COMPONENTS', accent: "SHOULDN'T STOP A BUILD.", color: 'text-[color:var(--chipzo-primary)]' },
@@ -186,6 +189,26 @@ function MobileHero() {
     { label: 'MICROCONTROLLERS. SENSORS.', accent: 'POWER MODULES.', color: 'text-[color:var(--chipzo-lime)]' },
     { label: 'LESS SEARCHING.', accent: 'MORE BUILDING.', color: 'text-[color:var(--chipzo-lime)]' },
   ]
+
+  // Loop the exploded sequence automatically at 60fps in a smooth ping-pong style
+  useEffect(() => {
+    if (!isLoaded) return
+    let frameId
+    let startTime = Date.now()
+    const duration = 9000 // 9 seconds per full assembly/disassembly cycle
+    
+    const loop = () => {
+      const elapsed = Date.now() - startTime
+      const progress = (elapsed % duration) / duration
+      // Ping-pong style: explode out, then assemble back
+      const pingPong = Math.abs(Math.sin(progress * Math.PI))
+      render(pingPong)
+      frameId = requestAnimationFrame(loop)
+    }
+    
+    frameId = requestAnimationFrame(loop)
+    return () => cancelAnimationFrame(frameId)
+  }, [isLoaded, render])
 
   useEffect(() => {
     const updateDimensions = () => {
@@ -226,41 +249,48 @@ function MobileHero() {
   }
 
   return (
-    <section className="relative w-full bg-[color:var(--chipzo-ink)] pb-12">
-      {/* Hero Banner */}
-      <div className="flex min-h-[80vh] items-center justify-center px-5 pt-28 pb-16 text-center">
+    <section className="relative w-full bg-[color:var(--chipzo-ink)] pb-4 overflow-hidden flex flex-col min-h-screen justify-between">
+      {/* Background Canvas Sequence for Exploded View on Mobile */}
+      <div className="absolute inset-0 z-0 h-full opacity-35 pointer-events-none">
+        <CanvasSequence canvasRef={canvasRef} />
+        {/* Dark overlay blend so neon components pop and text stays perfectly legible */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[color:var(--chipzo-ink)]/10 via-[color:var(--chipzo-ink)]/40 to-[color:var(--chipzo-ink)]" />
+      </div>
+
+      {/* Hero Banner - Merged and Tightened */}
+      <div className="relative z-10 flex flex-col items-center justify-center px-5 pt-24 pb-2 text-center flex-grow">
         <div>
-          <h1 className="text-[clamp(3.8rem,16vw,6rem)] font-black uppercase leading-[0.75] tracking-tighter text-[color:var(--chipzo-paper)]">
+          <h1 className="text-[clamp(3.0rem,12vw,4.5rem)] font-black uppercase leading-[0.8] tracking-tighter text-[color:var(--chipzo-paper)]">
             BUILD<br /><span className="text-[color:var(--chipzo-lime)]">WITHOUT</span><br />WAITING.
           </h1>
-          <p className="mt-6 text-sm font-bold uppercase tracking-widest text-[color:var(--chipzo-primary)]">
+          <p className="mt-3 text-xs font-bold uppercase tracking-widest text-[color:var(--chipzo-primary)]">
             Electronic components delivered in 90–120 minutes.
           </p>
-          <div className="mt-10 flex flex-col items-center gap-3">
+          <div className="mt-5 flex flex-row justify-center gap-3 w-full max-w-xs mx-auto">
             <a
               href="#shop"
-              className="brutal-border brutal-shadow w-full max-w-xs bg-[color:var(--chipzo-primary)] py-4 text-base font-black uppercase text-[color:var(--chipzo-paper)] text-center transition-transform hover:-translate-x-1 hover:-translate-y-1 active:translate-x-0 active:translate-y-0"
+              className="brutal-border brutal-shadow-sm flex-1 bg-[color:var(--chipzo-primary)] py-2.5 text-xs font-black uppercase text-[color:var(--chipzo-paper)] text-center transition-transform hover:-translate-x-1 hover:-translate-y-1 active:translate-x-0 active:translate-y-0"
             >
-              Explore Marketplace
+              Explore
             </a>
-            <button className="border-[3px] border-[color:var(--chipzo-paper)] bg-transparent w-full max-w-xs py-4 text-base font-black uppercase text-[color:var(--chipzo-paper)] text-center hover:bg-[color:var(--chipzo-surface)] hover:text-[color:var(--chipzo-ink)] transition-colors">
-              Join Discord
+            <button className="border-[2px] border-[color:var(--chipzo-paper)] bg-transparent flex-1 py-2.5 text-xs font-black uppercase text-[color:var(--chipzo-paper)] text-center hover:bg-[color:var(--chipzo-surface)] hover:text-[color:var(--chipzo-ink)] transition-colors">
+              Discord
             </button>
           </div>
         </div>
       </div>
 
-      {/* Swipeable Narrative Cards */}
-      <div className="border-t-[3px] border-b-[3px] border-[color:var(--chipzo-paper)]/20 py-8">
-        <div className="flex items-center justify-between px-5 mb-4">
-          <span className="text-xs font-black uppercase tracking-[0.2em] text-[color:var(--chipzo-primary)]">System Narrative</span>
-          <span className="text-xs font-mono font-bold text-[color:var(--chipzo-paper)]/60">
+      {/* Swipeable Narrative Cards - Pulled Up & Compact */}
+      <div className="relative z-10 border-t-2 border-b-2 border-[color:var(--chipzo-paper)]/10 py-4 w-full bg-[color:var(--chipzo-ink)]/60 backdrop-blur-xs">
+        <div className="flex items-center justify-between px-5 mb-2">
+          <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[color:var(--chipzo-primary)]">System Narrative</span>
+          <span className="text-[9px] font-mono font-bold text-[color:var(--chipzo-paper)]/60">
             [SWIPE MODULES]
           </span>
         </div>
         <div 
           ref={containerRef}
-          className="w-full overflow-hidden cursor-grab active:cursor-grabbing pb-6"
+          className="w-full overflow-hidden cursor-grab active:cursor-grabbing pb-3"
         >
           <motion.div
             drag="x"
@@ -282,7 +312,7 @@ function MobileHero() {
             {cards.map((item, i) => (
               <motion.div 
                 key={i} 
-                className="carousel-card shrink-0 w-[85vw] md:w-[45vw] brutal-border brutal-shadow-lg bg-[#131311] p-6 pt-10 text-left relative flex flex-col justify-between min-h-[220px] select-none"
+                className="carousel-card shrink-0 w-[85vw] md:w-[45vw] brutal-border brutal-shadow bg-[#131311] p-4 pt-8 text-left relative flex flex-col justify-between min-h-[160px] select-none"
                 animate={{
                   scale: i === activeIndex ? 1 : 0.96,
                   opacity: i === activeIndex ? 1 : 0.65,
@@ -293,16 +323,16 @@ function MobileHero() {
                   damping: 30,
                 }}
               >
-                <div className="brutal-border absolute -top-4 left-5 bg-[color:var(--chipzo-primary)] px-3 py-1 text-xs font-black text-[color:var(--chipzo-ink)] font-mono select-none">
+                <div className="brutal-border absolute -top-3 left-4 bg-[color:var(--chipzo-primary)] px-2 py-0.5 text-[10px] font-black text-[color:var(--chipzo-ink)] font-mono select-none">
                   MOD-{String(i + 2).padStart(2, '0')}
                 </div>
-                <h2 className="text-[clamp(1.5rem,6vw,2.5rem)] font-black uppercase leading-[0.95] tracking-tighter text-[color:var(--chipzo-paper)] mt-2 select-none">
+                <h2 className="text-sm font-black uppercase leading-[0.95] tracking-tighter text-[color:var(--chipzo-paper)] mt-1 select-none">
                   {item.label}<br />
                   <span className={item.color}>{item.accent}</span>
                 </h2>
-                <div className="mt-6 flex items-center justify-between border-t border-dashed border-[color:var(--chipzo-paper)]/10 pt-4 select-none">
-                  <span className="text-[10px] font-bold tracking-widest text-[color:var(--chipzo-paper)]/40 font-mono">CHIPZO HARDWARE SYSTEM</span>
-                  <span className="text-xs font-bold text-[color:var(--chipzo-lime)] font-mono">✓ ACTIVE</span>
+                <div className="mt-3 flex items-center justify-between border-t border-dashed border-[color:var(--chipzo-paper)]/10 pt-2 select-none">
+                  <span className="text-[8px] font-bold tracking-widest text-[color:var(--chipzo-paper)]/40 font-mono">CHIPZO HARDWARE SYSTEM</span>
+                  <span className="text-[10px] font-bold text-[color:var(--chipzo-lime)] font-mono">✓ ACTIVE</span>
                 </div>
               </motion.div>
             ))}
@@ -310,15 +340,15 @@ function MobileHero() {
         </div>
 
         {/* Visual Swipe Indicators */}
-        <div className="flex justify-center items-center gap-3 mt-4">
+        <div className="flex justify-center items-center gap-2 mt-1">
           {cards.map((_, i) => (
             <button
               key={i}
               onClick={() => setActiveIndex(i)}
-              className={`h-2.5 transition-all duration-300 brutal-border cursor-pointer ${
+              className={`h-2 transition-all duration-300 brutal-border cursor-pointer ${
                 activeIndex === i 
-                  ? 'w-8 bg-[color:var(--chipzo-lime)]' 
-                  : 'w-2.5 bg-[#252521] hover:bg-[#383832]'
+                  ? 'w-6 bg-[color:var(--chipzo-lime)]' 
+                  : 'w-2 bg-[#252521] hover:bg-[#383832]'
               }`}
               aria-label={`Go to slide ${i + 1}`}
             />

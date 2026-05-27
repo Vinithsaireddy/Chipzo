@@ -1,7 +1,8 @@
 import SmoothScroll from '../components/SmoothScroll.jsx'
 import Navbar from '../components/Navbar.jsx'
 import HeroScrollExperience from '../components/HeroScrollExperience.jsx'
-import ProductGrid from '../components/ProductGrid.jsx'
+import CategoryShowcase from '../components/CategoryShowcase.jsx'
+import StudentOfferBanner from '../components/StudentOfferBanner.jsx'
 import HowItWorks from '../components/HowItWorks.jsx'
 import RoboticsSection from '../components/RoboticsSection.jsx'
 import Footer from '../components/Footer.jsx'
@@ -14,8 +15,9 @@ export default function Home({ onNavigate, activeCategory, cartCount, onAddToCar
         <main>
           <HeroScrollExperience />
           <section id="shop">
-            <ProductGrid onNavigate={onNavigate} onAddToCart={onAddToCart} />
+            <CategoryShowcase onNavigate={onNavigate} />
           </section>
+          <StudentOfferBanner />
           <HowItWorks />
           <RoboticsSection />
         </main>

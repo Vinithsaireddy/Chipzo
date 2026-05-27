@@ -1,7 +1,7 @@
 import { useMemo, useRef, useEffect, useState } from 'react'
 
 const buildFrameList = (count, isMobile) => {
-  const step = isMobile ? 2 : 1
+  const step = isMobile ? 4 : 1
   const frames = []
   for (let i = 1; i <= count; i += step) {
     frames.push(`/sequence/arduino-nano-exploded/ezgif-frame-${String(i).padStart(3, '0')}.jpg`)
@@ -63,9 +63,10 @@ export default function useImageSequence({
       return
     }
 
-    const width = window.innerWidth
-    const height = window.innerHeight
-    const ratio = Math.min(window.devicePixelRatio || 1, 2)
+    const parent = canvas.parentElement;
+    const width = parent ? parent.clientWidth : window.innerWidth
+    const height = parent ? parent.clientHeight : window.innerHeight
+    const ratio = Math.min(window.devicePixelRatio || 1, 1.5) // Constrain device pixel ratio to 1.5 on mobile/retina to boost performance
 
     const scale = Math.min(width / frame.naturalWidth, height / frame.naturalHeight) * 1.18
     const renderWidth = frame.naturalWidth * scale
@@ -83,7 +84,19 @@ export default function useImageSequence({
     context.imageSmoothingQuality = 'high'
     context.fillStyle = '#F1F1EF'
     context.fillRect(0, 0, width, height)
-    context.drawImage(frame, x, y, renderWidth, renderHeight)
+    
+    if (isMobile) {
+      // Rotate 90 degrees on mobile portrait screens to fit the board vertically
+      context.translate(width / 2, height / 2)
+      context.rotate(Math.PI / 2)
+      // Adjust scale to fit the vertical space nicely
+      const mobileScale = Math.min(height / frame.naturalWidth, width / frame.naturalHeight) * 1.15
+      const mWidth = frame.naturalWidth * mobileScale
+      const mHeight = frame.naturalHeight * mobileScale
+      context.drawImage(frame, -mWidth / 2, -mHeight / 2, mWidth, mHeight)
+    } else {
+      context.drawImage(frame, x, y, renderWidth, renderHeight)
+    }
   }
 
   return { render, isLoaded }

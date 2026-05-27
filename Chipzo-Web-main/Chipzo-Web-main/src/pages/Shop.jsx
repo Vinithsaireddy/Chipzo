@@ -7,16 +7,22 @@ import { productsAPI } from '../services/api.js'
 
 const SHOP_CATEGORIES = [
   { label: 'All Categories', value: '' },
-  { label: 'Sensors', value: 'Sensor' },
-  { label: 'Motors', value: 'Motor & Driver' },
-  { label: 'Microcontrollers', value: 'Microcontroller' },
-  { label: 'Power Supply', value: 'Power Supply' },
-  { label: 'Batteries', value: 'Battery' },
-  { label: 'Modules', value: 'Communication Module' },
-  { label: 'Drivers', value: 'Motor & Driver' },
-  { label: 'IoT Components', value: 'Communication Module' },
-  { label: 'Tools', value: 'Tool' },
-  { label: 'Accessories', value: 'Other' },
+  { label: 'Battery', value: 'Battery' },
+  { label: 'Battery Holder', value: 'Battery Holder' },
+  { label: 'Wire', value: 'Wire' },
+  { label: 'Microcontroller', value: 'Microcontroller' },
+  { label: 'Communication', value: 'Communication' },
+  { label: 'Sensor', value: 'Sensor' },
+  { label: 'Display', value: 'Display' },
+  { label: 'Motor', value: 'Motor' },
+  { label: 'Robotics', value: 'Robotics' },
+  { label: 'Drone', value: 'Drone' },
+  { label: 'Switch', value: 'Switch' },
+  { label: 'Output', value: 'Output' },
+  { label: 'Tool', value: 'Tool' },
+  { label: 'Kit', value: 'Kit' },
+  { label: 'Passive', value: 'Passive' },
+  { label: 'IC', value: 'IC' },
 ]
 
 const announcements = [
@@ -35,16 +41,6 @@ function mapProduct(p) {
   const voltageMin = voltageEntry ? parseFloat(voltageEntry[1]) || 0 : 0
   const voltageMax = voltageMin
 
-  let interfaces = p.interfaces && p.interfaces.length > 0 ? p.interfaces : []
-  if (interfaces.length === 0) {
-    const interfaceEntry = Object.entries(specsObj).find(([k]) =>
-      k.toLowerCase().includes('interface') || k.toLowerCase().includes('protocol')
-    )
-    interfaces = interfaceEntry
-      ? [interfaceEntry[1]]
-      : (p.category?.toLowerCase().includes('wireless') ? ['UART'] : ['I2C'])
-  }
-
   const stockLabel = p.stock > 10 ? 'In Stock' : p.stock > 0 ? 'Low Stock' : 'Out of Stock'
   const statusLabel = p.stock > 10 ? 'IN_STOCK' : p.stock > 0 ? 'HOT_ITEM' : 'PREORDER'
   const tones = ['primary', 'lime', 'ink']
@@ -60,7 +56,6 @@ function mapProduct(p) {
     category: p.category || 'Other',
     description: p.description || '',
     specs: specs.length ? specs : ['See product page'],
-    interfaces,
     price: `₹${Number(p.price || 0).toFixed(2)}`,
     priceNum: Number(p.price || 0),
     note: p.minOrderQuantity > 1 ? `Min ${p.minOrderQuantity} Units` : 'Active Stock',
@@ -120,7 +115,6 @@ export default function Shop({ onNavigate, activeCategory, setActiveCategory, ca
   const [totalPages, setTotalPages]   = useState(1)
   const [totalCount, setTotalCount]   = useState(0)
   const [prevActiveCategory, setPrevActiveCategory] = useState(activeCategory)
-  const [activeProtocols, setActiveProtocols] = useState([])
   const [minVoltage, setMinVoltage]   = useState('0')
   const [maxVoltage, setMaxVoltage]   = useState('12')
   const [search, setSearch]           = useState(() => new URLSearchParams(location.search).get('search') || '')
@@ -176,21 +170,10 @@ export default function Shop({ onNavigate, activeCategory, setActiveCategory, ca
     setMinVoltage('0')
     setMaxVoltage('12')
     setCurrentPage(1)
-    if (activeCategory === 'Sensor') {
-      setActiveProtocols(['I2C', 'SPI'])
-    } else {
-      setActiveProtocols([])
-    }
   }
 
-  // Client-side voltage/protocol filter on top of server-fetched results
+  // Client-side voltage filter on top of server-fetched results
   const filteredProducts = products.filter((product) => {
-    if (activeProtocols.length > 0) {
-      const matchesProtocol = activeProtocols.some((protocol) =>
-        product.interfaces.includes(protocol)
-      )
-      if (!matchesProtocol) return false
-    }
     if (minVoltage !== '') {
       const minV = parseFloat(minVoltage)
       if (!isNaN(minV) && product.voltageMax < minV) return false
@@ -201,6 +184,30 @@ export default function Shop({ onNavigate, activeCategory, setActiveCategory, ca
     }
     return true
   })
+
+  // Generate dynamic pagination range centered around currentPage
+  const getPaginationRange = () => {
+    const maxDesktop = 5
+    if (totalPages <= maxDesktop) {
+      return Array.from({ length: totalPages }, (_, i) => i + 1)
+    }
+    
+    let start = Math.max(1, currentPage - 2)
+    let end = Math.min(totalPages, start + maxDesktop - 1)
+    
+    if (end - start + 1 < maxDesktop) {
+      start = Math.max(1, end - maxDesktop + 1)
+    }
+    
+    return Array.from({ length: end - start + 1 }, (_, i) => start + i)
+  }
+
+  const isPageVisibleOnMobile = (page) => {
+    if (totalPages <= 3) return true
+    if (currentPage <= 2) return page <= 3
+    if (currentPage >= totalPages - 1) return page >= totalPages - 2
+    return Math.abs(page - currentPage) <= 1
+  }
 
   return (
     <SmoothScroll>
@@ -298,10 +305,10 @@ export default function Shop({ onNavigate, activeCategory, setActiveCategory, ca
                   </div>
                 </div>
 
-                {/* Voltage + Protocols (right) */}
-                <div className="flex flex-wrap items-stretch divide-x-[3px] divide-[color:var(--chipzo-ink)]">
+                {/* Voltage Limits (right) */}
+                <div className="flex flex-wrap items-stretch">
                   {/* Voltage Range Limits */}
-                  <div className="flex flex-col justify-center px-3 py-2.5 lg:px-4">
+                  <div className="flex flex-col justify-center px-4 py-2.5 lg:px-6">
                     <p className="mb-1 text-[8px] font-black uppercase tracking-[0.16em] text-[color:var(--chipzo-muted)]">Voltage Limits (V)</p>
                     <div className="flex items-center gap-1.5">
                       <div className="flex items-center border-[2px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-paper)] h-[28px] focus-within:border-[color:var(--chipzo-primary)] transition-all">
@@ -329,38 +336,6 @@ export default function Shop({ onNavigate, activeCategory, setActiveCategory, ca
                       </div>
                     </div>
                   </div>
-
-                  {/* Interface Protocols */}
-                  <div className="flex flex-col justify-center px-3 py-2.5 lg:px-4 lg:pr-6">
-                    <p className="mb-1 text-[8px] font-black uppercase tracking-[0.16em] text-[color:var(--chipzo-muted)]">Interface Protocols</p>
-                    <div className="flex gap-1">
-                      {['I2C', 'SPI', 'UART', 'CAN'].map((protocol) => {
-                        const isActive = activeProtocols.includes(protocol)
-                        return (
-                          <button
-                            key={protocol}
-                            type="button"
-                            onClick={() => {
-                              setCurrentPage(1)
-                              if (isActive) {
-                                setActiveProtocols(activeProtocols.filter((p) => p !== protocol))
-                              } else {
-                                setActiveProtocols([...activeProtocols, protocol])
-                              }
-                            }}
-                            className={[
-                              'border-[2px] px-2 py-1 text-[9px] font-black uppercase tracking-[0.1em] transition-all shadow-[1px_1px_0_var(--chipzo-ink)] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none cursor-pointer',
-                              isActive
-                                ? 'border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-ink)] text-[color:var(--chipzo-paper)]'
-                                : 'border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-paper)] text-[color:var(--chipzo-ink)] hover:bg-[color:var(--chipzo-lime)]',
-                            ].join(' ')}
-                          >
-                            {protocol}
-                          </button>
-                        )
-                      })}
-                    </div>
-                  </div>
                 </div>
 
               </div>
@@ -380,7 +355,7 @@ export default function Shop({ onNavigate, activeCategory, setActiveCategory, ca
                     FILTER_CHAIN:
                   </span>
                   
-                  {(!search && !activeCategory && activeProtocols.length === 0 && minVoltage === '0' && maxVoltage === '12') ? (
+                  {(!search && !activeCategory && minVoltage === '0' && maxVoltage === '12') ? (
                     <span className="text-[9px] font-black uppercase tracking-[0.1em] text-[color:var(--chipzo-lime)] border border-dashed border-[color:var(--chipzo-lime)] px-2 py-0.5">
                       PASS_THRU (NO ACTIVE FILTERS)
                     </span>
@@ -418,25 +393,15 @@ export default function Shop({ onNavigate, activeCategory, setActiveCategory, ca
                           VOLTS: {minVoltage}V - {maxVoltage}V <span className="text-[9px]">✖</span>
                         </button>
                       )}
-                      {activeProtocols.map(proto => (
-                        <button
-                          key={proto}
-                          onClick={() => setActiveProtocols(activeProtocols.filter(p => p !== proto))}
-                          className="flex items-center gap-1 border border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-paper)] px-2 py-0.5 text-[8px] font-bold uppercase tracking-[0.05em] hover:bg-[color:var(--chipzo-primary)] hover:text-[color:var(--chipzo-paper)]"
-                        >
-                          PROTO: {proto} <span className="text-[9px]">✖</span>
-                        </button>
-                      ))}
                     </div>
                   )}
                 </div>
 
-                {(!search && !activeCategory && activeProtocols.length === 0 && minVoltage === '0' && maxVoltage === '12') ? null : (
+                {(!search && !activeCategory && minVoltage === '0' && maxVoltage === '12') ? null : (
                   <button
                     type="button"
                     onClick={() => {
                       setActiveCategory('')
-                      setActiveProtocols([])
                       setMinVoltage('0')
                       setMaxVoltage('12')
                       setSearch('')
@@ -495,7 +460,6 @@ export default function Shop({ onNavigate, activeCategory, setActiveCategory, ca
                     type="button"
                     onClick={() => {
                       setActiveCategory('')
-                      setActiveProtocols([])
                       setMinVoltage('0')
                       setMaxVoltage('12')
                       setSearch('')
@@ -576,11 +540,10 @@ export default function Shop({ onNavigate, activeCategory, setActiveCategory, ca
             {!isLoading && !apiError && (
             <div className="hidden lg:block overflow-x-auto brutal-border brutal-shadow bg-[color:var(--chipzo-surface)]">
               <div className="min-w-[1120px]">
-                <div className="grid grid-cols-[120px_2fr_1.2fr_0.9fr_0.8fr_140px] border-b-[3px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-ink)] text-xs font-black uppercase tracking-[0.16em] text-[color:var(--chipzo-paper)]">
+                <div className="grid grid-cols-[120px_2fr_1.5fr_1fr_140px] border-b-[3px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-ink)] text-xs font-black uppercase tracking-[0.16em] text-[color:var(--chipzo-paper)]">
                   <div className="border-r-[2px] border-[color:var(--chipzo-paper)]/20 px-3 py-3">Schematic</div>
                   <div className="border-r-[2px] border-[color:var(--chipzo-paper)]/20 px-4 py-3">Part Number / Description</div>
                   <div className="border-r-[2px] border-[color:var(--chipzo-paper)]/20 px-4 py-3">Specs (V/A/O)</div>
-                  <div className="border-r-[2px] border-[color:var(--chipzo-paper)]/20 px-4 py-3">Interface</div>
                   <div className="border-r-[2px] border-[color:var(--chipzo-paper)]/20 px-4 py-3">Price (Unit)</div>
                   <div className="px-3 py-3">Action</div>
                 </div>
@@ -590,13 +553,12 @@ export default function Shop({ onNavigate, activeCategory, setActiveCategory, ca
                     <p className="text-xs font-black uppercase tracking-[0.2em] text-[color:var(--chipzo-primary)]">Zero Results</p>
                     <h3 className="mt-2 text-2xl font-black uppercase tracking-[-0.03em] text-[color:var(--chipzo-ink)]">No Components Match Your Schema</h3>
                     <p className="mt-2 max-w-[45ch] text-xs font-medium leading-relaxed text-[color:var(--chipzo-muted)]">
-                      Adjust your category, protocol, or voltage filters.
+                      Adjust your category or voltage filters.
                     </p>
                     <button
                       type="button"
                       onClick={() => {
                         setActiveCategory('')
-                        setActiveProtocols([])
                         setMinVoltage('0')
                         setMaxVoltage('12')
                         setSearch('')
@@ -615,7 +577,7 @@ export default function Shop({ onNavigate, activeCategory, setActiveCategory, ca
                     <div
                       key={product.id}
                       className={[
-                        'grid grid-cols-[120px_2fr_1.2fr_0.9fr_0.8fr_140px] items-stretch bg-[color:var(--chipzo-paper)] transition-colors hover:bg-[color:var(--chipzo-surface)]',
+                        'grid grid-cols-[120px_2fr_1.5fr_1fr_140px] items-stretch bg-[color:var(--chipzo-paper)] transition-colors hover:bg-[color:var(--chipzo-surface)]',
                         index < filteredProducts.length - 1 ? 'border-b-[2px] border-[color:var(--chipzo-rule)]' : '',
                       ].join(' ')}
                     >
@@ -639,16 +601,6 @@ export default function Shop({ onNavigate, activeCategory, setActiveCategory, ca
                             <div key={spec} className="text-[color:var(--chipzo-ink)]">
                               {spec}
                             </div>
-                          ))}
-                        </div>
-                      </div>
-
-                      <div className="border-r-[2px] border-[color:var(--chipzo-rule)] px-4 py-4">
-                        <div className="flex flex-wrap gap-1.5">
-                          {product.interfaces.map((item) => (
-                            <span key={item} className="border border-[color:var(--chipzo-rule)] bg-[color:var(--chipzo-paper)] px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.12em] text-[color:var(--chipzo-muted)]">
-                              {item}
-                            </span>
                           ))}
                         </div>
                       </div>
@@ -692,22 +644,23 @@ export default function Shop({ onNavigate, activeCategory, setActiveCategory, ca
                 {isLoading ? 'Loading...' : `${totalCount} RESULTS`}
               </div>
 
-              <div className="flex items-center justify-center gap-2">
+              <div className="flex flex-wrap items-center justify-center gap-1 sm:gap-2">
                 <button
                   type="button"
                   disabled={currentPage <= 1}
                   onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                  className="border-[3px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-paper)] px-3 py-2 text-xs font-black uppercase tracking-[0.14em] transition-colors hover:bg-[color:var(--chipzo-ink)] hover:text-[color:var(--chipzo-paper)] focus:outline-none disabled:opacity-40 disabled:cursor-not-allowed"
+                  className="h-10 border-[3px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-paper)] px-2 sm:px-3 py-1.5 sm:py-2 text-[10px] sm:text-xs font-black uppercase tracking-[0.05em] sm:tracking-[0.14em] transition-colors hover:bg-[color:var(--chipzo-ink)] hover:text-[color:var(--chipzo-paper)] focus:outline-none disabled:opacity-40 disabled:cursor-not-allowed"
                 >
-                  <span className="inline-flex items-center gap-1"><ChevronLeft size={14} /> Prev</span>
+                  <span className="inline-flex items-center gap-0.5 sm:gap-1"><ChevronLeft size={12} /> Prev</span>
                 </button>
-                {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => i + 1).map((page) => (
+                {getPaginationRange().map((page) => (
                   <button
                     key={page}
                     type="button"
                     onClick={() => setCurrentPage(page)}
                     className={[
-                      'h-10 min-w-10 border-[3px] px-3 text-xs font-black transition-colors focus:outline-none focus:ring-2 focus:ring-[color:var(--chipzo-primary)] focus:ring-offset-1',
+                      'h-10 w-8 sm:w-10 min-w-8 sm:min-w-10 border-[3px] px-1 sm:px-3 text-[10px] sm:text-xs font-black transition-colors focus:outline-none focus:ring-2 focus:ring-[color:var(--chipzo-primary)] focus:ring-offset-1 justify-center items-center',
+                      isPageVisibleOnMobile(page) ? 'inline-flex' : 'hidden sm:inline-flex',
                       currentPage === page
                         ? 'border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-ink)] text-[color:var(--chipzo-paper)]'
                         : 'border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-paper)] text-[color:var(--chipzo-ink)] hover:bg-[color:var(--chipzo-surface)]',
@@ -716,12 +669,12 @@ export default function Shop({ onNavigate, activeCategory, setActiveCategory, ca
                     {page}
                   </button>
                 ))}
-                {totalPages > 5 && <span className="px-1 text-xs font-black uppercase tracking-[0.16em] text-[color:var(--chipzo-muted)]">...</span>}
+                {totalPages > 5 && <span className="hidden sm:inline-block px-1 text-[10px] sm:text-xs font-black uppercase tracking-[0.16em] text-[color:var(--chipzo-muted)]">...</span>}
                 {totalPages > 5 && (
                   <button
                     type="button"
                     onClick={() => setCurrentPage(totalPages)}
-                    className="h-10 min-w-10 border-[3px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-paper)] px-3 text-xs font-black hover:bg-[color:var(--chipzo-surface)] focus:outline-none"
+                    className="hidden sm:inline-flex h-10 w-8 sm:w-10 min-w-8 sm:min-w-10 border-[3px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-paper)] px-1 sm:px-3 text-[10px] sm:text-xs font-black hover:bg-[color:var(--chipzo-surface)] focus:outline-none items-center justify-center"
                   >
                     {totalPages}
                   </button>
@@ -730,9 +683,9 @@ export default function Shop({ onNavigate, activeCategory, setActiveCategory, ca
                   type="button"
                   disabled={currentPage >= totalPages}
                   onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-                  className="border-[3px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-paper)] px-3 py-2 text-xs font-black uppercase tracking-[0.14em] transition-colors hover:bg-[color:var(--chipzo-ink)] hover:text-[color:var(--chipzo-paper)] focus:outline-none disabled:opacity-40 disabled:cursor-not-allowed"
+                  className="h-10 border-[3px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-paper)] px-2 sm:px-3 py-1.5 sm:py-2 text-[10px] sm:text-xs font-black uppercase tracking-[0.05em] sm:tracking-[0.14em] transition-colors hover:bg-[color:var(--chipzo-ink)] hover:text-[color:var(--chipzo-paper)] focus:outline-none disabled:opacity-40 disabled:cursor-not-allowed"
                 >
-                  <span className="inline-flex items-center gap-1">Next <ChevronRight size={14} /></span>
+                  <span className="inline-flex items-center gap-0.5 sm:gap-1">Next <ChevronRight size={12} /></span>
                 </button>
               </div>
 

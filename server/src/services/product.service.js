@@ -31,15 +31,28 @@ const getPaginatedProducts = async (queryParams) => {
 
   // Regex search across name, description, category, interfaces
   if (search) {
-    const escaped = search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    const regex = new RegExp(escaped, 'i');
-    filter.$or = [
-      { name: { $regex: regex } },
-      { description: { $regex: regex } },
-      { category: { $regex: regex } },
-      { interfaces: { $regex: regex } },
-    ];
+    const terms = search.split(/\s+/).filter(Boolean);
+    if (terms.length > 0) {
+      filter.$and = terms.map(term => {
+        const escaped = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        let pattern = escaped;
+        if (/lipo/i.test(term)) {
+          pattern = 'li-?po';
+        } else if (/li-po/i.test(term)) {
+          pattern = 'li-?po';
+        }
+        return {
+          $or: [
+            { name: { $regex: pattern, $options: 'i' } },
+            { description: { $regex: pattern, $options: 'i' } },
+            { category: { $regex: pattern, $options: 'i' } },
+            { interfaces: { $regex: pattern, $options: 'i' } },
+          ]
+        };
+      });
+    }
   }
+  console.log("EXEC_QUERY_FILTER:", JSON.stringify(filter));
 
   // Category filter (exact match)
   if (category) {

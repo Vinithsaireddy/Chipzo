@@ -11,10 +11,10 @@ import { useAuth } from '../contexts/AuthContext.jsx'
 import { productsAPI, ordersAPI } from '../services/api.js'
 
 const BACKEND_CATEGORIES = [
-  'Battery', 'Battery Holder', 'Wire', 'Sensor', 'Display',
-  'Microcontroller', 'Motor & Driver', 'Power Supply',
-  'Relay & Switch', 'Communication Module', 'Prototyping',
-  'Tool', 'Passive Component', 'Semiconductor', 'LED & Lighting', 'Other',
+  'Battery', 'Battery Holder', 'Wire', 'Microcontroller',
+  'Communication', 'Sensor', 'Display', 'Motor',
+  'Robotics', 'Drone', 'Switch', 'Output',
+  'Tool', 'Kit', 'Passive', 'IC',
 ]
 
 export default function Admin() {
@@ -45,7 +45,6 @@ export default function Admin() {
     category: 'Microcontroller',
     description: '',
     specifications: [], // array of { key: '', value: '' }
-    interfaces: [],     // array of strings
     imageMode: 'url',   // 'url' or 'upload'
     imageUrl: '',
     imageFile: null,
@@ -218,7 +217,6 @@ export default function Admin() {
         category: prod.category || 'Microcontroller',
         description: prod.description || '',
         specifications: specsArray,
-        interfaces: prod.interfaces || [],
         imageMode: 'url',
         imageUrl: prod.images && prod.images.length > 0 ? prod.images[0] : '',
         imageFile: null,
@@ -235,7 +233,6 @@ export default function Admin() {
         category: 'Microcontroller',
         description: '',
         specifications: [],
-        interfaces: [],
         imageMode: 'url',
         imageUrl: '',
         imageFile: null,
@@ -266,16 +263,6 @@ export default function Admin() {
       ...prev,
       specifications: prev.specifications.filter((_, i) => i !== index)
     }))
-  }
-
-  const handleInterfaceToggle = (proto) => {
-    setFormData(prev => {
-      const active = prev.interfaces.includes(proto)
-      const next = active 
-        ? prev.interfaces.filter(p => p !== proto) 
-        : [...prev.interfaces, proto]
-      return { ...prev, interfaces: next }
-    })
   }
 
   // --- Image Upload Handling ---
@@ -339,7 +326,6 @@ export default function Admin() {
         bodyFormData.append('category', formData.category)
         bodyFormData.append('description', formData.description.trim())
         bodyFormData.append('specifications', JSON.stringify(specsObj))
-        bodyFormData.append('interfaces', JSON.stringify(formData.interfaces))
         bodyFormData.append('isFeatured', formData.isFeatured)
         bodyFormData.append('images', formData.imageFile)
         
@@ -357,7 +343,6 @@ export default function Admin() {
           category: formData.category,
           description: formData.description.trim(),
           specifications: specsObj,
-          interfaces: formData.interfaces,
           isFeatured: formData.isFeatured,
           images: formData.imageUrl.trim() ? [formData.imageUrl.trim()] : []
         }
@@ -675,7 +660,7 @@ TOTAL OUTFLOW:        ₹${order.totalAmount.toFixed(2)} INR
             <p className="text-xs font-bold uppercase tracking-widest text-[color:var(--chipzo-muted)] mt-1.5">
               {activeTab === 'dashboard' && 'Live diagnostic metrics and active inventory indicators.'}
               {activeTab === 'manage' && 'Register, edit, or purge components from global index.'}
-              {activeTab === 'add' && 'Provide parameters, images, specs, and interfaces.'}
+              {activeTab === 'add' && 'Provide parameters, images, and technical specs.'}
               {activeTab === 'orders' && 'Supervise dynamic payment clearing and logistics tracking.'}
               {activeTab === 'users' && 'Inspect credential directories and client access list.'}
               {activeTab === 'settings' && 'Adjust API base routing and delivery mode toggles.'}
@@ -1182,30 +1167,6 @@ TOTAL OUTFLOW:        ₹${order.totalAmount.toFixed(2)} INR
                   </div>
                 </div>
 
-              </div>
-
-              {/* Protocol Interfaces Checklist */}
-              <div>
-                <p className="text-[10px] font-black uppercase tracking-widest text-[color:var(--chipzo-ink)] mb-3">Protocol Interfaces (Multiple Options)</p>
-                <div className="flex flex-wrap gap-2.5">
-                  {['I2C', 'SPI', 'UART', 'CAN', 'USB', 'Bluetooth', 'WiFi', 'Analog', 'GPIO'].map((proto) => {
-                    const isActive = formData.interfaces.includes(proto)
-                    return (
-                      <button
-                        key={proto}
-                        type="button"
-                        onClick={() => handleInterfaceToggle(proto)}
-                        className={`border-[2px] px-3 py-1.5 text-[9px] font-black uppercase tracking-[0.1em] transition-all shadow-[2px_2px_0_var(--chipzo-ink)] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none cursor-pointer ${
-                          isActive
-                            ? 'border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-ink)] text-[color:var(--chipzo-paper)]'
-                            : 'border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-paper)] text-[color:var(--chipzo-ink)] hover:bg-[color:var(--chipzo-lime)]'
-                        }`}
-                      >
-                        {proto}
-                      </button>
-                    )
-                  })}
-                </div>
               </div>
 
               {/* Flexible Specifications Manager */}
