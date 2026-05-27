@@ -24,6 +24,7 @@ function App() {
   const [completedOrder, setCompletedOrder] = useState(null)
   const [paymentError, setPaymentError] = useState(null)
   const [cart, setCart] = useState([])
+  const [isCartLoading, setIsCartLoading] = useState(true)
   const [toastProduct, setToastProduct] = useState(null)
 
   const PROTECTED_PATHS = ['/checkout', '/profile', '/orders']
@@ -41,8 +42,9 @@ function App() {
 
   // ── Sync cart from backend on login ───────────────────────────────────────────
   useEffect(() => {
-    if (!isLoggedIn) return
+    if (!isLoggedIn) { setIsCartLoading(false); return }
     let cancelled = false
+    setIsCartLoading(true)
     ;(async () => {
       try {
         const data = await cartAPI.get()
@@ -77,6 +79,8 @@ function App() {
         setCart(mapped)
       } catch (err) {
         console.warn('[Cart] Could not fetch backend cart:', err.message)
+      } finally {
+        if (!cancelled) setIsCartLoading(false)
       }
     })()
     return () => { cancelled = true }
@@ -220,6 +224,7 @@ function App() {
             onNavigate={handleNavigate}
             activeCategory={activeCategory}
             cart={cart}
+            isCartLoading={isCartLoading}
             onUpdateQuantity={handleUpdateQuantity}
             onRemoveFromCart={handleRemoveFromCart}
             onAddToCart={handleAddToCart}

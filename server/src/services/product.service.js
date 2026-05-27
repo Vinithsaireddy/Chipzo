@@ -128,17 +128,24 @@ const createProduct = async (productData) => {
  * @param {object}  updates
  */
 const updateProduct = async (productId, updates) => {
-  const { _prependImages, ...setFields } = updates;
+  const { _replaceImages, ...setFields } = updates;
 
   const mongoUpdate = {};
+
+  // When new images are uploaded, replace the entire images array
+  if (_replaceImages && _replaceImages.length > 0) {
+    setFields.images = _replaceImages;
+  }
 
   if (Object.keys(setFields).length > 0) {
     mongoUpdate.$set = setFields;
   }
 
-  if (_prependImages && _prependImages.length > 0) {
-    mongoUpdate.$push = { images: { $each: _prependImages, $position: 0 } };
+  console.log('[UPDATE_PRODUCT_SERVICE] setFields keys:', Object.keys(setFields));
+  if (setFields.images) {
+    console.log('[UPDATE_PRODUCT_SERVICE] images in $set:', JSON.stringify(setFields.images));
   }
+  console.log('[UPDATE_PRODUCT_SERVICE] mongoUpdate:', JSON.stringify(mongoUpdate));
 
   const product = await Product.findByIdAndUpdate(productId, mongoUpdate, {
     new: true,

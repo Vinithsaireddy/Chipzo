@@ -133,6 +133,10 @@ const createProduct = asyncHandler(async (req, res) => {
 const updateProduct = asyncHandler(async (req, res) => {
   const updates = { ...req.body };
 
+  console.log('[UPDATE_PRODUCT] Incoming body keys:', Object.keys(req.body));
+  console.log('[UPDATE_PRODUCT] images field:', req.body.images);
+  console.log('[UPDATE_PRODUCT] req.files:', req.files?.length, 'files');
+
   // Coerce multipart strings
   if (updates.price !== undefined && updates.price !== null) {
     updates.price = parseFloat(updates.price);
@@ -150,14 +154,16 @@ const updateProduct = asyncHandler(async (req, res) => {
     updates.interfaces = JSON.parse(updates.interfaces);
   }
 
-  // Upload new images (if any) and make them the primary product images.
+  // Upload new images (if any) and replace the existing images array.
   if (req.files && req.files.length > 0) {
     const newUrls = [];
     for (const file of req.files) {
       const { url } = await cloudflareService.uploadImage(file);
       newUrls.push(url);
     }
-    updates._prependImages = newUrls;
+    updates._replaceImages = newUrls;
+    // Remove images from body to avoid double-setting
+    delete updates.images;
   }
 
   const product = await productService.updateProduct(req.params.id, updates);

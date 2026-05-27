@@ -222,6 +222,7 @@ export default function Admin() {
         imageFile: null,
         imagePreview: prod.images && prod.images.length > 0 ? prod.images[0] : '',
         isFeatured: prod.isFeatured || false,
+        existingImages: prod.images || [],
       })
       setEditingProduct(prod)
       setActiveTab('add')
@@ -238,6 +239,7 @@ export default function Admin() {
         imageFile: null,
         imagePreview: '',
         isFeatured: false,
+        existingImages: [],
       })
       setEditingProduct(null)
     }
@@ -314,7 +316,7 @@ export default function Admin() {
       })
 
       const usesUpload = formData.imageMode === 'upload' && formData.imageFile
-      
+
       let payload
       let headers = {}
 
@@ -328,7 +330,7 @@ export default function Admin() {
         bodyFormData.append('specifications', JSON.stringify(specsObj))
         bodyFormData.append('isFeatured', formData.isFeatured)
         bodyFormData.append('images', formData.imageFile)
-        
+
         const slug = formData.name.trim().toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '')
         bodyFormData.append('id', slug)
 
@@ -344,9 +346,16 @@ export default function Admin() {
           description: formData.description.trim(),
           specifications: specsObj,
           isFeatured: formData.isFeatured,
-          images: formData.imageUrl.trim() ? [formData.imageUrl.trim()] : []
         }
-        
+
+        // Only send images if user explicitly provided a URL (never send empty array which wipes existing)
+        if (formData.imageUrl.trim()) {
+          bodyJSON.images = [formData.imageUrl.trim()]
+        } else if (!editingProduct) {
+          bodyJSON.images = []
+        }
+        // When editing and imageUrl is empty, omit images entirely to preserve existing ones
+
         payload = JSON.stringify(bodyJSON)
         headers = { 'Content-Type': 'application/json' }
       }
