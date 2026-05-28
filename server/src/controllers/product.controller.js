@@ -2,42 +2,10 @@
 
 const productService = require('../services/product.service');
 const cloudflareService = require('../services/cloudflare.service');
-const env = require('../config/env');
 const ApiResponse = require('../utils/ApiResponse');
 const ApiError = require('../utils/ApiError');
 const asyncHandler = require('../utils/asyncHandler');
-
-const publicImageBase = (() => {
-  try {
-    return new URL(env.CLOUDFLARE_PUBLIC_URL);
-  } catch (error) {
-    return null;
-  }
-})();
-
-const rewriteImageUrl = (imageUrl) => {
-  if (!imageUrl || !publicImageBase) {
-    return imageUrl;
-  }
-
-  try {
-    const parsedUrl = new URL(imageUrl);
-    if (parsedUrl.origin !== publicImageBase.origin) {
-      return imageUrl;
-    }
-
-    const basePath = publicImageBase.pathname.replace(/\/+$/, '');
-    const imagePath = parsedUrl.pathname;
-    const relativePath = basePath && imagePath.startsWith(basePath)
-      ? imagePath.slice(basePath.length)
-      : imagePath;
-    const key = relativePath.replace(/^\/+/, '');
-
-    return key ? `/api/products/images/${key}` : imageUrl;
-  } catch (error) {
-    return imageUrl;
-  }
-};
+const { getFileName } = require('../utils/imageHelper');
 
 const serializeProduct = (product) => {
   if (!product) {
@@ -46,7 +14,7 @@ const serializeProduct = (product) => {
 
   return {
     ...product,
-    images: Array.isArray(product.images) ? product.images.map(rewriteImageUrl) : [],
+    images: Array.isArray(product.images) ? product.images : [],
   };
 };
 
@@ -109,17 +77,16 @@ const createProduct = asyncHandler(async (req, res) => {
     productData.interfaces = JSON.parse(productData.interfaces);
   }
 
-  // Upload any attached images to Cloudflare R2
-  const uploadedUrls = [];
+  const uploadedFiles = [];
   if (req.files && req.files.length > 0) {
     for (const file of req.files) {
-      const { url } = await cloudflareService.uploadImage(file);
-      uploadedUrls.push(url);
+      const { fileName } = await cloudflareService.uploadImage(file);
+      uploadedFiles.push(fileName);
     }
   }
 
-  if (uploadedUrls.length > 0) {
-    productData.images = [...(productData.images || []), ...uploadedUrls];
+  if (uploadedFiles.length > 0) {
+    productData.images = [...(productData.images || []), ...uploadedFiles];
   }
 
   const product = await productService.createProduct(productData);
@@ -154,15 +121,13 @@ const updateProduct = asyncHandler(async (req, res) => {
     updates.interfaces = JSON.parse(updates.interfaces);
   }
 
-  // Upload new images (if any) and replace the existing images array.
   if (req.files && req.files.length > 0) {
-    const newUrls = [];
+    const newFiles = [];
     for (const file of req.files) {
-      const { url } = await cloudflareService.uploadImage(file);
-      newUrls.push(url);
+      const { fileName } = await cloudflareService.uploadImage(file);
+      newFiles.push(fileName);
     }
-    updates._replaceImages = newUrls;
-    // Remove images from body to avoid double-setting
+    updates._replaceImages = newFiles;
     delete updates.images;
   }
 
@@ -206,7 +171,8 @@ const getProductImage = asyncHandler(async (req, res) => {
     throw new ApiError(400, 'Image key is required');
   }
 
-  const image = await cloudflareService.getImage(key);
+  const fileName = getFileName(key);
+  const image = await cloudflareService.getImage(fileName);
   if (image.contentType) {
     res.setHeader('Content-Type', image.contentType);
   }
@@ -225,13 +191,11 @@ const getProductImage = asyncHandler(async (req, res) => {
 const deleteProduct = asyncHandler(async (req, res) => {
   const product = await productService.deleteProduct(req.params.id);
 
-  // Best-effort: delete all images from R2 after DB deletion
   if (product.images && product.images.length > 0) {
-    // Fire-and-forget — don't block response on image cleanup
     Promise.allSettled(
-      product.images.map((url) => {
-        const key = url.split('/').pop(); // derive key from URL path
-        return cloudflareService.deleteImage(key);
+      product.images.map((img) => {
+        const fileName = img.startsWith('http') ? img.split('/').pop() : img;
+        return cloudflareService.deleteImage(fileName);
       })
     );
   }

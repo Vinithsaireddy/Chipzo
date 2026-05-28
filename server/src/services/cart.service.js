@@ -3,28 +3,6 @@
 const Cart = require('../models/Cart');
 const Product = require('../models/Product');
 const ApiError = require('../utils/ApiError');
-const env = require('../config/env');
-
-/**
- * Rewrite R2 public URLs to local proxy URLs (same as product controller does).
- */
-const rewriteImageUrl = (imageUrl) => {
-  if (!imageUrl || !env.CLOUDFLARE_PUBLIC_URL) return imageUrl
-  try {
-    const parsedUrl = new URL(imageUrl)
-    const publicOrigin = new URL(env.CLOUDFLARE_PUBLIC_URL)
-    if (parsedUrl.origin !== publicOrigin.origin) return imageUrl
-    const basePath = publicOrigin.pathname.replace(/\/+$/, '')
-    const imagePath = parsedUrl.pathname
-    const relativePath = basePath && imagePath.startsWith(basePath)
-      ? imagePath.slice(basePath.length)
-      : imagePath
-    const key = relativePath.replace(/^\/+/, '')
-    return key ? `/api/products/images/${key}` : imageUrl
-  } catch {
-    return imageUrl
-  }
-}
 
 const getCart = async (userId) => {
   let cart = await Cart.findOne({ userId })
@@ -35,7 +13,6 @@ const getCart = async (userId) => {
     return { userId, items: [], totalPrice: 0 };
   }
 
-  // Remove items whose product was deleted from the database
   const staleItems = cart.items.filter(i => !i.productId || !i.productId.name)
   if (staleItems.length > 0) {
     const staleIds = staleItems.map(i => i._id || i.productId)
@@ -45,13 +22,6 @@ const getCart = async (userId) => {
     )
     cart.items = cart.items.filter(i => i.productId && i.productId.name)
   }
-
-  // Rewrite R2 public URLs to local proxy URLs for each item
-  cart.items.forEach(item => {
-    if (item.productId && Array.isArray(item.productId.images)) {
-      item.productId.images = item.productId.images.map(rewriteImageUrl)
-    }
-  })
 
   const totalPrice = computeTotal(cart.items);
   return { ...cart, totalPrice };

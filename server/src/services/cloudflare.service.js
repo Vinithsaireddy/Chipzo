@@ -7,6 +7,7 @@ const r2Client = require('../config/cloudflare');
 const env = require('../config/env');
 const ApiError = require('../utils/ApiError');
 const logger = require('../utils/logger');
+const { getImageKey, PRODUCT_PREFIX } = require('../utils/imageHelper');
 
 const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
 const MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024; // 5 MB
@@ -27,16 +28,18 @@ const validateFile = (file) => {
 
 /**
  * Uploads an image buffer to Cloudflare R2.
- * Returns the public URL for the uploaded object.
+ * Stores the object with a "products/" prefix in R2,
+ * but returns only the filename for database storage.
  *
  * @param {Express.Multer.File} file - Multer in-memory file object
- * @returns {Promise<{ url: string, key: string }>}
+ * @returns {Promise<{ fileName: string, key: string }>}
  */
 const uploadImage = async (file) => {
   validateFile(file);
 
   const ext = path.extname(file.originalname).toLowerCase() || '.jpg';
-  const key = `products/${uuidv4()}${ext}`;
+  const fileName = `${uuidv4()}${ext}`;
+  const key = `${PRODUCT_PREFIX}${fileName}`;
 
   try {
     if (
@@ -71,8 +74,7 @@ const uploadImage = async (file) => {
     });
 
     await r2Client.send(command);
-    const url = `${env.CLOUDFLARE_PUBLIC_URL}/${key}`;
-    return { url, key };
+    return { fileName, key };
   } catch (error) {
     logger.error(`[R2 Service] Upload failed for "${key}": ${error.message}`);
 
@@ -85,13 +87,15 @@ const uploadImage = async (file) => {
 };
 
 /**
- * Deletes an image from Cloudflare R2 by its object key.
+ * Deletes an image from Cloudflare R2 by its filename.
  * Silently ignores errors (best-effort deletion).
  *
- * @param {string} key - R2 object key (e.g. "products/uuid.jpg")
+ * @param {string} fileName - Just the filename (e.g. "uuid.jpg")
  */
-const deleteImage = async (key) => {
-  if (!key || key === 'dummy.jpg') return;
+const deleteImage = async (fileName) => {
+  if (!fileName || fileName === 'dummy.jpg') return;
+
+  const key = getImageKey(fileName);
 
   try {
     if (!env.CLOUDFLARE_BUCKET_NAME || env.CLOUDFLARE_BUCKET_NAME === 'dummy_r2_bucket_name') {
@@ -103,18 +107,19 @@ const deleteImage = async (key) => {
     });
     await r2Client.send(command);
   } catch (error) {
-    // Log but don't throw — a failed delete shouldn't crash the request
     const logger = require('../utils/logger');
     logger.warn(`[R2] Failed to delete object "${key}": ${error.message}`);
   }
 };
 
 /**
- * Reads an image object from Cloudflare R2.
- * @param {string} key
+ * Reads an image object from Cloudflare R2 by filename.
+ * @param {string} fileName - Just the filename (e.g. "uuid.jpg")
  * @returns {Promise<{ body: NodeJS.ReadableStream, contentType?: string, contentLength?: number }>}
  */
-const getImage = async (key) => {
+const getImage = async (fileName) => {
+  const key = getImageKey(fileName);
+
   try {
     const command = new GetObjectCommand({
       Bucket: env.CLOUDFLARE_BUCKET_NAME,

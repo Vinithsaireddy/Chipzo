@@ -37,7 +37,7 @@ const createProductSchema = Joi.object({
     'number.min': 'Stock cannot be negative',
   }),
 
-  images: Joi.array().items(Joi.string().uri({ allowRelative: true })).default([]),
+  images: Joi.array().items(Joi.string()).default([]),
 });
 
 // ── Update (all fields optional, at least one required) ───────────────────────
@@ -52,7 +52,7 @@ const updateProductSchema = Joi.object({
   currency: Joi.string().trim().uppercase().max(10),
   in_stock: Joi.boolean(),
   stock: Joi.number().integer().min(0),
-  images: Joi.array().items(Joi.string().uri({ allowRelative: true })),
+  images: Joi.array().items(Joi.string()),
 }).min(1); // At least one field must be provided
 
 module.exports = { createProductSchema, updateProductSchema };
