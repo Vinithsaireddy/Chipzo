@@ -6,9 +6,10 @@ function resolveToken() {
 
 async function request(path, options = {}) {
   const token = resolveToken();
+  const isFormData = options.body instanceof FormData;
 
   const headers = {
-    'Content-Type': 'application/json',
+    ...(!isFormData ? { 'Content-Type': 'application/json' } : {}),
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
     ...options.headers,
   };
@@ -80,6 +81,23 @@ export const productsAPI = {
   getOne: (id) => request(`/products/${id}`),
 
   getBySlug: (slug) => request(`/products/slug/${slug}`),
+
+  create: (data) =>
+    request('/products', {
+      method: 'POST',
+      body: data,
+    }),
+
+  update: (id, data) =>
+    request(`/products/${id}`, {
+      method: 'PUT',
+      body: data,
+    }),
+
+  deleteProduct: (id) =>
+    request(`/products/${id}`, {
+      method: 'DELETE',
+    }),
 };
 
 export const cartAPI = {

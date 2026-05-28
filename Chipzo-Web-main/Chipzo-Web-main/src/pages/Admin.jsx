@@ -166,8 +166,7 @@ export default function Admin() {
   const loadDashboardStats = async () => {
     try {
       // 1. Fetch products stats
-      const prodRes = await fetch('/api/products?limit=1000')
-      const prodData = await prodRes.json()
+      const prodData = await productsAPI.getAll({ limit: 1000 })
       const allProds = prodData?.data || prodData?.products || []
       
       const totalProductsCount = allProds.length
@@ -320,7 +319,6 @@ export default function Admin() {
       const usesUpload = formData.imageMode === 'upload' && formData.imageFile
 
       let payload
-      let headers = {}
 
       if (usesUpload) {
         const bodyFormData = new FormData()
@@ -359,30 +357,12 @@ export default function Admin() {
         // When editing and imageUrl is empty, omit images entirely to preserve existing ones
 
         payload = JSON.stringify(bodyJSON)
-        headers = { 'Content-Type': 'application/json' }
       }
 
-      const token = localStorage.getItem('chipzo_token')
-      headers['Authorization'] = `Bearer ${token}`
-
-      let res
       if (editingProduct) {
-        res = await fetch(`/api/products/${editingProduct._id}`, {
-          method: 'PUT',
-          headers,
-          body: payload
-        })
+        await productsAPI.update(editingProduct._id, payload)
       } else {
-        res = await fetch('/api/products', {
-          method: 'POST',
-          headers,
-          body: payload
-        })
-      }
-
-      const resData = await res.json()
-      if (!res.ok) {
-        throw new Error(resData?.message || 'Server returned an error status.')
+        await productsAPI.create(payload)
       }
 
       showToast('success', editingProduct ? 'Product details updated successfully!' : 'New product initialized and registered!')
@@ -400,18 +380,7 @@ export default function Admin() {
   const handleDeleteConfirm = async () => {
     if (!deletingId) return
     try {
-      const token = localStorage.getItem('chipzo_token')
-      const res = await fetch(`/api/products/${deletingId}`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      })
-      
-      const resData = await res.json()
-      if (!res.ok) {
-        throw new Error(resData?.message || 'Could not verify deletion access.')
-      }
+      await productsAPI.deleteProduct(deletingId)
 
       showToast('success', 'Product permanently purged from catalog.')
       setDeletingId(null)
