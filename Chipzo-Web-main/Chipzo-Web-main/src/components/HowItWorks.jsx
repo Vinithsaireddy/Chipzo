@@ -2,7 +2,7 @@ import { useRef, useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 
 const steps = [
-  ['01', 'Order', 'Choose stocked parts while your build is active.'],
+  ['01', 'Order', 'Choose your parts while your build is active.'],
   ['02', 'Pack', 'Local runners verify and pack from nearby hubs.'],
   ['03', 'Deliver', 'Track to your desk, lab, garage, or hackathon table.'],
 ]

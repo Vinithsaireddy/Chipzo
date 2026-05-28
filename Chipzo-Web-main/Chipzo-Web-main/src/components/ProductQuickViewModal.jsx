@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, ShoppingCart, Minus, Plus, Zap, Cpu } from 'lucide-react'
 import { getProductImageUrl } from '../utils/imageUtils.js'
+import { LoadingButton } from './LoadingButton.jsx'
+import { useAsyncStatus } from '../hooks/useAsyncAction.js'
 
 const RELATED_ITEMS = {
   Microcontroller: [
@@ -19,12 +21,6 @@ const RELATED_ITEMS = {
     { title: 'Breadboard', price: '₹89', image: 'https://images.unsplash.com/photo-1591453089816-0fbb971b454c?w=200&q=60' },
     { title: 'Heat Shrink', price: '₹29', image: 'https://images.unsplash.com/photo-1591453089816-0fbb971b454c?w=200&q=60' },
   ],
-}
-
-const STOCK_CONFIG = {
-  IN_STOCK: { label: 'IN STOCK', className: 'text-[color:var(--chipzo-lime)] border-[color:var(--chipzo-lime)] bg-[color:var(--chipzo-lime)]/10' },
-  HOT_ITEM: { label: 'LOW STOCK', className: 'text-amber-400 border-amber-400 bg-amber-400/10' },
-  PREORDER: { label: 'PREORDER', className: 'text-[color:var(--chipzo-primary)] border-[color:var(--chipzo-primary)] bg-[color:var(--chipzo-primary)]/10' },
 }
 
 function ProductGallery({ images, title }) {
@@ -52,14 +48,20 @@ function ProductGallery({ images, title }) {
     setMousePos({ x, y })
   }
 
+  const toggleZoom = () => {
+    setZoomed(z => !z)
+  }
+
   return (
     <div className="flex flex-col gap-2">
       <div
         ref={imageRef}
+        role="button"
+        tabIndex={0}
+        onClick={toggleZoom}
+        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') toggleZoom() }}
         className="relative aspect-square overflow-hidden border-[3px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-surface)] group cursor-crosshair"
         onMouseMove={handleMouseMove}
-        onMouseEnter={() => setZoomed(true)}
-        onMouseLeave={() => setZoomed(false)}
       >
         <div className="absolute inset-0 z-10 pointer-events-none bg-[linear-gradient(rgba(0,194,255,0.06)_1px,transparent_1px),linear-gradient(90deg,rgba(0,194,255,0.06)_1px,transparent_1px)] bg-[size:12px_12px]" />
         <div className="absolute -left-10 -top-10 z-10 h-32 w-32 rounded-full bg-[color:var(--chipzo-primary)]/5 blur-2xl" />
@@ -189,14 +191,13 @@ function RelatedProducts({ category, onAddToCart }) {
 
 export default function ProductQuickViewModal({ product, isOpen, onClose, onAddToCart }) {
   const [quantity, setQuantity] = useState(1)
-  const [added, setAdded] = useState(false)
   const modalRef = useRef(null)
+  const { status: addStatus, execute: executeAdd } = useAsyncStatus({ minDuration: 900, successDuration: 800 })
   const previousActiveElement = useRef(null)
 
   useEffect(() => {
     if (!isOpen) {
       setQuantity(1)
-      setAdded(false)
       return
     }
 
@@ -259,24 +260,27 @@ export default function ProductQuickViewModal({ product, isOpen, onClose, onAddT
   if (!product) return null
 
   const images = product.image ? [product.image] : []
-  const stockInfo = STOCK_CONFIG[product.status] || STOCK_CONFIG.IN_STOCK
 
   const handleAdd = () => {
-    for (let i = 0; i < quantity; i++) {
-      onAddToCart?.({
-        id: product.id,
-        _backendProductId: product._id,
-        code: product.code,
-        title: product.title,
-        category: product.category,
-        specs: product.specs,
-        price: product.priceNum,
-        image: product.image || '',
-        status: 'Operational',
-      })
-    }
-    setAdded(true)
-    setTimeout(() => setAdded(false), 2000)
+    executeAdd(async () => {
+      // Simulate premium pre-load latency (800ms to 1s, e.g., 900ms)
+      await new Promise(resolve => setTimeout(resolve, 900))
+
+      // When loading state is done, we actually add the product to the cart
+      for (let i = 0; i < quantity; i++) {
+        await onAddToCart?.({
+          id: product.id,
+          _backendProductId: product._id,
+          code: product.code,
+          title: product.title,
+          category: product.category,
+          specs: product.specs,
+          price: product.priceNum,
+          image: product.image || '',
+          status: 'Operational',
+        })
+      }
+    })
   }
 
   return (
@@ -344,9 +348,6 @@ export default function ProductQuickViewModal({ product, isOpen, onClose, onAddT
                     <Zap size={10} strokeWidth={2.5} />
                     {product.category || 'COMPONENT'}
                   </span>
-                  <span className={`inline-flex items-center border-[2px] px-2 py-0.5 text-[8px] font-black uppercase tracking-[0.12em] ${stockInfo.className}`}>
-                    ✓ {stockInfo.label}
-                  </span>
                   <span className="text-[8px] font-mono text-[color:var(--chipzo-muted)] ml-auto">
                     [{product.code}]
                   </span>
@@ -390,18 +391,15 @@ export default function ProductQuickViewModal({ product, isOpen, onClose, onAddT
                     onDecrement={() => setQuantity(q => Math.max(1, q - 1))}
                     onIncrement={() => setQuantity(q => Math.min(99, q + 1))}
                   />
-                  <button
+                  <LoadingButton
                     type="button"
                     onClick={handleAdd}
-                    className={`flex-1 min-w-[180px] flex items-center justify-center gap-2 border-[3px] border-[color:var(--chipzo-ink)] px-5 py-3 text-xs font-black uppercase tracking-[0.12em] transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0_var(--chipzo-ink)] cursor-pointer ${
-                      added
-                        ? 'bg-[color:var(--chipzo-lime)] text-[color:var(--chipzo-ink)] shadow-[4px_4px_0_var(--chipzo-ink)]'
-                        : 'bg-[color:var(--chipzo-lime)] text-[color:var(--chipzo-ink)] shadow-[6px_6px_0_var(--chipzo-ink)] hover:-translate-x-[1px] hover:-translate-y-[1px] hover:shadow-[8px_8px_0_var(--chipzo-ink)]'
-                    }`}
+                    status={addStatus}
+                    variant="lime"
+                    className="flex-1 min-w-[180px]"
                   >
-                    <ShoppingCart size={16} strokeWidth={2.5} />
-                    {added ? 'ADDED ✓' : `ADD TO CART — ${(product.priceNum * quantity).toFixed(2)}`}
-                  </button>
+                    ADD TO CART — {(product.priceNum * quantity).toFixed(2)}
+                  </LoadingButton>
                 </div>
 
                 {/* Delivery note */}

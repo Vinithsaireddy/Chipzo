@@ -6,7 +6,7 @@ const authController = require('../controllers/auth.controller');
 const { validate } = require('../middleware/validate.middleware');
 const { protect } = require('../middleware/auth.middleware');
 const { authLimiter } = require('../middleware/rateLimiter.middleware');
-const { signupSchema, loginSchema, updateProfileSchema } = require('../validators/auth.validator');
+const { signupSchema, loginSchema, updateProfileSchema, forgotPasswordSchema, verifyForgotOTPSchema, resetPasswordSchema } = require('../validators/auth.validator');
 
 /**
  * POST /api/auth/signup
@@ -31,5 +31,23 @@ router.get('/me', protect, authController.getMe);
  * Protected — updates current user profile (name, phone, password).
  */
 router.put('/profile', protect, validate(updateProfileSchema), authController.updateProfile);
+
+/**
+ * POST /api/auth/forgot-password
+ * Sends a 6-digit OTP to the user's email for password reset.
+ */
+router.post('/forgot-password', authLimiter, validate(forgotPasswordSchema), authController.forgotPassword);
+
+/**
+ * POST /api/auth/verify-forgot-otp
+ * Verifies the OTP and returns a short-lived reset JWT.
+ */
+router.post('/verify-forgot-otp', authLimiter, validate(verifyForgotOTPSchema), authController.verifyForgotOTP);
+
+/**
+ * POST /api/auth/reset-password
+ * Resets the password using a valid reset token.
+ */
+router.post('/reset-password', authLimiter, validate(resetPasswordSchema), authController.resetPassword);
 
 module.exports = router;

@@ -1,41 +1,10 @@
 'use strict';
 
-const Product = require('../models/Product');
 const Order = require('../models/Order');
 const ApiError = require('../utils/ApiError');
 
 /**
- * Atomically deducts stock for all ordered items using MongoDB bulkWrite.
- * Uses $inc with a negative value for atomicity.
- * After the write, checks if any product's stock went negative and rolls back if so.
- *
- * @param {Array<{ productId, quantity }>} items
- */
-const deductStock = async (items) => {
-  // Build bulk write ops: decrement stock for each item
-  const bulkOps = items.map((item) => ({
-    updateOne: {
-      filter: {
-        _id: item.productId,
-        stock: { $gte: item.quantity }, // Guard against race condition
-      },
-      update: { $inc: { stock: -item.quantity } },
-    },
-  }));
-
-  const result = await Product.bulkWrite(bulkOps, { ordered: false });
-
-  // If fewer documents were modified than items, some stock was insufficient
-  if (result.modifiedCount < items.length) {
-    throw new ApiError(
-      400,
-      'One or more items went out of stock during checkout. Please review your cart.'
-    );
-  }
-};
-
-/**
- * Creates a new Order document after successful payment and stock deduction.
+ * Creates a new Order document after successful payment.
  *
  * @param {object} params
  * @param {string}   params.userId
@@ -113,7 +82,6 @@ const getOrderById = async (orderId, userId) => {
 };
 
 module.exports = {
-  deductStock,
   createOrder,
   getUserOrders,
   getOrderById,

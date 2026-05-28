@@ -18,24 +18,39 @@ export default function useImageSequence({
   frameCount = 240,
 }) {
   const [isLoaded, setIsLoaded] = useState(false)
+  const [loadedCount, setLoadedCount] = useState(0)
   const isMobile = typeof window !== 'undefined' ? window.innerWidth < 768 : false
   const frameSources = useMemo(() => buildFrameList(frameCount, isMobile), [frameCount, isMobile])
   const imagesRef = useRef([])
 
   useEffect(() => {
+    let active = true
     const loadImages = async () => {
+      setLoadedCount(0)
       const promises = frameSources.map((source) => {
         return new Promise((resolve) => {
           const image = new Image()
-          image.onload = () => resolve(image)
-          image.onerror = () => resolve(image)
+          image.onload = () => {
+            if (active) setLoadedCount((prev) => prev + 1)
+            resolve(image)
+          }
+          image.onerror = () => {
+            if (active) setLoadedCount((prev) => prev + 1)
+            resolve(image)
+          }
           image.src = source
         })
       })
-      imagesRef.current = await Promise.all(promises)
-      setIsLoaded(true)
+      const resolvedImages = await Promise.all(promises)
+      if (active) {
+        imagesRef.current = resolvedImages
+        setIsLoaded(true)
+      }
     }
     loadImages()
+    return () => {
+      active = false
+    }
   }, [frameSources])
 
   const render = (progress) => {
@@ -87,7 +102,8 @@ export default function useImageSequence({
     
     if (isMobile) {
       // Rotate 90 degrees on mobile portrait screens to fit the board vertically
-      context.translate(width / 2, height / 2)
+      // Shift up by 40px to align perfectly under mobile headings and avoid bottom cutoffs
+      context.translate(width / 2, height / 2 - 40)
       context.rotate(Math.PI / 2)
       // Adjust scale to fit the vertical space nicely
       const mobileScale = Math.min(height / frame.naturalWidth, width / frame.naturalHeight) * 1.15
@@ -99,5 +115,5 @@ export default function useImageSequence({
     }
   }
 
-  return { render, isLoaded }
+  return { render, isLoaded, loadedCount, totalCount: frameSources.length }
 }

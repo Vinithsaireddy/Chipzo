@@ -6,7 +6,7 @@ const ApiError = require('../utils/ApiError');
 
 const getCart = async (userId) => {
   let cart = await Cart.findOne({ userId })
-    .populate('items.productId', 'name price images in_stock stock category id specifications')
+    .populate('items.productId', 'name price images category id specifications')
     .lean({ virtuals: true });
 
   if (!cart) {
@@ -29,7 +29,7 @@ const getCart = async (userId) => {
 
 /**
  * Adds a product to the cart or increments quantity if already present.
- * Validates: product exists, sufficient stock.
+ * Validates: product exists.
  *
  * @param {string} userId
  * @param {string} productId
@@ -46,13 +46,6 @@ const addToCart = async (userId, productId, quantity) => {
   );
   const currentQty = existingItem ? existingItem.quantity : 0;
   const newTotal = currentQty + quantity;
-
-  if (newTotal > product.stock) {
-    throw new ApiError(
-      400,
-      `Insufficient stock. Available: ${product.stock}, in cart: ${currentQty}, requested: ${quantity}.`
-    );
-  }
 
   const cart = await Cart.findOneAndUpdate(
     { userId },
@@ -88,10 +81,6 @@ const addToCart = async (userId, productId, quantity) => {
 const updateCartItem = async (userId, productId, quantity) => {
   const product = await Product.findById(productId);
   if (!product) throw new ApiError(404, 'Product not found');
-
-  if (quantity > product.stock) {
-    throw new ApiError(400, `Insufficient stock. Available: ${product.stock}.`);
-  }
 
   const result = await Cart.findOneAndUpdate(
     { userId, 'items.productId': productId },
@@ -150,19 +139,6 @@ const computeTotal = (items = []) =>
     return total;
   }, 0);
 
-/**
- * Validates that each cart item has sufficient stock.
- * @param {Array} items - Populated cart items
- * @returns {Array} - Array of out-of-stock items (empty = all good)
- */
-const validateStock = (items = []) => {
-  return items.filter((item) => {
-    const product = item.productId;
-    if (!product || typeof product !== 'object') return true; // Not populated — flag as issue
-    return item.quantity > product.stock;
-  });
-};
-
 module.exports = {
   getCart,
   addToCart,
@@ -170,5 +146,4 @@ module.exports = {
   removeCartItem,
   clearCart,
   computeTotal,
-  validateStock,
 };

@@ -20,7 +20,6 @@ const getPaginatedProducts = async (queryParams) => {
     category,
     minPrice,
     maxPrice,
-    inStock,
   } = queryParams;
 
   const pageNum = Math.max(parseInt(page, 10), 1);
@@ -64,11 +63,6 @@ const getPaginatedProducts = async (queryParams) => {
     filter.price = { $ne: null };
     if (minPrice !== undefined) filter.price.$gte = parseFloat(minPrice);
     if (maxPrice !== undefined) filter.price.$lte = parseFloat(maxPrice);
-  }
-
-  // in_stock filter
-  if (inStock === 'true') {
-    filter.in_stock = true;
   }
 
   const [products, totalCount] = await Promise.all([

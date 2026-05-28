@@ -8,6 +8,8 @@ import {
   User, MapPin, Package, ChevronRight, LogOut, Save, X, AlertTriangle,
   Loader, Plus, Trash2, Star, CheckCircle, Clock, CreditCard, Truck,
 } from 'lucide-react';
+import { LoadingButton } from '../components/LoadingButton.jsx';
+import { useAsyncStatus } from '../hooks/useAsyncAction.js';
 
 export default function Profile({ onNavigate, activeCategory }) {
   const { isLoggedIn, logout } = useAuth();
@@ -19,7 +21,7 @@ export default function Profile({ onNavigate, activeCategory }) {
   const [editPhone, setEditPhone] = useState('');
   const [editPassword, setEditPassword] = useState('');
   const [editCurrentPassword, setEditCurrentPassword] = useState('');
-  const [editLoading, setEditLoading] = useState(false);
+  const { status: editStatus, execute: executeEdit } = useAsyncStatus({ minDuration: 2000, successDuration: 800 });
   const [editError, setEditError] = useState('');
   const [editSuccess, setEditSuccess] = useState('');
   const [orders, setOrders] = useState([]);
@@ -74,27 +76,26 @@ export default function Profile({ onNavigate, activeCategory }) {
 
   const handleSaveProfile = async (e) => {
     e.preventDefault();
-    setEditLoading(true);
     setEditError('');
     setEditSuccess('');
-    try {
-      const body = {};
-      if (editName !== (profile?.name || '')) body.name = editName;
-      if (editPhone !== (profile?.phone || '')) body.phone = editPhone;
-      if (editPassword) {
-        if (!editCurrentPassword) {
-          setEditError('Current password is required to set a new password.');
-          setEditLoading(false);
-          return;
-        }
-        body.currentPassword = editCurrentPassword;
-        body.newPassword = editPassword;
-      }
-      if (Object.keys(body).length === 0) {
-        setEditError('No changes to save.');
-        setEditLoading(false);
+
+    const body = {};
+    if (editName !== (profile?.name || '')) body.name = editName;
+    if (editPhone !== (profile?.phone || '')) body.phone = editPhone;
+    if (editPassword) {
+      if (!editCurrentPassword) {
+        setEditError('Current password is required to set a new password.');
         return;
       }
+      body.currentPassword = editCurrentPassword;
+      body.newPassword = editPassword;
+    }
+    if (Object.keys(body).length === 0) {
+      setEditError('No changes to save.');
+      return;
+    }
+
+    executeEdit(async () => {
       const data = await authAPI.updateProfile(body);
       const updated = data?.data?.user || data?.user;
       if (updated) {
@@ -106,11 +107,9 @@ export default function Profile({ onNavigate, activeCategory }) {
         setTimeout(() => setEditSuccess(''), 3000);
       }
       setEditing(false);
-    } catch (err) {
+    }).catch((err) => {
       setEditError(err.message || 'Failed to update profile.');
-    } finally {
-      setEditLoading(false);
-    }
+    })
   };
 
   const handleLogout = () => {
@@ -236,9 +235,16 @@ export default function Profile({ onNavigate, activeCategory }) {
                       </div>
                     </div>
                     <div className="flex gap-3 pt-2">
-                      <button type="submit" disabled={editLoading} className="flex-1 border-[3px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-lime)] py-3 text-xs font-black uppercase cursor-pointer flex items-center justify-center gap-2 hover:-translate-y-[1px] transition-all disabled:opacity-50 shadow-[3px_3px_0_rgba(0,0,0,1)]">
-                        {editLoading ? <><Loader size={14} className="animate-spin" /> Saving...</> : <><Save size={14} /> Save Changes</>}
-                      </button>
+                      <LoadingButton
+                        type="submit"
+                        status={editStatus}
+                        variant="lime"
+                        size="md"
+                        icon={Save}
+                        className="flex-1"
+                      >
+                        Save Changes
+                      </LoadingButton>
                       <button type="button" onClick={() => { setEditing(false); setEditError(''); setEditSuccess(''); setEditPassword(''); setEditCurrentPassword(''); }} className="border-[3px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-paper)] py-3 px-6 text-xs font-black uppercase cursor-pointer hover:bg-[color:var(--chipzo-surface)] shadow-[3px_3px_0_rgba(0,0,0,1)]">
                         <X size={14} className="inline mr-1" /> Cancel
                       </button>

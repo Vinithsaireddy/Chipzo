@@ -114,7 +114,7 @@ const productSchema = new mongoose.Schema(
 productSchema.index({ name: 'text', description: 'text' });
 productSchema.index({ category: 1 });
 productSchema.index({ price: 1 });
-productSchema.index({ in_stock: 1 });
+// productSchema.index({ in_stock: 1 });
 
 const Product = mongoose.model('Product', productSchema);
 

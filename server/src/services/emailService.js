@@ -485,9 +485,129 @@ async function sendDeliveryConfirmation(email, name, order) {
   });
 }
 
+/**
+ * Dispatches Password Reset OTP email
+ */
+async function sendPasswordResetOTP(email, name, otp) {
+  const html = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Password Reset OTP</title>
+  <style>
+    body {
+      background-color: #f4f4f5;
+      font-family: 'Courier New', Courier, monospace;
+      margin: 0;
+      padding: 0;
+      color: #18181b;
+    }
+    .wrapper {
+      padding: 30px 20px;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: #ffffff;
+      border: 3px solid #18181b;
+      box-shadow: 8px 8px 0px 0px #18181b;
+      padding: 40px 30px;
+    }
+    .logo-accent {
+      background-color: #18181b;
+      color: #a3e635;
+      display: inline-block;
+      font-weight: 900;
+      font-size: 24px;
+      padding: 5px 15px;
+      letter-spacing: 2px;
+      margin-bottom: 20px;
+    }
+    h1 {
+      font-family: Arial, sans-serif;
+      font-size: 26px;
+      font-weight: 900;
+      text-transform: uppercase;
+      margin: 0 0 10px 0;
+      letter-spacing: -0.5px;
+    }
+    p {
+      font-size: 14px;
+      line-height: 1.6;
+      margin: 0 0 20px 0;
+    }
+    .otp-box {
+      background-color: #18181b;
+      color: #a3e635;
+      font-size: 36px;
+      font-weight: 900;
+      letter-spacing: 8px;
+      text-align: center;
+      padding: 20px;
+      margin: 25px 0;
+      font-family: 'Courier New', Courier, monospace;
+    }
+    .warning {
+      background-color: #fef9c3;
+      border: 2px solid #18181b;
+      padding: 15px;
+      margin: 20px 0;
+      font-size: 12px;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+    .footer {
+      border-top: 2px dashed #e4e4e7;
+      padding-top: 25px;
+      margin-top: 30px;
+      font-size: 11px;
+      color: #71717a;
+      text-align: center;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="container">
+      <div class="logo-accent">CHIPZO</div>
+      <h1>PASSWORD RESET REQUEST</h1>
+      <p>Hello <strong>${name.toUpperCase()}</strong>,</p>
+      <p>A secure password reset request was received for your Chipzo account. Use the following one-time authorization code to proceed:</p>
+
+      <div class="otp-box">${otp}</div>
+
+      <p style="font-size: 12px; color: #71717a;">This code expires in <strong>10 minutes</strong>. Do not share this code with anyone.</p>
+
+      <div class="warning">⚠ If you did not request this, please ignore this email. Your account remains secure.</div>
+
+      <p>Keep building,</p>
+      <p><strong>The Chipzo Team</strong></p>
+
+      <div class="footer">
+        ■ CHIPZO ELECTRONICS CORP ■<br>
+        Bengaluru Hardware Logistics Hub<br>
+        This is an automated system dispatch. Do not reply.
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+  `;
+
+  return sendEmail({
+    to: email,
+    subject: `[CHIPZO] Password Reset Code: ${otp}`,
+    html,
+  });
+}
+
 module.exports = {
   sendEmail,
   sendWelcomeEmail,
   sendOrderConfirmation,
   sendDeliveryConfirmation,
+  sendPasswordResetOTP,
 };

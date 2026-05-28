@@ -66,6 +66,27 @@ export const authAPI = {
     request('/auth/resend-otp', {
       method: 'POST',
     }),
+
+  /** POST /api/auth/forgot-password — sends OTP to email */
+  forgotPassword: (email) =>
+    request('/auth/forgot-password', {
+      method: 'POST',
+      body: JSON.stringify({ email }),
+    }),
+
+  /** POST /api/auth/verify-forgot-otp — verifies OTP, returns reset token */
+  verifyForgotOTP: (email, otp) =>
+    request('/auth/verify-forgot-otp', {
+      method: 'POST',
+      body: JSON.stringify({ email, otp }),
+    }),
+
+  /** POST /api/auth/reset-password — sets new password using reset token */
+  resetPassword: (token, password) =>
+    request('/auth/reset-password', {
+      method: 'POST',
+      body: JSON.stringify({ token, password }),
+    }),
 };
 
 export const productsAPI = {

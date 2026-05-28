@@ -13,6 +13,7 @@ import Login from './pages/Login.jsx'
 import Signup from './pages/Signup.jsx'
 import Admin from './pages/Admin.jsx'
 import VerifyOTP from './pages/VerifyOTP.jsx'
+import ForgotPassword from './pages/ForgotPassword.jsx'
 import { useAuth } from './contexts/AuthContext.jsx'
 import { cartAPI } from './services/api.js'
 import Toast from './components/Toast.jsx'
@@ -21,7 +22,7 @@ import { getProductImageUrl } from './utils/imageUtils.js'
 function App() {
   const navigate = useNavigate()
   const location = useLocation()
-  const { isLoggedIn, user } = useAuth()
+  const { isLoggedIn, user, loading: authLoading } = useAuth()
   const [completedOrder, setCompletedOrder] = useState(null)
   const [paymentError, setPaymentError] = useState(null)
   const [cart, setCart] = useState([])
@@ -186,6 +187,22 @@ function App() {
     handleNavigate('order-failure')
   }
 
+  // ── Auth loading gate ─────────────────────────────────────────────────────────
+  if (authLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[color:var(--chipzo-paper)]">
+        <div className="flex flex-col items-center gap-4">
+          <div className="flex gap-[3px]">
+            <span className="w-[3px] h-5 bg-[color:var(--chipzo-ink)] block animate-pulse" style={{ animationDelay: '0ms' }} />
+            <span className="w-[3px] h-5 bg-[color:var(--chipzo-ink)] block animate-pulse" style={{ animationDelay: '150ms' }} />
+            <span className="w-[3px] h-5 bg-[color:var(--chipzo-ink)] block animate-pulse" style={{ animationDelay: '300ms' }} />
+          </div>
+          <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[color:var(--chipzo-muted)]">Authenticating Session...</span>
+        </div>
+      </div>
+    )
+  }
+
   // ── Page routes ──────────────────────────────────────────────────────────────
   return (
     <>
@@ -280,6 +297,7 @@ function App() {
       />
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/admin" element={<Admin />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

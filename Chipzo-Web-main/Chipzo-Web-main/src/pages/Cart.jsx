@@ -1,10 +1,12 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Trash2, Minus, Plus, ArrowRight, ShoppingBag, Check, Ban, Clock, CheckCircle, AlertTriangle, Lock, Unlock, X } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Skeleton } from 'boneyard-js/react'
 import SmoothScroll from '../components/SmoothScroll.jsx'
 import Navbar from '../components/Navbar.jsx'
 import Footer from '../components/Footer.jsx'
+import { LoadingButton } from '../components/LoadingButton.jsx'
+import { useAsyncStatus } from '../hooks/useAsyncAction.js'
 import { getOrderStatus } from '../utils/orderValidation.js'
 import { productsAPI } from '../services/api.js'
 import { getProductImageUrl } from '../utils/imageUtils.js'
@@ -150,9 +152,32 @@ function DeliveryProgressBar({ progress, total }) {
 }
 
 function DeliveryRewardMessage({ remaining, onAddToCart, cartItems }) {
+  const [statuses, setStatuses] = useState({})
   const recommended = DYNAMIC_UPSELLS.filter(item => {
     return !cartItems.some(cartItem => cartItem.id === item.id);
   });
+
+  const handleAdd = async (item) => {
+    if (statuses[item.id]) return
+    setStatuses(prev => ({ ...prev, [item.id]: 'loading' }))
+    try {
+      // Simulate premium pre-load latency (800ms to 1s, e.g., 900ms)
+      await new Promise(resolve => setTimeout(resolve, 900))
+
+      // When loading state is done, we actually add the product to the cart
+      await onAddToCart?.(item)
+
+      setStatuses(prev => ({ ...prev, [item.id]: 'success' }))
+      setTimeout(() => {
+        setStatuses(prev => { const n = { ...prev }; delete n[item.id]; return n })
+      }, 800)
+    } catch (err) {
+      setStatuses(prev => ({ ...prev, [item.id]: 'error' }))
+      setTimeout(() => {
+        setStatuses(prev => { const n = { ...prev }; delete n[item.id]; return n })
+      }, 1000)
+    }
+  }
 
   return (
     <div className="flex flex-col gap-3 mt-1 border-t-2 border-dashed border-[color:var(--chipzo-rule)] pt-3 font-mono">
@@ -187,13 +212,16 @@ function DeliveryRewardMessage({ remaining, onAddToCart, cartItems }) {
                     <p className="text-[8px] text-[color:var(--chipzo-primary)] font-black mt-0.5">₹{item.price.toFixed(2)}</p>
                   </div>
                 </div>
-                <button 
+                <LoadingButton
                   type="button"
-                  onClick={() => onAddToCart?.(item)}
-                  className="bg-[color:var(--chipzo-lime)] border border-[color:var(--chipzo-ink)] text-[8px] font-black uppercase px-1.5 py-0.5 shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:bg-[color:var(--chipzo-ink)] hover:text-white hover:shadow-none active:translate-x-[0.5px] active:translate-y-[0.5px] transition-all cursor-pointer shrink-0"
+                  onClick={() => handleAdd(item)}
+                  status={statuses[item.id] || 'idle'}
+                  variant="lime"
+                  size="sm"
+                  className="shrink-0"
                 >
                   + ADD
-                </button>
+                </LoadingButton>
               </div>
             ))}
           </div>
@@ -250,6 +278,36 @@ export default function Cart({ onNavigate, activeCategory, cart = [], isCartLoad
   const [orderStatus, setOrderStatus] = useState(getOrderStatus())
   const [complementaryItems, setComplementaryItems] = useState([])
   const [complementaryLoading, setComplementaryLoading] = useState(true)
+  const [buildStatuses, setBuildStatuses] = useState({})
+  const { status: checkoutStatus, execute: executeCheckout } = useAsyncStatus({ minDuration: 2000, successDuration: 800 })
+
+  const handleCheckout = useCallback(() => {
+    executeCheckout(async () => {
+      onNavigate?.('checkout')
+    })
+  }, [executeCheckout, onNavigate])
+
+  const handleAddBuild = useCallback(async (compItem) => {
+    if (buildStatuses[compItem.id]) return
+    setBuildStatuses(prev => ({ ...prev, [compItem.id]: 'loading' }))
+    try {
+      // Simulate premium pre-load latency (800ms to 1s, e.g., 900ms)
+      await new Promise(resolve => setTimeout(resolve, 900))
+
+      // When loading state is done, we actually add the product to the cart
+      await onAddToCart?.(compItem)
+
+      setBuildStatuses(prev => ({ ...prev, [compItem.id]: 'success' }))
+      setTimeout(() => {
+        setBuildStatuses(prev => { const n = { ...prev }; delete n[compItem.id]; return n })
+      }, 800)
+    } catch (err) {
+      setBuildStatuses(prev => ({ ...prev, [compItem.id]: 'error' }))
+      setTimeout(() => {
+        setBuildStatuses(prev => { const n = { ...prev }; delete n[compItem.id]; return n })
+      }, 1000)
+    }
+  }, [onAddToCart, buildStatuses])
 
   const displayRecommendations = complementaryItems.filter(
     comp => !items.some(cartItem => {
@@ -293,7 +351,7 @@ export default function Cart({ onNavigate, activeCategory, cart = [], isCartLoad
             specs: Array.isArray(p.specifications) ? p.specifications : [],
             price: p.price ?? 0,
             image: Array.isArray(p.images) && p.images.length > 0 ? getProductImageUrl(p.images[0]) : '',
-            status: p.in_stock ? 'Operational' : 'Out of Stock'
+            status: 'Operational'
           }))
         setComplementaryItems(filtered)
       })
@@ -522,13 +580,16 @@ export default function Cart({ onNavigate, activeCategory, cart = [], isCartLoad
                                       <span>IN BUILD</span>
                                     </button>
                                   ) : (
-                                    <button 
-                                      type="button"
-                                      onClick={() => onAddToCart?.(compItem)}
-                                      className="w-full brutal-border py-2 font-black uppercase text-[10px] hover:bg-[color:var(--chipzo-ink)] hover:text-white transition-colors duration-150 active:translate-x-[1px] active:translate-y-[1px] cursor-pointer shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:shadow-none bg-[color:var(--chipzo-lime)] text-[color:var(--chipzo-ink)]"
-                                    >
-                                      ADD TO BUILD
-                                    </button>
+                        <LoadingButton
+                          type="button"
+                          onClick={() => handleAddBuild(compItem)}
+                          status={buildStatuses[compItem.id] || 'idle'}
+                          variant="lime"
+                          size="sm"
+                          fullWidth
+                        >
+                          ADD TO BUILD
+                        </LoadingButton>
                                   )}
                                 </div>
                               </div>
@@ -592,15 +653,16 @@ export default function Cart({ onNavigate, activeCategory, cart = [], isCartLoad
                       </div>
                       
                       {canCheckout ? (
-                        <motion.button 
+                        <LoadingButton
                           type="button"
-                          onClick={() => onNavigate?.('checkout')}
-                          whileHover={{ y: -2 }}
-                          whileTap={{ y: 1 }}
-                          className="mt-2 w-full bg-[color:var(--chipzo-lime)] text-[color:var(--chipzo-ink)] font-black text-sm py-3.5 px-4 brutal-border shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:-translate-x-[1px] hover:-translate-y-[1px] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] transition-all flex items-center justify-center gap-2 group cursor-pointer uppercase tracking-wider relative overflow-hidden"
+                          onClick={handleCheckout}
+                          status={checkoutStatus}
+                          variant="lime"
+                          size="lg"
+                          className="mt-2 w-full"
                         >
-                          <span>CHECKOUT →</span>
-                        </motion.button>
+                          CHECKOUT →
+                        </LoadingButton>
                       ) : (
                         <motion.button 
                           type="button"
@@ -652,14 +714,18 @@ export default function Cart({ onNavigate, activeCategory, cart = [], isCartLoad
                 </div>
                 
                 {canCheckout ? (
-                  <button
+                  <LoadingButton
                     type="button"
-                    onClick={() => onNavigate?.('checkout')}
-                    className="flex flex-1 items-center justify-center gap-2 border-[3px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-lime)] py-3 text-sm font-black uppercase tracking-[0.1em] text-[color:var(--chipzo-ink)] shadow-[3px_3px_0_rgba(0,0,0,1)] transition-all hover:bg-[color:var(--chipzo-ink)] hover:text-[color:var(--chipzo-lime)] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none cursor-pointer"
+                    onClick={handleCheckout}
+                    status={checkoutStatus}
+                    variant="lime"
+                    size="lg"
+                    icon={ArrowRight}
+                    fullWidth
+                    className="flex-1"
                   >
-                    <span>Proceed to Checkout</span>
-                    <ArrowRight size={16} strokeWidth={3} />
-                  </button>
+                    Proceed to Checkout
+                  </LoadingButton>
                 ) : (
                   <button
                     type="button"

@@ -63,12 +63,6 @@ const createProduct = asyncHandler(async (req, res) => {
   if (productData.price !== undefined && productData.price !== null) {
     productData.price = parseFloat(productData.price);
   }
-  if (productData.stock !== undefined) {
-    productData.stock = parseInt(productData.stock, 10);
-  }
-  if (productData.in_stock !== undefined) {
-    productData.in_stock = productData.in_stock === 'true' || productData.in_stock === true;
-  }
   // specifications / interfaces may arrive as JSON strings from multipart
   if (typeof productData.specifications === 'string') {
     productData.specifications = JSON.parse(productData.specifications);
@@ -107,12 +101,6 @@ const updateProduct = asyncHandler(async (req, res) => {
   // Coerce multipart strings
   if (updates.price !== undefined && updates.price !== null) {
     updates.price = parseFloat(updates.price);
-  }
-  if (updates.stock !== undefined) {
-    updates.stock = parseInt(updates.stock, 10);
-  }
-  if (updates.in_stock !== undefined) {
-    updates.in_stock = updates.in_stock === 'true' || updates.in_stock === true;
   }
   if (typeof updates.specifications === 'string') {
     updates.specifications = JSON.parse(updates.specifications);

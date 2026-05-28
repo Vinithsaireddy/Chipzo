@@ -110,7 +110,8 @@ function DesktopHero() {
   const canvasRef = useRef(null)
   const sceneRefs = useRef([])
 
-  const { render, isLoaded } = useImageSequence({ canvasRef, frameCount: 240 })
+  const { render, isLoaded, loadedCount, totalCount } = useImageSequence({ canvasRef, frameCount: 240 })
+  const progressPercent = totalCount > 0 ? Math.min(Math.round((loadedCount / totalCount) * 100), 100) : 0
 
   useEffect(() => {
     if (!isLoaded) return
@@ -152,7 +153,52 @@ function DesktopHero() {
   return (
     <section ref={sectionRef} className="relative w-full bg-[color:var(--chipzo-paper)]">
       <div ref={containerRef} className="relative w-full h-screen overflow-hidden">
-        <CanvasSequence canvasRef={canvasRef} />
+        {/* Dynamic Poster Frame Overlay */}
+        <div 
+          className={`absolute inset-0 bg-[#F1F1EF] flex items-center justify-center overflow-hidden pointer-events-none transition-opacity duration-[1000ms] ease-[cubic-bezier(0.25,1,0.5,1)] ${
+            isLoaded ? 'opacity-0 z-0' : 'opacity-100 z-20'
+          }`}
+        >
+          <img 
+            src="/sequence/arduino-nano-exploded/ezgif-frame-001.jpg"
+            alt="CHIPZO Hero"
+            className="w-full h-full object-contain p-4 scale-[1.18]"
+          />
+          {/* Cinematic Overlay Gradients and Grain */}
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_45%_40%,color-mix(in_oklch,var(--chipzo-primary)_25%,transparent)_0%,transparent_50%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_55%_60%,color-mix(in_oklch,var(--chipzo-lime)_15%,transparent)_0%,transparent_40%)]" />
+          <div className="absolute inset-0 opacity-[0.04] mix-blend-overlay bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
+          
+          {/* Sleek retro-cyberpunk progress indicator */}
+          <div className="absolute bottom-[28%] left-0 right-0 flex flex-col items-center justify-center gap-4 pointer-events-auto z-30">
+            <div className="flex items-center gap-3 font-mono text-sm sm:text-base font-black uppercase tracking-[0.25em] drop-shadow-[0_3px_6px_rgba(0,0,0,0.9)]">
+              <span className="animate-pulse text-[color:var(--chipzo-lime)]">
+                PRELOADING HARDWARE: <span className="text-[color:var(--chipzo-primary)]">{progressPercent}%</span>
+              </span>
+            </div>
+            <div className="w-[360px] sm:w-[420px] h-3.5 bg-black/90 border-2 border-[color:var(--chipzo-paper)]/30 p-[3px] relative overflow-hidden flex items-center shadow-[4px_4px_0_rgba(0,0,0,0.6)]">
+              <div 
+                className="h-full bg-[color:var(--chipzo-lime)] transition-all duration-300 ease-out shadow-[0_0_12px_var(--chipzo-lime)]"
+                style={{ width: `${progressPercent}%` }}
+              />
+            </div>
+            {/* Skip to Shop Button */}
+            <Link 
+              to="/shop" 
+              className="mt-2 w-[240px] sm:w-[280px] justify-center py-3 font-mono text-xs font-black uppercase tracking-[0.25em] bg-black/95 border-2 border-[color:var(--chipzo-primary)] text-[color:var(--chipzo-paper)] shadow-[3px_3px_0_var(--chipzo-primary)] transition-all hover:bg-[color:var(--chipzo-primary)] hover:text-[color:var(--chipzo-ink)] hover:shadow-none hover:translate-x-[3px] hover:translate-y-[3px] cursor-pointer flex items-center gap-2"
+            >
+              Skip to Shop <span>// ↗</span>
+            </Link>
+          </div>
+        </div>
+
+        {/* Live Canvas Animation */}
+        <div className={`absolute inset-0 w-full h-full transition-opacity duration-[1000ms] ease-[cubic-bezier(0.25,1,0.5,1)] ${
+          isLoaded ? 'opacity-100' : 'opacity-0'
+        }`}>
+          <CanvasSequence canvasRef={canvasRef} />
+        </div>
+
         <div className="absolute inset-0 z-10 pointer-events-none">
           {SCENES.map((scene, i) => (
             <div
@@ -182,7 +228,8 @@ function MobileHero() {
   const [activeIndex, setActiveIndex] = useState(0)
   const [dimensions, setDimensions] = useState({ cardWidth: 280, gap: 20 })
 
-  const { render, isLoaded } = useImageSequence({ canvasRef, frameCount: 240 })
+  const { render, isLoaded, loadedCount, totalCount } = useImageSequence({ canvasRef, frameCount: 240 })
+  const progressPercent = totalCount > 0 ? Math.round((loadedCount / totalCount) * 100) : 0
 
   const cards = [
     { label: 'RUNNING OUT OF COMPONENTS', accent: "SHOULDN'T STOP A BUILD.", color: 'text-[color:var(--chipzo-primary)]' },
@@ -251,8 +298,28 @@ function MobileHero() {
 
   return (
     <section className="relative w-full bg-[color:var(--chipzo-ink)] pb-4 overflow-hidden flex flex-col min-h-screen justify-between">
+      {/* Mobile Poster Frame Overlay */}
+      <div 
+        className={`absolute inset-0 z-0 h-full pointer-events-none transition-opacity duration-[1000ms] ease-[cubic-bezier(0.25,1,0.5,1)] ${
+          isLoaded ? 'opacity-0' : 'opacity-35'
+        }`}
+      >
+        <div className="absolute inset-0 bg-[#F1F1EF] flex items-center justify-center overflow-hidden">
+          <img 
+            src="/sequence/arduino-nano-exploded/ezgif-frame-001.jpg"
+            alt="CHIPZO Hero"
+            className="relative -top-10 w-full h-full object-contain p-4 scale-[1.15] rotate-90"
+          />
+        </div>
+        <div className="absolute inset-0 bg-gradient-to-b from-[color:var(--chipzo-ink)]/10 via-[color:var(--chipzo-ink)]/40 to-[color:var(--chipzo-ink)]" />
+      </div>
+
       {/* Background Canvas Sequence for Exploded View on Mobile */}
-      <div className="absolute inset-0 z-0 h-full opacity-35 pointer-events-none">
+      <div 
+        className={`absolute inset-0 z-0 h-full pointer-events-none transition-opacity duration-[1000ms] ease-[cubic-bezier(0.25,1,0.5,1)] ${
+          isLoaded ? 'opacity-35' : 'opacity-0'
+        }`}
+      >
         <CanvasSequence canvasRef={canvasRef} />
         {/* Dark overlay blend so neon components pop and text stays perfectly legible */}
         <div className="absolute inset-0 bg-gradient-to-b from-[color:var(--chipzo-ink)]/10 via-[color:var(--chipzo-ink)]/40 to-[color:var(--chipzo-ink)]" />
@@ -267,6 +334,20 @@ function MobileHero() {
           <p className="mt-3 text-xs font-bold uppercase tracking-widest text-[color:var(--chipzo-primary)]">
             Electronic components delivered in 90–120 minutes.
           </p>
+          {/* Mobile Loading Progress Bar */}
+          <div className={`mt-5 flex flex-col items-center gap-2 font-mono text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-700 ease-out ${
+            isLoaded ? 'opacity-0 h-0 overflow-hidden mt-0' : 'opacity-100'
+          }`}>
+            <span className="animate-pulse text-[color:var(--chipzo-lime)] drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]">
+              PRELOADING HARDWARE: <span className="text-[color:var(--chipzo-primary)]">{progressPercent}%</span>
+            </span>
+            <div className="w-48 h-1.5 bg-black/60 border border-[color:var(--chipzo-paper)]/20 p-[1px] relative overflow-hidden flex items-center shadow-[1px_1px_0_rgba(0,0,0,0.3)]">
+              <div 
+                className="h-full bg-[color:var(--chipzo-lime)] transition-all duration-300 ease-out shadow-[0_0_6px_var(--chipzo-lime)]"
+                style={{ width: `${progressPercent}%` }}
+              />
+            </div>
+          </div>
           <div className="mt-5 flex flex-row justify-center gap-3 w-full max-w-xs mx-auto">
             <Link
               to="/shop"
@@ -369,6 +450,18 @@ export default function HeroScrollExperience() {
     const handler = (e) => setIsMobile(e.matches)
     mq.addEventListener('change', handler)
     return () => mq.removeEventListener('change', handler)
+  }, [])
+
+  // Preload first frame of animation immediately on mount for maximum performance
+  useEffect(() => {
+    const link = document.createElement('link')
+    link.rel = 'preload'
+    link.as = 'image'
+    link.href = '/sequence/arduino-nano-exploded/ezgif-frame-001.jpg'
+    document.head.appendChild(link)
+    return () => {
+      document.head.removeChild(link)
+    }
   }, [])
 
   return isMobile ? <MobileHero /> : <DesktopHero />

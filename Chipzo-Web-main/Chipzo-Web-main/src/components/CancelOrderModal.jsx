@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { XCircle, AlertTriangle, Loader, X } from 'lucide-react';
+import { XCircle, AlertTriangle, X } from 'lucide-react';
+import { LoadingButton } from './LoadingButton.jsx';
 
-export default function CancelOrderModal({ isOpen, onClose, onConfirm, isCancelling }) {
+export default function CancelOrderModal({ isOpen, onClose, onConfirm, status = 'idle' }) {
   const [reason, setReason] = useState('');
   const [confirmed, setConfirmed] = useState(false);
 
@@ -12,7 +13,7 @@ export default function CancelOrderModal({ isOpen, onClose, onConfirm, isCancell
   };
 
   const handleClose = () => {
-    if (!isCancelling) {
+    if (status !== 'loading') {
       setReason('');
       setConfirmed(false);
       onClose();
@@ -32,7 +33,7 @@ export default function CancelOrderModal({ isOpen, onClose, onConfirm, isCancell
           </div>
           <button
             onClick={handleClose}
-            disabled={isCancelling}
+            disabled={status === 'loading'}
             className="w-8 h-8 flex items-center justify-center brutal-border brutal-shadow-sm bg-[color:var(--chipzo-paper)] hover:bg-red-100 transition-all cursor-pointer disabled:opacity-50"
           >
             <X size={14} strokeWidth={3} />
@@ -55,7 +56,7 @@ export default function CancelOrderModal({ isOpen, onClose, onConfirm, isCancell
               onChange={(e) => setReason(e.target.value)}
               placeholder="e.g. Changed my mind, Found better price..."
               rows={3}
-              disabled={isCancelling}
+              disabled={status === 'loading'}
               className="w-full border-[3px] border-[color:var(--chipzo-ink)] px-4 py-3 text-sm font-bold bg-[color:var(--chipzo-paper)] outline-none resize-none disabled:opacity-50"
             />
           </div>
@@ -77,18 +78,22 @@ export default function CancelOrderModal({ isOpen, onClose, onConfirm, isCancell
         <div className="px-6 py-4 border-t-[3px] border-[color:var(--chipzo-ink)] flex gap-3">
           <button
             onClick={handleClose}
-            disabled={isCancelling}
+            disabled={status === 'loading'}
             className="flex-1 brutal-border bg-[color:var(--chipzo-paper)] py-3 text-xs font-black uppercase cursor-pointer disabled:opacity-50 hover:bg-[color:var(--chipzo-surface)] transition-all"
           >
             KEEP ORDER
           </button>
-          <button
+          <LoadingButton
             onClick={handleConfirm}
-            disabled={!confirmed || isCancelling}
-            className="flex-1 bg-red-500 text-white brutal-border border-red-700 py-3 text-xs font-black uppercase cursor-pointer disabled:opacity-50 hover:bg-red-600 transition-all flex items-center justify-center gap-2"
+            status={status}
+            disabled={!confirmed}
+            variant="danger"
+            size="sm"
+            icon={XCircle}
+            className="flex-1"
           >
-            {isCancelling ? <><Loader size={14} className="animate-spin" /> CANCELLING...</> : <><XCircle size={14} /> CONFIRM CANCEL</>}
-          </button>
+            CONFIRM CANCEL
+          </LoadingButton>
         </div>
       </div>
     </div>

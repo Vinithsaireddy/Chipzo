@@ -17,7 +17,7 @@ const Order = require('../models/Order');
 
 /**
  * POST /api/payment/verify
- * Verifies Razorpay signature, deducts stock, creates Order, clears cart, assigns delivery.
+ * Verifies Razorpay signature, creates Order, clears cart, assigns delivery.
  */
 const verifyPayment = asyncHandler(async (req, res) => {
   const {
@@ -105,10 +105,7 @@ const verifyPayment = asyncHandler(async (req, res) => {
   // ── 2. Verify signature ───────────────────────────────────────────────────
   paymentService.verifySignature({ razorpayOrderId, razorpayPaymentId, razorpaySignature });
 
-  // ── 3. Deduct stock atomically ────────────────────────────────────────────
-  await orderService.deductStock(validatedItems);
-
-  // ── 4. Create Order document ──────────────────────────────────────────────
+  // ── 3. Create Order document ──────────────────────────────────────────────
   const order = await orderService.createOrder({
     userId: req.user._id,
     items: validatedItems,

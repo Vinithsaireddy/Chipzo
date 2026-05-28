@@ -3,13 +3,15 @@ import { Navigate, useNavigate } from 'react-router-dom'
 import { 
   LayoutDashboard, Boxes, PlusCircle, ShoppingCart, Users, 
   Settings as SettingsIcon, LogOut, Search, Edit, Trash2, Plus, X, 
-  Upload, AlertTriangle, CheckCircle2, Loader2, TrendingUp, 
+  Upload, AlertTriangle, CheckCircle2, TrendingUp, 
   Coins, AlertCircle, ArrowUpRight, Globe, FileText, Sparkles,
   Download, Eye, ShoppingBag, Truck, CreditCard, ChevronRight, ChevronLeft
 } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext.jsx'
 import { productsAPI, ordersAPI } from '../services/api.js'
 import { getProductImageUrl } from '../utils/imageUtils.js'
+import { LoadingButton } from '../components/LoadingButton.jsx'
+import { useAsyncStatus } from '../hooks/useAsyncAction.js'
 
 const BACKEND_CATEGORIES = [
   'Battery', 'Battery Holder', 'Wire', 'Microcontroller',
@@ -42,7 +44,6 @@ export default function Admin() {
   const [formData, setFormData] = useState({
     name: '',
     price: '',
-    stock: '',
     category: 'Microcontroller',
     description: '',
     specifications: [], // array of { key: '', value: '' }
@@ -54,7 +55,7 @@ export default function Admin() {
   })
 
   // --- UI feedback states ---
-  const [saving, setSaving] = useState(false)
+  const { status: savingStatus, execute: executeSave } = useAsyncStatus({ minDuration: 2000, successDuration: 800 })
   const [deletingId, setDeletingId] = useState(null) // ID of product to delete
   const [toasts, setToasts] = useState([]) // array of { id, type, message }
 
@@ -158,8 +159,6 @@ export default function Admin() {
   // --- Fetch Global Stats & Telemetry ---
   const [stats, setStats] = useState({
     totalProductsCount: 0,
-    totalStockValue: 0,
-    lowStockCount: 0,
     activeOrdersCount: 0
   })
 
@@ -170,8 +169,6 @@ export default function Admin() {
       const allProds = prodData?.data || prodData?.products || []
       
       const totalProductsCount = allProds.length
-      const totalStockValue = allProds.reduce((sum, item) => sum + ((item.price || 0) * (item.stock || 0)), 0)
-      const lowStockCount = allProds.filter(item => (item.stock || 0) < 20).length
 
       // 2. Fetch orders stats
       const ordRes = await ordersAPI.adminGetAll({ limit: 1000 })
@@ -184,8 +181,6 @@ export default function Admin() {
 
       setStats({
         totalProductsCount,
-        totalStockValue,
-        lowStockCount,
         activeOrdersCount
       })
 
@@ -214,7 +209,6 @@ export default function Admin() {
       setFormData({
         name: prod.name || '',
         price: prod.price !== null ? String(prod.price) : '',
-        stock: String(prod.stock || 0),
         category: prod.category || 'Microcontroller',
         description: prod.description || '',
         specifications: specsArray,
@@ -231,7 +225,6 @@ export default function Admin() {
       setFormData({
         name: '',
         price: '',
-        stock: '',
         category: 'Microcontroller',
         description: '',
         specifications: [],
@@ -303,12 +296,8 @@ export default function Admin() {
     if (isNaN(parseFloat(formData.price)) || parseFloat(formData.price) < 0) {
       return showToast('warning', 'Valid Price is required.')
     }
-    if (isNaN(parseInt(formData.stock)) || parseInt(formData.stock) < 0) {
-      return showToast('warning', 'Valid Stock Quantity is required.')
-    }
 
-    setSaving(true)
-    try {
+    executeSave(async () => {
       const specsObj = {}
       formData.specifications.forEach(row => {
         if (row.key.trim() && row.value.trim()) {
@@ -324,7 +313,6 @@ export default function Admin() {
         const bodyFormData = new FormData()
         bodyFormData.append('name', formData.name.trim())
         bodyFormData.append('price', parseFloat(formData.price))
-        bodyFormData.append('stock', parseInt(formData.stock, 10))
         bodyFormData.append('category', formData.category)
         bodyFormData.append('description', formData.description.trim())
         bodyFormData.append('specifications', JSON.stringify(specsObj))
@@ -341,7 +329,6 @@ export default function Admin() {
           id: slug,
           name: formData.name.trim(),
           price: parseFloat(formData.price),
-          stock: parseInt(formData.stock, 10),
           category: formData.category,
           description: formData.description.trim(),
           specifications: specsObj,
@@ -370,11 +357,9 @@ export default function Admin() {
       setActiveTab('manage')
       setCurrentPage(1)
       fetchProducts()
-    } catch (err) {
+    }).catch((err) => {
       showToast('danger', err.message || 'Transmission failed.')
-    } finally {
-      setSaving(false)
-    }
+    })
   }
 
   const handleDeleteConfirm = async () => {
@@ -675,32 +660,6 @@ TOTAL OUTFLOW:        ₹${order.totalAmount.toFixed(2)} INR
 
               <div className="border-[3px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-surface)] p-6 shadow-[4px_4px_0_var(--chipzo-ink)] flex items-start justify-between">
                 <div>
-                  <p className="text-[10px] font-black uppercase tracking-widest text-[color:var(--chipzo-muted)]">STOCK CASH VAL</p>
-                  <h3 className="text-4xl font-black mt-2">₹{stats.totalStockValue.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</h3>
-                  <p className="text-[10px] font-semibold text-[color:var(--chipzo-ink)] mt-2 inline-flex items-center gap-1">
-                    <Coins size={12} /> Dynamic asset sum
-                  </p>
-                </div>
-                <div className="bg-[color:var(--chipzo-primary)] border-[2px] border-[color:var(--chipzo-ink)] p-2 text-white">
-                  <Coins size={20} />
-                </div>
-              </div>
-
-              <div className="border-[3px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-surface)] p-6 shadow-[4px_4px_0_var(--chipzo-ink)] flex items-start justify-between">
-                <div>
-                  <p className="text-[10px] font-black uppercase tracking-widest text-[color:var(--chipzo-muted)]">LOW_STOCK ITEMS</p>
-                  <h3 className="text-4xl font-black mt-2 text-[color:var(--chipzo-primary)]">{stats.lowStockCount}</h3>
-                  <p className="text-[10px] font-semibold text-[color:var(--chipzo-muted)] mt-2 inline-flex items-center gap-1">
-                    <AlertTriangle size={12} /> Less than 20 units
-                  </p>
-                </div>
-                <div className="bg-[color:var(--chipzo-paper)] border-[2px] border-[color:var(--chipzo-ink)] p-2">
-                  <AlertTriangle size={20} className="text-[color:var(--chipzo-primary)]" />
-                </div>
-              </div>
-
-              <div className="border-[3px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-surface)] p-6 shadow-[4px_4px_0_var(--chipzo-ink)] flex items-start justify-between">
-                <div>
                   <p className="text-[10px] font-black uppercase tracking-widest text-[color:var(--chipzo-muted)]">ACTIVE SHIPMENTS</p>
                   <h3 className="text-4xl font-black mt-2">{stats.activeOrdersCount}</h3>
                   <p className="text-[10px] font-semibold text-[color:var(--chipzo-ink)] mt-2 inline-flex items-center gap-1">
@@ -732,7 +691,7 @@ TOTAL OUTFLOW:        ₹${order.totalAmount.toFixed(2)} INR
                       <ArrowUpRight size={16} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                     </div>
                     <h4 className="font-black text-sm uppercase tracking-wider">Initialize New Product</h4>
-                    <p className="text-[10px] font-medium text-[color:var(--chipzo-muted)] mt-1">Register a fresh component card with specs and stocks.</p>
+                    <p className="text-[10px] font-medium text-[color:var(--chipzo-muted)] mt-1">Register a fresh component card with specs.</p>
                   </button>
 
                   <button
@@ -822,12 +781,14 @@ TOTAL OUTFLOW:        ₹${order.totalAmount.toFixed(2)} INR
                   ))}
                 </select>
 
-                <button
+                <LoadingButton
                   onClick={() => { initForm(); setActiveTab('add') }}
-                  className="flex items-center gap-2 border-[3px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-lime)] hover:-translate-y-0.5 active:translate-y-0 px-4 py-2 text-xs font-black uppercase tracking-widest shadow-[2px_2px_0_var(--chipzo-ink)] cursor-pointer"
+                  variant="lime"
+                  size="sm"
+                  icon={Plus}
                 >
-                  <Plus size={14} /> CREATE RECORD
-                </button>
+                  CREATE RECORD
+                </LoadingButton>
               </div>
 
             </div>
@@ -853,7 +814,6 @@ TOTAL OUTFLOW:        ₹${order.totalAmount.toFixed(2)} INR
                       <th className="p-3">Product Identifier</th>
                       <th className="p-3 w-40">Category</th>
                       <th className="p-3 w-28">Price (Unit)</th>
-                      <th className="p-3 w-24">Stock</th>
                       <th className="p-3 w-28">Featured</th>
                       <th className="p-3 w-24 text-center">Actions</th>
                     </tr>
@@ -883,16 +843,6 @@ TOTAL OUTFLOW:        ₹${order.totalAmount.toFixed(2)} INR
 
                         <td className="p-3 font-black text-sm tabular-prices text-[color:var(--chipzo-primary)]">
                           ₹{(prod.price || 0).toFixed(2)}
-                        </td>
-
-                        <td className="p-3 font-bold">
-                          <span className={`px-2 py-0.5 border ${
-                            prod.stock <= 10
-                              ? 'border-[color:var(--chipzo-primary)] text-[color:var(--chipzo-primary)] bg-[color:var(--chipzo-primary)]/5 font-black'
-                              : 'border-[color:var(--chipzo-rule)] text-[color:var(--chipzo-ink)]'
-                          }`}>
-                            {prod.stock || 0} U
-                          </span>
                         </td>
 
                         <td className="p-3 font-bold">
@@ -1025,21 +975,6 @@ TOTAL OUTFLOW:        ₹${order.totalAmount.toFixed(2)} INR
                     value={formData.price}
                     onChange={(e) => setFormData(prev => ({ ...prev, price: e.target.value }))}
                     placeholder="e.g. 450.00"
-                    className="w-full border-[3px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-paper)] px-4 py-2.5 text-xs font-bold tracking-wider text-[color:var(--chipzo-ink)] outline-none focus:border-[color:var(--chipzo-primary)] focus:shadow-[3px_3px_0_var(--chipzo-ink)] transition-all"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-[10px] font-black uppercase tracking-widest text-[color:var(--chipzo-ink)] mb-1">
-                    Initial Stock Count *
-                  </label>
-                  <input
-                    type="number"
-                    required
-                    min="0"
-                    value={formData.stock}
-                    onChange={(e) => setFormData(prev => ({ ...prev, stock: e.target.value }))}
-                    placeholder="e.g. 50"
                     className="w-full border-[3px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-paper)] px-4 py-2.5 text-xs font-bold tracking-wider text-[color:var(--chipzo-ink)] outline-none focus:border-[color:var(--chipzo-primary)] focus:shadow-[3px_3px_0_var(--chipzo-ink)] transition-all"
                   />
                 </div>
@@ -1217,21 +1152,15 @@ TOTAL OUTFLOW:        ₹${order.totalAmount.toFixed(2)} INR
                   CANCEL &amp; LIST
                 </button>
                 
-                <button
+                <LoadingButton
                   type="submit"
-                  disabled={saving}
-                  className="border-[3px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-lime)] px-8 py-3 text-xs font-black uppercase tracking-widest shadow-[3px_3px_0_var(--chipzo-ink)] transition-all hover:-translate-y-[2px] hover:shadow-[5px_5px_0_var(--chipzo-ink)] active:translate-y-0 active:shadow-none flex items-center gap-2 cursor-pointer disabled:opacity-50"
+                  status={savingStatus}
+                  variant="lime"
+                  size="md"
+                  icon={Sparkles}
                 >
-                  {saving ? (
-                    <>
-                      <Loader2 className="animate-spin" size={14} /> TRANSMITTING...
-                    </>
-                  ) : (
-                    <>
-                      <Sparkles size={14} /> {editingProduct ? 'COMMIT CHANGES →' : 'REGISTER PRODUCT →'}
-                    </>
-                  )}
-                </button>
+                  {editingProduct ? 'COMMIT CHANGES →' : 'REGISTER PRODUCT →'}
+                </LoadingButton>
               </div>
 
             </div>

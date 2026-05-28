@@ -59,17 +59,11 @@ router.get('/:id', productController.getProduct);
 
 // ── Preprocessing Middleware for Multipart Form Data ────────────────────────
 const preprocessMultipartProduct = (req, res, next) => {
-  // Coerce numeric / boolean fields that arrive as multipart strings
+  // Coerce numeric fields that arrive as multipart strings
   if (req.body.price !== undefined && req.body.price !== null && req.body.price !== '') {
     req.body.price = parseFloat(req.body.price);
   }
-  if (req.body.stock !== undefined && req.body.stock !== null && req.body.stock !== '') {
-    req.body.stock = parseInt(req.body.stock, 10);
-  }
-  if (req.body.in_stock !== undefined) {
-    req.body.in_stock = req.body.in_stock === 'true' || req.body.in_stock === true;
-  }
-  
+
   // Multipart fields can arrive as JSON strings or repeated values.
   req.body.specifications = parseMultipartJsonField(req.body.specifications, {});
 

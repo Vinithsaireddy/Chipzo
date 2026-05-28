@@ -15,7 +15,7 @@ const logger = require('../utils/logger');
 
 /**
  * POST /api/orders
- * Validates cart and stock, creates a Razorpay order.
+ * Validates cart and creates a Razorpay order.
  * Does NOT create a DB Order document — waits for payment verification.
  */
 const initiateOrder = asyncHandler(async (req, res) => {
@@ -26,23 +26,13 @@ const initiateOrder = asyncHandler(async (req, res) => {
   console.log('[Order] RAZORPAY_KEY_SECRET exists:', !!process.env.RAZORPAY_KEY_SECRET);
 
   // Fetch and populate cart
-  const cart = await Cart.findOne({ userId }).populate('items.productId', 'name price stock');
+  const cart = await Cart.findOne({ userId }).populate('items.productId', 'name price');
 
   if (!cart || cart.items.length === 0) {
     console.log('[Order] Cart is empty');
     throw new ApiError(400, 'Your cart is empty.');
   }
   console.log('[Order] Cart items count:', cart.items.length);
-
-  // Validate stock for all items
-  const outOfStock = cartService.validateStock(cart.items);
-  if (outOfStock.length > 0) {
-    const names = outOfStock
-      .map((i) => i.productId?.name || 'Unknown product')
-      .join(', ');
-    console.log('[Order] Out of stock items:', names);
-    throw new ApiError(400, `Insufficient stock for: ${names}`);
-  }
 
   const totalAmount = cartService.computeTotal(cart.items);
   console.log('[Order] Total amount (INR):', totalAmount);
@@ -106,14 +96,8 @@ const createCODOrder = asyncHandler(async (req, res) => {
 
   if (!address) throw new ApiError(400, 'Delivery address is required.');
 
-  const cart = await Cart.findOne({ userId }).populate('items.productId', 'name price stock');
+  const cart = await Cart.findOne({ userId }).populate('items.productId', 'name price');
   if (!cart || cart.items.length === 0) throw new ApiError(400, 'Your cart is empty.');
-
-  const outOfStock = cartService.validateStock(cart.items);
-  if (outOfStock.length > 0) {
-    const names = outOfStock.map((i) => i.productId?.name || 'Unknown product').join(', ');
-    throw new ApiError(400, `Insufficient stock for: ${names}`);
-  }
 
   const items = cart.items.map((item) => {
     const product = item.productId;
@@ -126,8 +110,6 @@ const createCODOrder = asyncHandler(async (req, res) => {
   });
 
   const totalAmount = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-
-  await orderService.deductStock(items);
 
   const order = await orderService.createOrder({
     userId,

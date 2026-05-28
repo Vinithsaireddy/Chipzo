@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
-import { Cpu, ArrowLeft, Lock, AlertTriangle, Loader } from 'lucide-react'
+import { Cpu, ArrowLeft, Lock, AlertTriangle } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext.jsx'
+import { LoadingButton } from '../components/LoadingButton.jsx'
+import { useAsyncStatus } from '../hooks/useAsyncAction.js'
 
 export default function Login() {
   const navigate = useNavigate()
@@ -12,26 +14,22 @@ export default function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [errorMsg, setErrorMsg] = useState('')
-  const [loading, setLoading] = useState(false)
+  const { status, execute } = useAsyncStatus({ minDuration: 2000, successDuration: 800 })
 
   const handleLogin = async (e) => {
     e.preventDefault()
     setErrorMsg('')
-    setLoading(true)
-
-    try {
+    execute(async () => {
       const res = await login(email, password);
       if (res && res.role === 'admin') {
         navigate('/admin', { replace: true });
       } else {
         navigate(from, { replace: true });
       }
-    } catch (err) {
+    }).catch((err) => {
       const msg = err?.data?.message || err.message || 'SECURE_CORE_ERROR: Authentication failed.'
       setErrorMsg(msg)
-    } finally {
-      setLoading(false)
-    }
+    })
   }
 
   const goBack = () => {
@@ -132,20 +130,29 @@ export default function Login() {
               />
             </div>
 
-            <button
+            <LoadingButton
               type="submit"
-              disabled={loading}
-              className="mt-6 w-full border-[3px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-lime)] py-4 text-sm font-black uppercase tracking-[0.1em] text-[color:var(--chipzo-ink)] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all hover:-translate-y-[2px] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] active:translate-y-0 active:translate-x-[2px] active:shadow-none flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              status={status}
+              variant="lime"
+              size="lg"
+              icon={Lock}
+              fullWidth
+              className="mt-6"
             >
-              {loading ? (
-                <><Loader size={16} className="animate-spin" /> AUTHENTICATING...</>
-              ) : (
-                <><Lock size={16} /> ACCESS SYSTEM →</>
-              )}
-            </button>
+              ACCESS SYSTEM →
+            </LoadingButton>
           </form>
 
-          <div className="mt-8 border-t-[2px] border-dashed border-[color:var(--chipzo-rule)] pt-6 text-center">
+          <div className="mt-6 text-center">
+            <button
+              onClick={() => navigate('/forgot-password', { state: { email } })}
+              className="text-[10px] font-black uppercase tracking-widest text-[color:var(--chipzo-muted)] hover:text-[color:var(--chipzo-primary)] transition-colors"
+            >
+              FORGOT PASSWORD? RECOVER ACCESS
+            </button>
+          </div>
+
+          <div className="mt-4 border-t-[2px] border-dashed border-[color:var(--chipzo-rule)] pt-6 text-center">
             <button
               onClick={() => navigate('/signup')}
               className="text-xs font-black uppercase tracking-widest text-[color:var(--chipzo-primary)] hover:text-[color:var(--chipzo-ink)] transition-colors"

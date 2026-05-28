@@ -1,14 +1,16 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import SmoothScroll from '../components/SmoothScroll.jsx';
 import Navbar from '../components/Navbar.jsx';
 import Footer from '../components/Footer.jsx';
 import {
-  ArrowRight, ArrowLeft, Check, AlertTriangle, Loader,
+  ArrowRight, ArrowLeft, Check, AlertTriangle,
   MapPin, Trash2, CreditCard, Banknote, Plus, Edit3, Star,
 } from 'lucide-react';
 import { ordersAPI, paymentAPI, addressAPI } from '../services/api.js';
 import { useAuth } from '../contexts/AuthContext.jsx';
 import AlertModal from '../components/AlertModal.jsx';
+import { LoadingButton } from '../components/LoadingButton.jsx';
+import { useAsyncStatus } from '../hooks/useAsyncAction.js';
 import { checkSunday, checkTime, checkBangalore } from '../utils/orderValidation.js';
 
 const fallbackOrderId = () => `CPZ-ORD-${Date.now()}`;
@@ -27,17 +29,17 @@ export default function Checkout({ onNavigate, activeCategory, cart = [], onChec
 
   const [currentStep, setCurrentStep] = useState('address');
   const [errorMessage, setErrorMessage] = useState('');
-  const [isProcessing, setIsProcessing] = useState(false);
+  const { status: processingStatus, execute: executeProcessing } = useAsyncStatus({ minDuration: 2000, successDuration: 800 });
+  const { status: saveStatus, execute: executeSave } = useAsyncStatus({ minDuration: 2000, successDuration: 800 });
   const [paymentMethod, setPaymentMethod] = useState('razorpay');
   const [selectedAddressId, setSelectedAddressId] = useState(null);
   const [savedAddresses, setSavedAddresses] = useState([]);
+  const [addressesLoading, setAddressesLoading] = useState(true);
   const [editingId, setEditingId] = useState(null);
   const [showAddForm, setShowAddForm] = useState(false);
   const [formData, setFormData] = useState(EMPTY_FORM);
   const [formErrors, setFormErrors] = useState({});
-  const [isSavingAddress, setIsSavingAddress] = useState(false);
   const [alertModal, setAlertModal] = useState({ open: false, title: '', message: '', type: 'default' });
-  const isSubmitting = useRef(false);
 
   const showAlert = (title, message, type) => setAlertModal({ open: true, title, message, type })
   const closeAlert = () => setAlertModal({ open: false, title: '', message: '', type: 'default' })
@@ -65,7 +67,11 @@ export default function Checkout({ onNavigate, activeCategory, cart = [], onChec
 
   // Fetch saved addresses on mount
   useEffect(() => {
-    if (!isLoggedIn) return;
+    if (!isLoggedIn) {
+      setAddressesLoading(false);
+      return;
+    }
+    setAddressesLoading(true);
     addressAPI.getAll()
       .then(data => {
         const addrs = data?.data?.addresses || data?.addresses || [];
@@ -75,7 +81,10 @@ export default function Checkout({ onNavigate, activeCategory, cart = [], onChec
           setSelectedAddressId(defaultAddr._id);
         }
       })
-      .catch(() => {});
+      .catch(() => {})
+      .finally(() => {
+        setAddressesLoading(false);
+      });
   }, [isLoggedIn]);
 
   // Pre-fill name from user for new address form (handled in Add button click)
@@ -135,8 +144,7 @@ export default function Checkout({ onNavigate, activeCategory, cart = [], onChec
 
   const handleSaveAddress = async () => {
     if (!validateForm()) return;
-    setIsSavingAddress(true);
-    try {
+    executeSave(async () => {
       if (editingId) {
         const data = await addressAPI.update(editingId, formData);
         const updated = data?.data?.address || data?.address;
@@ -153,11 +161,9 @@ export default function Checkout({ onNavigate, activeCategory, cart = [], onChec
         }
       }
       resetForm();
-    } catch (err) {
+    }).catch((err) => {
       setErrorMessage(err.message || 'Failed to save address.');
-    } finally {
-      setIsSavingAddress(false);
-    }
+    })
   };
 
   const handleDeleteAddress = async (id) => {
@@ -224,33 +230,26 @@ export default function Checkout({ onNavigate, activeCategory, cart = [], onChec
 
   const handlePlaceOrder = async (e) => {
     e.preventDefault();
-    if (isSubmitting.current) return;
     const addr = selectedAddr;
     if (!addr) {
       setErrorMessage('No delivery address selected.');
       return;
     }
 
-    if (!runValidations(addr)) {
-      setIsProcessing(false);
-      return;
-    }
+    if (!runValidations(addr)) return;
 
-    isSubmitting.current = true;
-    setIsProcessing(true);
     setErrorMessage('');
+    executeProcessing(async () => {
+      const chosenAddress = {
+        fullName: addr.fullName,
+        phone: addr.phone,
+        house: addr.house || '',
+        street: addr.street,
+        city: addr.city,
+        state: addr.state,
+        pincode: addr.pincode,
+      };
 
-    const chosenAddress = {
-      fullName: addr.fullName,
-      phone: addr.phone,
-      house: addr.house || '',
-      street: addr.street,
-      city: addr.city,
-      state: addr.state,
-      pincode: addr.pincode,
-    };
-
-    try {
       if (paymentMethod === 'cod' && isLoggedIn) {
         const data = await ordersAPI.createCOD(chosenAddress);
         const order = data?.data?.order || data?.order || {};
@@ -381,12 +380,9 @@ export default function Checkout({ onNavigate, activeCategory, cart = [], onChec
         console.log('[Checkout] Opening Razorpay checkout modal');
         rzp.open();
       });
-    } catch (err) {
+    }).catch((err) => {
       setErrorMessage(err.message || 'Payment failed. Please try again.');
-    } finally {
-      setIsProcessing(false);
-      isSubmitting.current = false;
-    }
+    })
   };
 
   const isStepActive = (step) => {
@@ -444,7 +440,17 @@ export default function Checkout({ onNavigate, activeCategory, cart = [], onChec
 
                 <div className="p-5 space-y-4">
                   {/* Saved Addresses List */}
-                  {savedAddresses.length === 0 && !showAddForm ? (
+                  {addressesLoading ? (
+                    <div className="text-center py-12 brutal-border bg-[color:var(--chipzo-paper)] relative overflow-hidden flex flex-col items-center justify-center gap-3">
+                      <div className="absolute inset-0 opacity-[0.03] mix-blend-overlay bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
+                      <div className="flex h-10 w-10 items-center justify-center border-[2px] border-[color:var(--chipzo-lime)] bg-[color:var(--chipzo-ink)] shadow-[2px_2px_0px_var(--chipzo-lime)] animate-spin-slow">
+                        <MapPin size={20} className="text-[color:var(--chipzo-lime)] animate-pulse" />
+                      </div>
+                      <div className="mt-2 text-xs font-mono font-black uppercase tracking-[0.2em] text-[color:var(--chipzo-ink)] flex items-center gap-1.5">
+                        <span className="animate-pulse">Retrieving Address Telemetry...</span>
+                      </div>
+                    </div>
+                  ) : savedAddresses.length === 0 && !showAddForm ? (
                     <div className="text-center py-10 brutal-border bg-[color:var(--chipzo-paper)]">
                       <MapPin size={32} className="mx-auto text-[color:var(--chipzo-muted)] mb-3" />
                       <p className="text-sm font-black uppercase">No saved addresses</p>
@@ -477,10 +483,17 @@ export default function Checkout({ onNavigate, activeCategory, cart = [], onChec
                                     inputCls={inputCls}
                                   />
                                   <div className="flex gap-2 mt-4">
-                                    <button type="button" onClick={handleSaveAddress} disabled={isSavingAddress}
-                                      className="flex-1 brutal-border bg-[color:var(--chipzo-primary)] py-2.5 text-xs font-black uppercase cursor-pointer flex items-center justify-center gap-2 hover:-translate-y-[1px] transition-all disabled:opacity-50">
-                                      {isSavingAddress ? <><Loader size={12} className="animate-spin" /> SAVING...</> : <><Check size={14} /> SAVE</>}
-                                    </button>
+                                    <LoadingButton
+                                      type="button"
+                                      onClick={handleSaveAddress}
+                                      status={saveStatus}
+                                      variant="primary"
+                                      size="sm"
+                                      icon={Check}
+                                      className="flex-1"
+                                    >
+                                      SAVE
+                                    </LoadingButton>
                                     <button type="button" onClick={cancelEdit}
                                       className="brutal-border bg-[color:var(--chipzo-paper)] py-2.5 px-4 text-xs font-black uppercase cursor-pointer hover:bg-[color:var(--chipzo-surface)]">
                                       CANCEL
@@ -568,10 +581,17 @@ export default function Checkout({ onNavigate, activeCategory, cart = [], onChec
                                 inputCls={inputCls}
                               />
                           <div className="flex gap-2 mt-4">
-                            <button type="button" onClick={handleSaveAddress} disabled={isSavingAddress}
-                              className="flex-1 brutal-border bg-[color:var(--chipzo-primary)] py-2.5 text-xs font-black uppercase cursor-pointer flex items-center justify-center gap-2 hover:-translate-y-[1px] transition-all disabled:opacity-50">
-                              {isSavingAddress ? <><Loader size={12} className="animate-spin" /> SAVING...</> : <><Check size={14} /> SAVE ADDRESS</>}
-                            </button>
+                            <LoadingButton
+                              type="button"
+                              onClick={handleSaveAddress}
+                              status={saveStatus}
+                              variant="primary"
+                              size="sm"
+                              icon={Check}
+                              className="flex-1"
+                            >
+                              SAVE ADDRESS
+                            </LoadingButton>
                             <button type="button" onClick={cancelEdit}
                               className="brutal-border bg-[color:var(--chipzo-paper)] py-2.5 px-4 text-xs font-black uppercase cursor-pointer hover:bg-[color:var(--chipzo-surface)]">
                               CANCEL
@@ -685,24 +705,37 @@ export default function Checkout({ onNavigate, activeCategory, cart = [], onChec
               )}
               {currentStep === 'address' && <div />}
               {currentStep === 'address' && (
-                <button type="button" onClick={handleProceedToReview}
-                  className="bg-[color:var(--chipzo-primary)] text-[color:var(--chipzo-ink)] font-black uppercase py-4 px-8 brutal-border brutal-shadow cursor-pointer flex items-center gap-3 text-lg hover:-translate-y-[1px] transition-all">
-                  REVIEW ORDER <ArrowRight strokeWidth={3} />
-                </button>
+                <LoadingButton
+                  type="button"
+                  onClick={handleProceedToReview}
+                  variant="primary"
+                  size="lg"
+                  icon={ArrowRight}
+                >
+                  REVIEW ORDER
+                </LoadingButton>
               )}
               {currentStep === 'review' && (
-                <button type="button" onClick={() => {
-                  if (runValidations(selectedAddr)) setCurrentStep('payment')
-                }}
-                  className="bg-[color:var(--chipzo-primary)] text-[color:var(--chipzo-ink)] font-black uppercase py-4 px-8 brutal-border brutal-shadow cursor-pointer flex items-center gap-3 text-lg hover:-translate-y-[1px] transition-all">
-                  PROCEED TO PAYMENT <ArrowRight strokeWidth={3} />
-                </button>
+                <LoadingButton
+                  type="button"
+                  onClick={() => { if (runValidations(selectedAddr)) setCurrentStep('payment') }}
+                  variant="primary"
+                  size="lg"
+                  icon={ArrowRight}
+                >
+                  PROCEED TO PAYMENT
+                </LoadingButton>
               )}
               {currentStep === 'payment' && (
-                <button type="button" onClick={handlePlaceOrder} disabled={isProcessing}
-                  className="bg-[color:var(--chipzo-lime)] text-[color:var(--chipzo-ink)] font-black uppercase py-4 px-8 brutal-border brutal-shadow cursor-pointer flex items-center gap-3 text-lg hover:-translate-y-[1px] transition-all disabled:opacity-50 disabled:cursor-not-allowed">
-                  {isProcessing ? <><Loader size={20} className="animate-spin" /> PROCESSING...</> : <>{paymentMethod === 'cod' ? 'PLACE ORDER (COD)' : `PAY ₹${total.toFixed(2)}`} <Check strokeWidth={3} /></>}
-                </button>
+                <LoadingButton
+                  type="button"
+                  onClick={handlePlaceOrder}
+                  status={processingStatus}
+                  variant="lime"
+                  size="lg"
+                >
+                  {paymentMethod === 'cod' ? 'PLACE ORDER (COD)' : `PAY ₹${total.toFixed(2)}`}
+                </LoadingButton>
               )}
             </div>
 
@@ -716,24 +749,43 @@ export default function Checkout({ onNavigate, activeCategory, cart = [], onChec
                   </button>
                 )}
                 {currentStep === 'address' && (
-                  <button type="button" onClick={handleProceedToReview}
-                    className="flex flex-1 items-center justify-center gap-2 border-[3px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-primary)] py-3 px-4 text-xs font-black uppercase shadow-[3px_3px_0_rgba(0,0,0,1)] cursor-pointer">
-                    REVIEW ORDER <ArrowRight size={14} strokeWidth={3} />
-                  </button>
+                  <LoadingButton
+                    type="button"
+                    onClick={handleProceedToReview}
+                    variant="primary"
+                    size="sm"
+                    icon={ArrowRight}
+                    fullWidth
+                    className="flex-1"
+                  >
+                    REVIEW ORDER
+                  </LoadingButton>
                 )}
                 {currentStep === 'review' && (
-                  <button type="button" onClick={() => {
-                    if (runValidations(selectedAddr)) setCurrentStep('payment')
-                  }}
-                    className="flex flex-1 items-center justify-center gap-2 border-[3px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-primary)] py-3 px-4 text-xs font-black uppercase shadow-[3px_3px_0_rgba(0,0,0,1)] cursor-pointer">
-                    TO PAYMENT <ArrowRight size={14} strokeWidth={3} />
-                  </button>
+                  <LoadingButton
+                    type="button"
+                    onClick={() => { if (runValidations(selectedAddr)) setCurrentStep('payment') }}
+                    variant="primary"
+                    size="sm"
+                    icon={ArrowRight}
+                    fullWidth
+                    className="flex-1"
+                  >
+                    TO PAYMENT
+                  </LoadingButton>
                 )}
                 {currentStep === 'payment' && (
-                  <button type="button" onClick={handlePlaceOrder} disabled={isProcessing}
-                    className="flex flex-1 items-center justify-center gap-2 border-[3px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-lime)] py-3 px-4 text-xs font-black uppercase shadow-[3px_3px_0_rgba(0,0,0,1)] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
-                    {isProcessing ? <><Loader size={14} className="animate-spin" /> PROCESSING</> : <>{paymentMethod === 'cod' ? 'PLACE ORDER' : `PAY ₹${total.toFixed(2)}`}</>}
-                  </button>
+                <LoadingButton
+                  type="button"
+                  onClick={handlePlaceOrder}
+                  status={processingStatus}
+                  variant="lime"
+                  size="sm"
+                  fullWidth
+                  className="flex-1"
+                >
+                  {paymentMethod === 'cod' ? 'PLACE ORDER' : `PAY ₹${total.toFixed(2)}`}
+                </LoadingButton>
                 )}
               </div>
             </div>

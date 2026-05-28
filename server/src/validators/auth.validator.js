@@ -42,4 +42,33 @@ const updateProfileSchema = Joi.object({
   newPassword: Joi.string().min(8).max(128).optional(),
 }).min(1).messages({ 'object.min': 'At least one field must be provided for update.' });
 
-module.exports = { signupSchema, loginSchema, updateProfileSchema };
+const forgotPasswordSchema = Joi.object({
+  email: Joi.string().trim().email({ tlds: { allow: false } }).lowercase().required().messages({
+    'string.email': 'Please provide a valid email address',
+    'any.required': 'Email is required',
+  }),
+});
+
+const verifyForgotOTPSchema = Joi.object({
+  email: Joi.string().trim().email({ tlds: { allow: false } }).lowercase().required().messages({
+    'string.email': 'Please provide a valid email address',
+    'any.required': 'Email is required',
+  }),
+  otp: Joi.string().length(6).required().messages({
+    'string.length': 'OTP must be exactly 6 digits',
+    'any.required': 'OTP is required',
+  }),
+});
+
+const resetPasswordSchema = Joi.object({
+  token: Joi.string().required().messages({
+    'any.required': 'Reset token is required',
+  }),
+  password: Joi.string().min(8).max(128).required().messages({
+    'string.min': 'Password must be at least 8 characters',
+    'string.max': 'Password cannot exceed 128 characters',
+    'any.required': 'Password is required',
+  }),
+});
+
+module.exports = { signupSchema, loginSchema, updateProfileSchema, forgotPasswordSchema, verifyForgotOTPSchema, resetPasswordSchema };

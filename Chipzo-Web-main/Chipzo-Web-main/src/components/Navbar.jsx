@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
-import { Search, ShoppingCart, UserRound, X, Store } from 'lucide-react'
+import { Search, ShoppingCart, UserRound, X } from 'lucide-react'
 import ProfilePanel from './ProfilePanel'
 import { useAuth } from '../contexts/AuthContext.jsx'
 
@@ -8,44 +8,15 @@ export default function Navbar({ onNavigate, currentPage = 'home', activeCategor
   const { isLoggedIn } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
-  const hideMobileBottomSearch = currentPage === 'cart' || currentPage === 'checkout'
-  const [isMobileSearchExpanded, setIsMobileSearchExpanded] = useState(() => location.state?.mobileSearchExpanded || false)
   const [scrolled, setScrolled] = useState(false)
   const [isProfileOpen, setIsProfileOpen] = useState(false)
   const desktopSearchRef = useRef(null)
-  const mobileExpandedSearchRef = useRef(null)
   const [searchQuery, setSearchQuery] = useState(() => {
     if (location.pathname === '/shop') {
       return new URLSearchParams(location.search).get('search') || ''
     }
     return ''
   })
-
-  const [keyboardHeight, setKeyboardHeight] = useState(0)
-
-  useEffect(() => {
-    if (typeof window === 'undefined' || !window.visualViewport) return
-    
-    const handleViewportChange = () => {
-      const vv = window.visualViewport
-      const heightDifference = window.innerHeight - vv.height
-      
-      // Virtual keyboard height threshold
-      if (heightDifference > 150) {
-        setKeyboardHeight(heightDifference)
-      } else {
-        setKeyboardHeight(0)
-      }
-    }
-
-    window.visualViewport.addEventListener('resize', handleViewportChange)
-    window.visualViewport.addEventListener('scroll', handleViewportChange)
-    
-    return () => {
-      window.visualViewport.removeEventListener('resize', handleViewportChange)
-      window.visualViewport.removeEventListener('scroll', handleViewportChange)
-    }
-  }, [])
 
   // Debounced dynamic search — updates URL as user types
   useEffect(() => {
@@ -61,7 +32,7 @@ export default function Navbar({ onNavigate, currentPage = 'home', activeCategor
         const qs = params.toString()
         navigate(`${location.pathname}${qs ? `?${qs}` : ''}`, { replace: true })
       } else if (q) {
-        navigate(`/shop?search=${encodeURIComponent(q)}`, { state: { mobileSearchExpanded: true } })
+        navigate(`/shop?search=${encodeURIComponent(q)}`)
       }
     }, 300)
     return () => clearTimeout(timer)
@@ -90,13 +61,10 @@ export default function Navbar({ onNavigate, currentPage = 'home', activeCategor
   useEffect(() => {
     if (location.pathname !== '/shop' || !location.state?.focusSearch) return
 
+    const target = desktopSearchRef.current
+    if (!target) return
+
     const focusVisibleSearch = () => {
-      const target = [desktopSearchRef.current, mobileExpandedSearchRef.current].find(
-        (input) => input && input.offsetParent !== null
-      )
-
-      if (!target) return
-
       target.focus()
       const length = target.value.length
       target.setSelectionRange(length, length)
@@ -116,16 +84,16 @@ export default function Navbar({ onNavigate, currentPage = 'home', activeCategor
     if (e.key === 'Enter') {
       e.preventDefault()
       const q = searchQuery.trim()
-      if (q) navigate(`/shop?search=${encodeURIComponent(q)}`, { state: { focusSearch: true, mobileSearchExpanded: true } })
-      else navigate('/shop', { state: { focusSearch: true, mobileSearchExpanded: true } })
+      if (q) navigate(`/shop?search=${encodeURIComponent(q)}`, { state: { focusSearch: true } })
+      else navigate('/shop', { state: { focusSearch: true } })
     }
   }
 
   const handleSearchBarClick = (e) => {
     if (location.pathname !== '/shop') {
       const q = searchQuery.trim()
-      if (q) navigate(`/shop?search=${encodeURIComponent(q)}`, { state: { focusSearch: true, mobileSearchExpanded: true } })
-      else navigate('/shop', { state: { focusSearch: true, mobileSearchExpanded: true } })
+      if (q) navigate(`/shop?search=${encodeURIComponent(q)}`, { state: { focusSearch: true } })
+      else navigate('/shop', { state: { focusSearch: true } })
     } else {
       const el = e.currentTarget.querySelector('input')
       el?.focus()
@@ -297,78 +265,6 @@ export default function Navbar({ onNavigate, currentPage = 'home', activeCategor
       </header>
 
       <ProfilePanel isOpen={isProfileOpen} onClose={() => setIsProfileOpen(false)} onNavigate={onNavigate} />
-
-      {!hideMobileBottomSearch && (
-        <>
-          {!isMobileSearchExpanded ? (
-            /* Compact Collapsed Search Icon Button - Floating on the Bottom Right */
-            <div className="fixed bottom-24 right-6 z-40 flex justify-end pointer-events-none lg:hidden">
-              <button
-                type="button"
-                onClick={() => setIsMobileSearchExpanded(true)}
-                className={`pointer-events-auto flex h-12 w-12 items-center justify-center border-[3px] border-[color:var(--chipzo-ink)] shadow-[4px_4px_0_var(--chipzo-ink)] transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0_var(--chipzo-ink)] cursor-pointer ${
-                  location.pathname === '/shop'
-                    ? 'bg-[color:var(--chipzo-ink)]'
-                    : 'bg-[color:var(--chipzo-surface)]'
-                }`}
-                aria-label="Search Catalog"
-              >
-                <Search 
-                  size={22} 
-                  strokeWidth={3} 
-                  className={
-                    location.pathname === '/shop'
-                      ? 'text-[color:var(--chipzo-paper)]'
-                      : 'text-[color:var(--chipzo-ink)]'
-                  } 
-                />
-              </button>
-            </div>
-          ) : (
-            /* Full Expanded Search Bar - Centered Horizontally */
-            <div 
-              className="fixed left-0 right-0 z-40 flex w-full justify-center pointer-events-none lg:hidden transition-all duration-100"
-              style={{
-                bottom: keyboardHeight > 0 ? `${keyboardHeight + 12}px` : '96px'
-              }}
-            >
-              <div
-                onClick={handleSearchBarClick}
-                className="pointer-events-auto w-[92%] max-w-md group flex items-stretch border-[3px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-surface)] shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all duration-200 focus-within:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] focus-within:translate-x-[2px] focus-within:translate-y-[2px]"
-              >
-                <span className="flex items-center justify-center bg-[color:var(--chipzo-ink)] px-3 border-r-[3px] border-[color:var(--chipzo-ink)] text-[10px] font-black uppercase tracking-[0.2em] text-[color:var(--chipzo-lime)] select-none">
-                  SEARCH &gt;
-                </span>
-                <input
-                  type="text"
-                  autoFocus
-                  ref={mobileExpandedSearchRef}
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  onKeyDown={handleSearchKeyDown}
-                  placeholder="SEARCH PARTS OR SPECS..."
-                  className="flex-1 bg-transparent px-3 py-2.5 text-base sm:text-xs placeholder:text-xs font-black uppercase tracking-[0.1em] text-[color:var(--chipzo-ink)] placeholder:text-[color:var(--chipzo-muted)] focus:outline-none"
-                />
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    if (searchQuery) {
-                      setSearchQuery('')
-                    } else {
-                      setIsMobileSearchExpanded(false)
-                    }
-                  }}
-                  className="flex items-center justify-center px-3 border-l-[3px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-surface)] text-[color:var(--chipzo-muted)] hover:text-red-500 transition-colors cursor-pointer"
-                  aria-label="Clear or Collapse"
-                >
-                  <X size={16} strokeWidth={3} />
-                </button>
-              </div>
-            </div>
-          )}
-        </>
-      )}
     </div>
   )
 }

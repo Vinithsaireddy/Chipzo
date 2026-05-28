@@ -8,7 +8,7 @@ const CATEGORY_DATA = [
     itemCount: 7,
     badge: 'BEST SELLER',
     slug: 'Microcontroller',
-    image: 'https://images.unsplash.com/photo-1608564697071-ddf911d81370?w=600&auto=format&fit=crop&q=80'
+    image: '/assets/MIcrocontrollers.jpeg'
   },
   {
     name: 'Sensors',
@@ -16,7 +16,7 @@ const CATEGORY_DATA = [
     itemCount: 14,
     badge: 'POPULAR',
     slug: 'Sensor',
-    image: 'https://images.unsplash.com/photo-1555664424-778a1e5e1b48?w=600&auto=format&fit=crop&q=80'
+    image: '/assets/Sensors.jpeg'
   },
   {
     name: 'Motors & Actuators',
@@ -24,7 +24,7 @@ const CATEGORY_DATA = [
     itemCount: 6,
     badge: 'ROBOTICS',
     slug: 'Motor',
-    image: 'https://images.unsplash.com/photo-1563770660941-20978e870e26?w=600&auto=format&fit=crop&q=80'
+    image: '/assets/Motors.jpeg'
   },
   {
     name: 'Displays',
@@ -32,7 +32,7 @@ const CATEGORY_DATA = [
     itemCount: 37,
     badge: 'VISUAL',
     slug: 'Display',
-    image: 'https://images.unsplash.com/photo-1517059224940-d4af9eec41b7?w=600&auto=format&fit=crop&q=80'
+    image: '/assets/Displays.jpeg'
   },
   {
     name: 'Batteries & Power',
@@ -40,7 +40,7 @@ const CATEGORY_DATA = [
     itemCount: 10,
     badge: 'MOST USED',
     slug: 'Battery',
-    image: 'https://images.unsplash.com/photo-1622445262465-2481c4574875?w=600&auto=format&fit=crop&q=80'
+    image: '/assets/Battery.jpeg'
   }
 ]
 
@@ -50,7 +50,7 @@ function CategoryCard({ categoryName, description, itemCount, image, badge, slug
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-40px' }}
-      whileHover={{ 
+      whileHover={{
         y: -4,
         x: -1.5,
         boxShadow: '8px 8px 0px 0px rgba(0,0,0,1)'
@@ -73,7 +73,7 @@ function CategoryCard({ categoryName, description, itemCount, image, badge, slug
       <div className="relative aspect-[16/10] w-full overflow-hidden border-b-[3px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-ink)] shrink-0">
         {/* PCB design / circuit accent lines overlay */}
         <div className="absolute inset-0 z-10 pointer-events-none opacity-20 bg-[linear-gradient(rgba(0,194,255,0.15)_1px,transparent_1px),linear-gradient(90deg,rgba(0,194,255,0.15)_1px,transparent_1px)] bg-[size:8px_8px]" />
-        
+
         {/* Neon blue and green glow blooms */}
         <div className="absolute -left-10 -top-10 z-10 h-24 w-24 rounded-full bg-[color:var(--chipzo-primary)]/10 blur-xl group-hover:scale-125 transition-transform duration-700" />
         <div className="absolute -right-10 -bottom-10 z-10 h-24 w-24 rounded-full bg-[color:var(--chipzo-lime)]/10 blur-xl group-hover:scale-125 transition-transform duration-700" />
@@ -149,7 +149,7 @@ export default function CategoryShowcase({ onNavigate }) {
             BUILD YOUR NEXT PROJECT.
           </h2>
         </div>
-        
+
         <button
           type="button"
           onClick={() => onNavigate?.('shop')}

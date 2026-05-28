@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
-import { ChevronLeft, ChevronRight, ChevronDown, ShoppingCart, RefreshCw, AlertOctagon, Clock, Ban } from 'lucide-react'
+import { ChevronLeft, ChevronRight, ChevronDown, ShoppingCart, RefreshCw, AlertOctagon, Clock, Ban, X } from 'lucide-react'
 import SmoothScroll from '../components/SmoothScroll.jsx'
 import Navbar from '../components/Navbar.jsx'
 import ProductQuickViewModal from '../components/ProductQuickViewModal.jsx'
+import { LoadingButton } from '../components/LoadingButton.jsx'
 import { ProductCardSkeleton, ProductTableRowSkeleton } from '../components/ProductCardSkeleton.jsx'
 import { productsAPI } from '../services/api.js'
 import { getProductImageUrl } from '../utils/imageUtils.js'
@@ -44,8 +45,7 @@ function mapProduct(p) {
   const voltageMin = voltageEntry ? parseFloat(voltageEntry[1]) || 0 : 0
   const voltageMax = voltageMin
 
-  const stockLabel = p.stock > 10 ? 'In Stock' : p.stock > 0 ? 'Low Stock' : 'Out of Stock'
-  const statusLabel = p.stock > 10 ? 'IN_STOCK' : p.stock > 0 ? 'HOT_ITEM' : 'PREORDER'
+  const statusLabel = 'IN_STOCK'
   const tones = ['primary', 'lime', 'ink']
   const idStr = p._id ? p._id.toString() : (p.id || '')
   const tone = tones[Math.abs(idStr.charCodeAt(0) || 0) % 3]
@@ -65,7 +65,6 @@ function mapProduct(p) {
     tone,
     voltageMin,
     voltageMax,
-    stock: stockLabel,
     image: p.images?.length ? getProductImageUrl(p.images[0]) : '',
   }
 }
@@ -118,8 +117,6 @@ export default function Shop({ onNavigate, activeCategory, setActiveCategory, ca
   const [totalPages, setTotalPages]   = useState(1)
   const [totalCount, setTotalCount]   = useState(0)
   const [prevActiveCategory, setPrevActiveCategory] = useState(activeCategory)
-  const [minVoltage, setMinVoltage]   = useState('0')
-  const [maxVoltage, setMaxVoltage]   = useState('12')
   const [search, setSearch]           = useState(() => new URLSearchParams(location.search).get('search') || '')
   const [categoryOpen, setCategoryOpen] = useState(false)
   const [quickViewProduct, setQuickViewProduct] = useState(null)
@@ -129,6 +126,42 @@ export default function Shop({ onNavigate, activeCategory, setActiveCategory, ca
   const [isLoading, setIsLoading] = useState(true)
   const [apiError, setApiError]   = useState('')
   const [retryKey, setRetryKey]   = useState(0)
+
+  // Per-product add-to-cart status map
+  const [btnStatuses, setBtnStatuses] = useState({})
+
+  const handleAddToCart = useCallback(async (product, e) => {
+    e?.stopPropagation()
+    if (btnStatuses[product.id]) return
+    setBtnStatuses(prev => ({ ...prev, [product.id]: 'loading' }))
+    try {
+      // Simulate premium pre-load latency (800ms to 1s, e.g., 900ms)
+      await new Promise(resolve => setTimeout(resolve, 900))
+
+      // When loading state is done, we actually add the product to the cart
+      await onAddToCart?.({
+        id: product.id,
+        _backendProductId: product._id,
+        code: product.code,
+        title: product.title,
+        category: product.category,
+        specs: product.specs,
+        price: product.priceNum,
+        image: product.image || 'https://images.unsplash.com/photo-1591453089816-0fbb971b454c?w=400&q=80',
+        status: 'Operational'
+      })
+
+      setBtnStatuses(prev => ({ ...prev, [product.id]: 'success' }))
+      setTimeout(() => {
+        setBtnStatuses(prev => { const n = { ...prev }; delete n[product.id]; return n })
+      }, 800)
+    } catch (err) {
+      setBtnStatuses(prev => ({ ...prev, [product.id]: 'error' }))
+      setTimeout(() => {
+        setBtnStatuses(prev => { const n = { ...prev }; delete n[product.id]; return n })
+      }, 1000)
+    }
+  }, [onAddToCart, btnStatuses])
 
   // Sync search state from URL
   useEffect(() => {
@@ -171,23 +204,11 @@ export default function Shop({ onNavigate, activeCategory, setActiveCategory, ca
   // Sync filter state when global activeCategory changes during render
   if (activeCategory !== prevActiveCategory) {
     setPrevActiveCategory(activeCategory)
-    setMinVoltage('0')
-    setMaxVoltage('12')
     setCurrentPage(1)
   }
 
-  // Client-side voltage filter on top of server-fetched results
-  const filteredProducts = products.filter((product) => {
-    if (minVoltage !== '') {
-      const minV = parseFloat(minVoltage)
-      if (!isNaN(minV) && product.voltageMax < minV) return false
-    }
-    if (maxVoltage !== '') {
-      const maxV = parseFloat(maxVoltage)
-      if (!isNaN(maxV) && product.voltageMin > maxV) return false
-    }
-    return true
-  })
+  // Products are already filtered server-side
+  const filteredProducts = products
 
   // Generate dynamic pagination range centered around currentPage
   const getPaginationRange = () => {
@@ -309,36 +330,42 @@ export default function Shop({ onNavigate, activeCategory, setActiveCategory, ca
                   </div>
                 </div>
 
-                {/* Voltage Limits (right) */}
-                <div className="flex flex-wrap items-stretch">
-                  {/* Voltage Range Limits */}
-                  <div className="flex flex-col justify-center px-4 py-2.5 lg:px-6">
-                    <p className="mb-1 text-[8px] font-black uppercase tracking-[0.16em] text-[color:var(--chipzo-muted)]">Voltage Limits (V)</p>
-                    <div className="flex items-center gap-1.5">
-                      <div className="flex items-center border-[2px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-paper)] h-[28px] focus-within:border-[color:var(--chipzo-primary)] transition-all">
-                        <span className="flex h-full items-center justify-center bg-[color:var(--chipzo-ink)] px-2 text-[7px] font-black uppercase tracking-[0.1em] text-[color:var(--chipzo-paper)] border-r-[2px] border-[color:var(--chipzo-ink)] select-none">
-                          MIN
-                        </span>
-                        <input
-                          type="number" min="0" max="24" step="0.1" placeholder="0.0"
-                          value={minVoltage}
-                          onChange={(e) => { setMinVoltage(e.target.value); setCurrentPage(1) }}
-                          className="h-full w-14 bg-transparent text-center text-[10px] font-black uppercase text-[color:var(--chipzo-ink)] focus:outline-none focus:bg-[color:var(--chipzo-surface)] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                        />
-                      </div>
-                      <span className="text-[10px] font-black text-[color:var(--chipzo-ink)]">⇄</span>
-                      <div className="flex items-center border-[2px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-paper)] h-[28px] focus-within:border-[color:var(--chipzo-primary)] transition-all">
-                        <span className="flex h-full items-center justify-center bg-[color:var(--chipzo-ink)] px-2 text-[7px] font-black uppercase tracking-[0.1em] text-[color:var(--chipzo-paper)] border-r-[2px] border-[color:var(--chipzo-ink)] select-none">
-                          MAX
-                        </span>
-                        <input
-                          type="number" min="0" max="24" step="0.1" placeholder="12.0"
-                          value={maxVoltage}
-                          onChange={(e) => { setMaxVoltage(e.target.value); setCurrentPage(1) }}
-                          className="h-full w-14 bg-transparent text-center text-[10px] font-black uppercase text-[color:var(--chipzo-ink)] focus:outline-none focus:bg-[color:var(--chipzo-surface)] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                        />
-                      </div>
-                    </div>
+                {/* SEARCH — Mobile only (replaces Voltage Limits) */}
+                <div className="border-b-[3px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-paper)] lg:hidden">
+                  <div className="flex items-stretch">
+                    <span className="flex items-center justify-center bg-[color:var(--chipzo-ink)] px-4 border-r-[3px] border-[color:var(--chipzo-ink)] text-[10px] font-black uppercase tracking-[0.2em] text-[color:var(--chipzo-lime)] select-none shrink-0">
+                      SEARCH &gt;
+                    </span>
+                    <input
+                      type="text"
+                      value={search}
+                      onChange={(e) => {
+                        setSearch(e.target.value)
+                        setCurrentPage(1)
+                        const params = new URLSearchParams(location.search)
+                        if (e.target.value) params.set('search', e.target.value)
+                        else params.delete('search')
+                        const qs = params.toString()
+                        navigate(`${location.pathname}${qs ? `?${qs}` : ''}`, { replace: true })
+                      }}
+                      placeholder="SEARCH PARTS OR SPECS..."
+                      className="flex-1 bg-transparent px-3 py-3 text-xs font-black uppercase tracking-[0.1em] text-[color:var(--chipzo-ink)] placeholder:text-[color:var(--chipzo-muted)] focus:outline-none"
+                    />
+                    {search && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setSearch('')
+                          setCurrentPage(1)
+                          const p = new URLSearchParams(location.search)
+                          p.delete('search')
+                          navigate(`${location.pathname}?${p.toString()}`, { replace: true })
+                        }}
+                        className="flex items-center justify-center px-3 border-l-[3px] border-[color:var(--chipzo-ink)] text-[color:var(--chipzo-muted)] hover:text-red-500 transition-colors cursor-pointer shrink-0"
+                      >
+                        <X size={16} strokeWidth={3} />
+                      </button>
+                    )}
                   </div>
                 </div>
 
@@ -359,7 +386,7 @@ export default function Shop({ onNavigate, activeCategory, setActiveCategory, ca
                     FILTER_CHAIN:
                   </span>
                   
-                  {(!search && !activeCategory && minVoltage === '0' && maxVoltage === '12') ? (
+                  {(!search && !activeCategory) ? (
                     <span className="text-[9px] font-black uppercase tracking-[0.1em] text-[color:var(--chipzo-lime)] border border-dashed border-[color:var(--chipzo-lime)] px-2 py-0.5">
                       PASS_THRU (NO ACTIVE FILTERS)
                     </span>
@@ -386,28 +413,15 @@ export default function Shop({ onNavigate, activeCategory, setActiveCategory, ca
                           CAT: {activeCategory} <span className="text-[9px]">✖</span>
                         </button>
                       )}
-                      {(minVoltage !== '0' || maxVoltage !== '12') && (
-                        <button
-                          onClick={() => {
-                            setMinVoltage('0')
-                            setMaxVoltage('12')
-                          }}
-                          className="flex items-center gap-1 border border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-paper)] px-2 py-0.5 text-[8px] font-bold uppercase tracking-[0.05em] hover:bg-[color:var(--chipzo-primary)] hover:text-[color:var(--chipzo-paper)]"
-                        >
-                          VOLTS: {minVoltage}V - {maxVoltage}V <span className="text-[9px]">✖</span>
-                        </button>
-                      )}
                     </div>
                   )}
                 </div>
 
-                {(!search && !activeCategory && minVoltage === '0' && maxVoltage === '12') ? null : (
+                {(!search && !activeCategory) ? null : (
                   <button
                     type="button"
                     onClick={() => {
                       setActiveCategory('')
-                      setMinVoltage('0')
-                      setMaxVoltage('12')
                       setSearch('')
                       setCurrentPage(1)
                       const p = new URLSearchParams(location.search)
@@ -424,7 +438,7 @@ export default function Shop({ onNavigate, activeCategory, setActiveCategory, ca
             </div>
           </section>
 
-          <section className="section-frame pb-10 sm:pb-14 relative z-10">
+          <section className="section-frame pb-16 sm:pb-14 lg:pb-14 relative z-10">
 
             {/* ===== API ERROR STATE ===== */}
             {apiError && (
@@ -464,8 +478,6 @@ export default function Shop({ onNavigate, activeCategory, setActiveCategory, ca
                       type="button"
                       onClick={() => {
                         setActiveCategory('')
-                        setMinVoltage('0')
-                        setMaxVoltage('12')
                         setSearch('')
                         setCurrentPage(1)
                         const p = new URLSearchParams(location.search)
@@ -544,27 +556,17 @@ export default function Shop({ onNavigate, activeCategory, setActiveCategory, ca
                               {product.note}
                             </p>
                           </div>
-                          <button
+                          <LoadingButton
                             type="button"
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              onAddToCart?.({
-                                id: product.id,
-                                _backendProductId: product._id,
-                                code: product.code,
-                                title: product.title,
-                                category: product.category,
-                                specs: product.specs,
-                                price: product.priceNum,
-                                image: product.image || 'https://images.unsplash.com/photo-1591453089816-0fbb971b454c?w=400&q=80',
-                                status: 'Operational'
-                              });
-                            }}
-                            className="flex items-center gap-1 border-[1.5px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-ink)] px-1.5 sm:px-2 py-1 text-[9px] sm:text-xs font-black uppercase tracking-[0.05em] text-[color:var(--chipzo-paper)] shadow-[1px_1px_0_var(--chipzo-ink)] transition-all hover:bg-[color:var(--chipzo-primary)] active:translate-x-[0.5px] active:translate-y-[0.5px] active:shadow-none focus:outline-none shrink-0"
+                            onClick={(e) => handleAddToCart(product, e)}
+                            status={btnStatuses[product.id] || 'idle'}
+                            variant="ink"
+                            size="sm"
+                            icon={ShoppingCart}
+                            className="shrink-0"
                           >
-                            <ShoppingCart size={9} strokeWidth={2.6} />
                             Add
-                          </button>
+                          </LoadingButton>
                         </div>
                       </div>
                     </div>

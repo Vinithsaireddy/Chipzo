@@ -55,7 +55,6 @@ export default function ProfilePanel({ isOpen, onClose, onNavigate }) {
     if (saved) return JSON.parse(saved)
     return {
       delivery: true,
-      stock: true,
       promo: false,
       tactical: true
     }
@@ -370,10 +369,6 @@ export default function ProfilePanel({ isOpen, onClose, onNavigate }) {
                   <div className="flex items-center justify-between">
                     <span className="text-[10px] font-bold uppercase tracking-widest text-[color:var(--chipzo-ink)]">Delivery Alerts</span>
                     <BrutalistToggle checked={toggles.delivery} onChange={() => handleToggle('delivery')} />
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-[color:var(--chipzo-ink)]">Stock Alerts</span>
-                    <BrutalistToggle checked={toggles.stock} onChange={() => handleToggle('stock')} />
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-[10px] font-bold uppercase tracking-widest text-[color:var(--chipzo-ink)]">Promotional Signals</span>
