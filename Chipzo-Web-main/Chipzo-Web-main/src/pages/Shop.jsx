@@ -6,6 +6,7 @@ import Navbar from '../components/Navbar.jsx'
 import ProductQuickViewModal from '../components/ProductQuickViewModal.jsx'
 import { ProductCardSkeleton, ProductTableRowSkeleton } from '../components/ProductCardSkeleton.jsx'
 import { productsAPI } from '../services/api.js'
+import { getProductImageUrl } from '../utils/imageUtils.js'
 
 const SHOP_CATEGORIES = [
   { label: 'All Categories', value: '' },
@@ -65,7 +66,7 @@ function mapProduct(p) {
     voltageMin,
     voltageMax,
     stock: stockLabel,
-    image: p.images?.length ? p.images[0] : '',
+    image: p.images?.length ? getProductImageUrl(p.images[0]) : '',
   }
 }
 

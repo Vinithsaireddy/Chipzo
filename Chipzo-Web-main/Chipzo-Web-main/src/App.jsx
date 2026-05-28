@@ -16,6 +16,7 @@ import VerifyOTP from './pages/VerifyOTP.jsx'
 import { useAuth } from './contexts/AuthContext.jsx'
 import { cartAPI } from './services/api.js'
 import Toast from './components/Toast.jsx'
+import { getProductImageUrl } from './utils/imageUtils.js'
 
 function App() {
   const navigate = useNavigate()
@@ -55,12 +56,7 @@ function App() {
           .map(item => {
             const product = item.productId
             const price = item.priceAtTime || product.price
-            let rawImage = product.images?.length ? product.images[0] : ''
-            // Rewrite raw R2 URL to local proxy URL
-            if (rawImage.includes('.r2.dev/')) {
-              const key = rawImage.split('.r2.dev/')[1]
-              rawImage = `/api/products/images/${key}`
-            }
+            const rawImage = product.images?.length ? getProductImageUrl(product.images[0]) : ''
             const specsObj = product.specifications || {}
             const specs = Object.entries(specsObj).map(([k, v]) => `${k}: ${v}`)
             return {

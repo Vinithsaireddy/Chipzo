@@ -9,6 +9,7 @@ import {
 } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext.jsx'
 import { productsAPI, ordersAPI } from '../services/api.js'
+import { getProductImageUrl } from '../utils/imageUtils.js'
 
 const BACKEND_CATEGORIES = [
   'Battery', 'Battery Holder', 'Wire', 'Microcontroller',
@@ -209,6 +210,7 @@ export default function Admin() {
   // --- Form Initialization & Specs Helpers ---
   const initForm = (prod = null) => {
     if (prod) {
+      const firstImage = prod.images && prod.images.length > 0 ? getProductImageUrl(prod.images[0]) : ''
       const specsArray = Object.entries(prod.specifications || {}).map(([k, v]) => ({ key: k, value: String(v) }))
       setFormData({
         name: prod.name || '',
@@ -218,9 +220,9 @@ export default function Admin() {
         description: prod.description || '',
         specifications: specsArray,
         imageMode: 'url',
-        imageUrl: prod.images && prod.images.length > 0 ? prod.images[0] : '',
+        imageUrl: firstImage,
         imageFile: null,
-        imagePreview: prod.images && prod.images.length > 0 ? prod.images[0] : '',
+        imagePreview: firstImage,
         isFeatured: prod.isFeatured || false,
         existingImages: prod.images || [],
       })
@@ -894,7 +896,7 @@ TOTAL OUTFLOW:        ₹${order.totalAmount.toFixed(2)} INR
                         <td className="p-3 flex items-center justify-center">
                           <div className="h-10 w-10 border-2 border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-surface)] overflow-hidden shrink-0 flex items-center justify-center">
                             {prod.images && prod.images.length > 0 ? (
-                              <img src={prod.images[0]} alt="" className="object-cover h-full w-full" />
+                              <img src={getProductImageUrl(prod.images[0])} alt="" className="object-cover h-full w-full" />
                             ) : (
                               <div className="text-[8px] font-black uppercase tracking-wider text-[color:var(--chipzo-muted)]">N/A</div>
                             )}

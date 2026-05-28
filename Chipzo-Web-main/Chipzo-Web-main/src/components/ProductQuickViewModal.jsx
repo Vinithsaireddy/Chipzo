@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, ShoppingCart, Minus, Plus, Zap, Cpu } from 'lucide-react'
+import { getProductImageUrl } from '../utils/imageUtils.js'
 
 const RELATED_ITEMS = {
   Microcontroller: [
@@ -40,7 +41,8 @@ function ProductGallery({ images, title }) {
     )
   }
 
-  const currentImage = images[currentIndex] || images[0]
+  const resolvedImages = images.map(getProductImageUrl)
+  const currentImage = resolvedImages[currentIndex] || resolvedImages[0]
 
   const handleMouseMove = (e) => {
     if (!zoomed || !imageRef.current) return
@@ -72,9 +74,9 @@ function ProductGallery({ images, title }) {
           PREVIEW
         </div>
       </div>
-      {images.length > 1 && (
+      {resolvedImages.length > 1 && (
         <div className="flex gap-2 overflow-x-auto pb-1">
-          {images.map((img, idx) => (
+          {resolvedImages.map((img, idx) => (
             <button
               key={idx}
               onClick={() => setCurrentIndex(idx)}

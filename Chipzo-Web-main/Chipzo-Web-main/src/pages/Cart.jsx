@@ -7,6 +7,7 @@ import Navbar from '../components/Navbar.jsx'
 import Footer from '../components/Footer.jsx'
 import { getOrderStatus } from '../utils/orderValidation.js'
 import { productsAPI } from '../services/api.js'
+import { getProductImageUrl } from '../utils/imageUtils.js'
 
 /* ================= FUTURISTIC DELIVERY AND VALIDATION COMPONENTS ================= */
 
@@ -291,7 +292,7 @@ export default function Cart({ onNavigate, activeCategory, cart = [], isCartLoad
             category: p.category,
             specs: Array.isArray(p.specifications) ? p.specifications : [],
             price: p.price ?? 0,
-            image: Array.isArray(p.images) && p.images.length > 0 ? p.images[0] : '',
+            image: Array.isArray(p.images) && p.images.length > 0 ? getProductImageUrl(p.images[0]) : '',
             status: p.in_stock ? 'Operational' : 'Out of Stock'
           }))
         setComplementaryItems(filtered)
