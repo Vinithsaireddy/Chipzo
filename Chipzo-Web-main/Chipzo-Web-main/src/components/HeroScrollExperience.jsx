@@ -4,6 +4,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import CanvasSequence from './CanvasSequence.jsx'
 import useImageSequence from '../hooks/useImageSequence.js'
 import { motion } from 'framer-motion'
+import { Link } from 'react-router-dom'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -90,9 +91,9 @@ const SCENES = [
           START YOUR<br /><span className="text-[color:var(--chipzo-lime)]">NEXT PROJECT</span><br />TODAY.
         </h2>
         <div className="mt-8 sm:mt-12 flex flex-col sm:flex-row flex-wrap justify-center gap-4 sm:gap-6">
-          <a href="#shop" className="brutal-border brutal-shadow bg-[color:var(--chipzo-primary)] px-6 sm:px-10 py-4 sm:py-5 text-base sm:text-xl font-black uppercase text-[color:var(--chipzo-paper)] pointer-events-auto transition-transform hover:-translate-x-1 hover:-translate-y-1 active:translate-x-0 active:translate-y-0">
+          <Link to="/shop" className="brutal-border brutal-shadow bg-[color:var(--chipzo-primary)] px-6 sm:px-10 py-4 sm:py-5 text-base sm:text-xl font-black uppercase text-[color:var(--chipzo-paper)] pointer-events-auto transition-transform hover:-translate-x-1 hover:-translate-y-1 active:translate-x-0 active:translate-y-0">
             Explore Marketplace
-          </a>
+          </Link>
           <button className="brutal-border brutal-shadow bg-[color:var(--chipzo-surface)] px-6 sm:px-10 py-4 sm:py-5 text-base sm:text-xl font-black uppercase text-[color:var(--chipzo-ink)] pointer-events-auto transition-transform hover:-translate-x-1 hover:-translate-y-1 active:translate-x-0 active:translate-y-0">
             Join Discord
           </button>
@@ -267,12 +268,12 @@ function MobileHero() {
             Electronic components delivered in 90–120 minutes.
           </p>
           <div className="mt-5 flex flex-row justify-center gap-3 w-full max-w-xs mx-auto">
-            <a
-              href="#shop"
-              className="brutal-border brutal-shadow-sm flex-1 bg-[color:var(--chipzo-primary)] py-2.5 text-xs font-black uppercase text-[color:var(--chipzo-paper)] text-center transition-transform hover:-translate-x-1 hover:-translate-y-1 active:translate-x-0 active:translate-y-0"
+            <Link
+              to="/shop"
+              className="brutal-border brutal-shadow-sm flex-1 bg-[color:var(--chipzo-primary)] py-2.5 text-xs font-black uppercase text-[color:var(--chipzo-paper)] text-center transition-transform hover:-translate-x-1 hover:-translate-y-1 active:translate-x-0 active:translate-y-0 animate-pulse-light"
             >
               Explore
-            </a>
+            </Link>
             <button className="border-[2px] border-[color:var(--chipzo-paper)] bg-transparent flex-1 py-2.5 text-xs font-black uppercase text-[color:var(--chipzo-paper)] text-center hover:bg-[color:var(--chipzo-surface)] hover:text-[color:var(--chipzo-ink)] transition-colors">
               Discord
             </button>

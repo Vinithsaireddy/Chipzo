@@ -445,140 +445,21 @@ export default function Shop({ onNavigate, activeCategory, setActiveCategory, ca
 
             {/* ===== LOADING SKELETON ===== */}
             {isLoading && (
-              <>
-                {/* Mobile card skeletons */}
-                <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:hidden mb-6">
-                  {Array.from({ length: 8 }).map((_, i) => (
-                    <ProductCardSkeleton key={i} />
-                  ))}
-                </div>
-                {/* Desktop table skeletons */}
-                <div className="hidden lg:block overflow-x-auto brutal-border brutal-shadow bg-[color:var(--chipzo-surface)] mb-6">
-                  <div className="min-w-[1120px]">
-                    <div className="grid grid-cols-[120px_2fr_1.5fr_1fr_140px] border-b-[3px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-ink)] text-xs font-black uppercase tracking-[0.16em] text-[color:var(--chipzo-paper)]">
-                      <div className="border-r-[2px] border-[color:var(--chipzo-paper)]/20 px-3 py-3">Schematic</div>
-                      <div className="border-r-[2px] border-[color:var(--chipzo-paper)]/20 px-4 py-3">Part Number / Description</div>
-                      <div className="border-r-[2px] border-[color:var(--chipzo-paper)]/20 px-4 py-3">Specs (V/A/O)</div>
-                      <div className="border-r-[2px] border-[color:var(--chipzo-paper)]/20 px-4 py-3">Price (Unit)</div>
-                      <div className="px-3 py-3">Action</div>
-                    </div>
-                    {Array.from({ length: 8 }).map((_, i) => (
-                      <ProductTableRowSkeleton key={i} index={i} total={8} />
-                    ))}
-                  </div>
-                </div>
-              </>
+              <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4 mb-6">
+                {Array.from({ length: 8 }).map((_, i) => (
+                  <ProductCardSkeleton key={i} />
+                ))}
+              </div>
             )}
 
-            {/* ===== MOBILE CARD VIEW (< lg) ===== */}
+            {/* ===== PRODUCT TILES GRID VIEW ===== */}
             {!isLoading && !apiError && (
-            <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:hidden">
-              {filteredProducts.length === 0 ? (
-                <div className="col-span-2 flex flex-col items-center justify-center brutal-border brutal-shadow bg-[color:var(--chipzo-paper)] py-14 px-5 text-center">
-                  <p className="text-xs font-black uppercase tracking-[0.2em] text-[color:var(--chipzo-primary)]">Zero Results</p>
-                  <h3 className="mt-2 text-xl font-black uppercase tracking-tight text-[color:var(--chipzo-ink)]">No Components Match</h3>
-                  <p className="mt-2 text-xs font-medium leading-relaxed text-[color:var(--chipzo-muted)]">Adjust filters or choose a different category.</p>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setActiveCategory('')
-                      setMinVoltage('0')
-                      setMaxVoltage('12')
-                      setSearch('')
-                      setCurrentPage(1)
-                      const p = new URLSearchParams(location.search)
-                      p.delete('search')
-                      navigate(`${location.pathname}?${p.toString()}${p.toString() ? '' : ''}`, { replace: true })
-                    }}
-                    className="mt-5 border-[3px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-lime)] px-4 py-2 text-xs font-black uppercase tracking-[0.12em] shadow-[2px_2px_0_var(--chipzo-ink)]"
-                  >
-                    Reset Filters
-                  </button>
-                </div>
-              ) : (
-                  filteredProducts.map((product) => (
-                  <div
-                    key={product.id}
-                    onClick={() => setQuickViewProduct(product)}
-                    className="brutal-border brutal-shadow bg-[color:var(--chipzo-paper)] overflow-hidden flex flex-col justify-between cursor-pointer transition-all hover:-translate-y-[1px] hover:shadow-[6px_6px_0_var(--chipzo-ink)]"
-                  >
-                    {/* Visual schematic preview with absolute status badge at top */}
-                    <div className="bg-[color:var(--chipzo-surface)] border-b-[2px] border-[color:var(--chipzo-ink)] flex items-center justify-center p-3 relative h-24 sm:h-28 shrink-0">
-                      <div className="flex h-full w-full items-center justify-center scale-75 sm:scale-90">
-                        <ProductVisual image={product.image} code={product.code} title={product.title} />
-                      </div>
-                      <span className={`absolute top-2 left-2 inline-flex border-[1.5px] border-[color:var(--chipzo-ink)] px-1 py-0.5 text-[7px] font-extrabold uppercase tracking-[0.05em] leading-none ${statusTone(product.tone)}`}>
-                        {product.status}
-                      </span>
-                    </div>
-
-                    {/* Card Content & Footer Stack */}
-                    <div className="p-2 sm:p-3 flex flex-col justify-between flex-grow min-w-0">
-                      {/* Product Header */}
-                      <div className="min-w-0">
-                        <h2 className="text-[10px] sm:text-xs font-black leading-tight tracking-[-0.02em] text-[color:var(--chipzo-ink)] line-clamp-2 uppercase">
-                          {product.title}
-                        </h2>
-                      </div>
-
-                      {/* Product Price & Add Button Row */}
-                      <div className="flex items-center justify-between mt-3 pt-2 border-t border-[color:var(--chipzo-rule)] gap-1 sm:gap-2">
-                        <div className="min-w-0">
-                          <p className="tabular-prices text-xs sm:text-sm font-black tracking-[-0.03em] text-[color:var(--chipzo-primary)] leading-none">
-                            {product.price}
-                          </p>
-                          <p className="text-[7px] sm:text-[8px] font-bold uppercase tracking-[0.05em] text-[color:var(--chipzo-muted)] mt-0.5 whitespace-nowrap overflow-hidden text-ellipsis">
-                            {product.note}
-                          </p>
-                        </div>
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            onAddToCart?.({
-                              id: product.id,
-                              _backendProductId: product._id,
-                              code: product.code,
-                              title: product.title,
-                              category: product.category,
-                              specs: product.specs,
-                              price: product.priceNum,
-                              image: product.image || 'https://images.unsplash.com/photo-1591453089816-0fbb971b454c?w=400&q=80',
-                              status: 'Operational'
-                            });
-                          }}
-                          className="flex items-center gap-1 border-[1.5px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-ink)] px-1.5 sm:px-2 py-1 text-[9px] sm:text-xs font-black uppercase tracking-[0.05em] text-[color:var(--chipzo-paper)] shadow-[1px_1px_0_var(--chipzo-ink)] transition-all hover:bg-[color:var(--chipzo-primary)] active:translate-x-[0.5px] active:translate-y-[0.5px] active:shadow-none focus:outline-none shrink-0"
-                        >
-                          <ShoppingCart size={9} strokeWidth={2.6} />
-                          Add
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                ))
-              )}
-            </div>
-            )}
-
-            {/* ===== DESKTOP TABLE VIEW (lg+) ===== */}
-            {!isLoading && !apiError && (
-            <div className="hidden lg:block overflow-x-auto brutal-border brutal-shadow bg-[color:var(--chipzo-surface)]">
-              <div className="min-w-[1120px]">
-                <div className="grid grid-cols-[120px_2fr_1.5fr_1fr_140px] border-b-[3px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-ink)] text-xs font-black uppercase tracking-[0.16em] text-[color:var(--chipzo-paper)]">
-                  <div className="border-r-[2px] border-[color:var(--chipzo-paper)]/20 px-3 py-3">Schematic</div>
-                  <div className="border-r-[2px] border-[color:var(--chipzo-paper)]/20 px-4 py-3">Part Number / Description</div>
-                  <div className="border-r-[2px] border-[color:var(--chipzo-paper)]/20 px-4 py-3">Specs (V/A/O)</div>
-                  <div className="border-r-[2px] border-[color:var(--chipzo-paper)]/20 px-4 py-3">Price (Unit)</div>
-                  <div className="px-3 py-3">Action</div>
-                </div>
-
+              <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4">
                 {filteredProducts.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center bg-[color:var(--chipzo-paper)] py-16 px-4 text-center">
+                  <div className="col-span-full flex flex-col items-center justify-center brutal-border brutal-shadow bg-[color:var(--chipzo-paper)] py-14 px-5 text-center">
                     <p className="text-xs font-black uppercase tracking-[0.2em] text-[color:var(--chipzo-primary)]">Zero Results</p>
-                    <h3 className="mt-2 text-2xl font-black uppercase tracking-[-0.03em] text-[color:var(--chipzo-ink)]">No Components Match Your Schema</h3>
-                    <p className="mt-2 max-w-[45ch] text-xs font-medium leading-relaxed text-[color:var(--chipzo-muted)]">
-                      Adjust your category or voltage filters.
-                    </p>
+                    <h3 className="mt-2 text-xl font-black uppercase tracking-tight text-[color:var(--chipzo-ink)]">No Components Match</h3>
+                    <p className="mt-2 text-xs font-medium leading-relaxed text-[color:var(--chipzo-muted)]">Adjust filters or choose a different category.</p>
                     <button
                       type="button"
                       onClick={() => {
@@ -591,78 +472,105 @@ export default function Shop({ onNavigate, activeCategory, setActiveCategory, ca
                         p.delete('search')
                         navigate(`${location.pathname}?${p.toString()}${p.toString() ? '' : ''}`, { replace: true })
                       }}
-                      className="mt-6 border-[3px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-lime)] px-4 py-2 text-xs font-black uppercase tracking-[0.12em] shadow-[2px_2px_0_var(--chipzo-ink)] transition-all hover:-translate-y-0.5 hover:shadow-[3px_3px_0_var(--chipzo-ink)] active:translate-y-0"
+                      className="mt-5 border-[3px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-lime)] px-4 py-2 text-xs font-black uppercase tracking-[0.12em] shadow-[2px_2px_0_var(--chipzo-ink)]"
                     >
-                      Reset All Filters
+                      Reset Filters
                     </button>
                   </div>
                 ) : (
-                  filteredProducts.map((product, index) => (
+                  filteredProducts.map((product) => (
                     <div
                       key={product.id}
                       onClick={() => setQuickViewProduct(product)}
-                      className={[
-                        'grid grid-cols-[120px_2fr_1.5fr_1fr_140px] items-stretch bg-[color:var(--chipzo-paper)] transition-colors hover:bg-[color:var(--chipzo-surface)] cursor-pointer',
-                        index < filteredProducts.length - 1 ? 'border-b-[2px] border-[color:var(--chipzo-rule)]' : '',
-                      ].join(' ')}
+                      className="group brutal-border brutal-shadow bg-[color:var(--chipzo-paper)] overflow-hidden flex flex-col justify-between cursor-pointer transition-all hover:-translate-y-[1px] hover:shadow-[6px_6px_0_var(--chipzo-ink)]"
                     >
-                      <div className="flex items-center justify-center border-r-[2px] border-[color:var(--chipzo-rule)] p-3">
-                        <ProductVisual image={product.image} code={product.code} title={product.title} className="max-h-20" />
-                      </div>
+                      {/* Visual schematic preview with absolute status badge at top */}
+                      <div 
+                        className="bg-[color:var(--chipzo-surface)] border-b-[2.5px] border-[color:var(--chipzo-ink)] flex items-center justify-center relative h-40 sm:h-48 md:h-52 lg:h-56 shrink-0 overflow-hidden"
+                        style={{
+                          backgroundImage: `
+                            radial-gradient(circle at center, rgba(0, 238, 255, 0.02) 0%, transparent 80%),
+                            radial-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+                            linear-gradient(rgba(0, 0, 0, 0.02) 1px, transparent 1px),
+                            linear-gradient(90deg, rgba(0, 0, 0, 0.02) 1px, transparent 1px)
+                          `,
+                          backgroundSize: '100% 100%, 16px 16px, 8px 8px, 8px 8px',
+                          backgroundColor: 'var(--chipzo-surface)',
+                        }}
+                      >
+                        {/* Retro diagnostic corner brackets */}
+                        <div className="absolute inset-2.5 border border-[color:var(--chipzo-ink)]/5 pointer-events-none">
+                          <div className="absolute top-0 left-0 w-1.5 h-1.5 border-t border-l border-[color:var(--chipzo-ink)]/30" />
+                          <div className="absolute top-0 right-0 w-1.5 h-1.5 border-t border-r border-[color:var(--chipzo-ink)]/30" />
+                          <div className="absolute bottom-0 left-0 w-1.5 h-1.5 border-b border-l border-[color:var(--chipzo-ink)]/30" />
+                          <div className="absolute bottom-0 right-0 w-1.5 h-1.5 border-b border-r border-[color:var(--chipzo-ink)]/30" />
+                        </div>
 
-                      <div className="border-r-[2px] border-[color:var(--chipzo-rule)] px-4 py-4">
-                        <h2 className="text-base font-black leading-[0.95] tracking-[-0.02em] uppercase">{product.title}</h2>
-                        <span className={`mt-2 inline-flex border-[2px] px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.14em] ${statusTone(product.tone)}`}>
+                        {/* Image Showcase Bay */}
+                        <div className="w-full h-full p-3 sm:p-4 flex items-center justify-center transition-all duration-300 ease-out group-hover:scale-[1.08] group-hover:rotate-[0.5deg]">
+                          <ProductVisual image={product.image} code={product.code} title={product.title} />
+                        </div>
+                        
+                        <span className={`absolute top-3 left-3 inline-flex border-[1.5px] border-[color:var(--chipzo-ink)] px-1.5 py-0.5 text-[8px] font-extrabold uppercase tracking-[0.05em] leading-none ${statusTone(product.tone)}`}>
                           {product.status}
                         </span>
-                        <p className="mt-2 max-w-[38ch] text-xs font-medium leading-relaxed text-[color:var(--chipzo-muted)]">
-                          {product.description}
-                        </p>
                       </div>
 
-                      <div className="border-r-[2px] border-[color:var(--chipzo-rule)] px-4 py-4 text-xs font-bold uppercase tracking-[0.08em]">
-                        <div className="grid gap-1.5">
-                          {product.specs.map((spec) => (
-                            <div key={spec} className="text-[color:var(--chipzo-ink)]">
-                              {spec}
-                            </div>
-                          ))}
+                      {/* Card Content & Footer Stack */}
+                      <div className="p-2.5 sm:p-3.5 flex flex-col justify-between flex-grow min-w-0">
+                        {/* Product Header */}
+                        <div className="min-w-0">
+                          <h2 className="text-[10px] sm:text-xs lg:text-sm font-black leading-tight tracking-[-0.02em] text-[color:var(--chipzo-ink)] line-clamp-2 uppercase">
+                            {product.title}
+                          </h2>
+                          {product.description ? (
+                            <p className="mt-1 text-[9px] sm:text-[10px] font-semibold text-[color:var(--chipzo-muted)] line-clamp-1 uppercase tracking-tight">
+                              {product.description}
+                            </p>
+                          ) : product.specs && product.specs.length > 0 ? (
+                            <p className="mt-1 text-[9px] sm:text-[10px] font-semibold text-[color:var(--chipzo-muted)] line-clamp-1 uppercase tracking-tight">
+                              {product.specs.join(' • ')}
+                            </p>
+                          ) : null}
                         </div>
-                      </div>
 
-                      <div className="border-r-[2px] border-[color:var(--chipzo-rule)] px-4 py-4">
-                        <p className="tabular-prices text-xl font-black tracking-[-0.03em] text-[color:var(--chipzo-primary)]">{product.price}</p>
-                        <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.12em] text-[color:var(--chipzo-muted)]">{product.note}</p>
-                      </div>
-
-                      <div className="flex items-center justify-center px-3 py-4">
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            onAddToCart?.({
-                              id: product.id,
-                              _backendProductId: product._id,
-                              code: product.code,
-                              title: product.title,
-                              category: product.category,
-                              specs: product.specs,
-                              price: product.priceNum,
-                              image: product.image || 'https://images.unsplash.com/photo-1591453089816-0fbb971b454c?w=400&q=80',
-                              status: 'Operational'
-                            });
-                          }}
-                          className="flex min-h-10 cursor-pointer items-center gap-2 border-[2px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-paper)] px-3 py-1.5 text-xs font-bold uppercase tracking-[0.12em] shadow-[2px_2px_0_var(--chipzo-ink)] transition-all hover:-translate-y-0.5 hover:bg-[color:var(--chipzo-ink)] hover:text-[color:var(--chipzo-paper)] hover:shadow-[3px_3px_0_var(--chipzo-ink)] active:translate-y-0 active:shadow-[1px_1px_0_var(--chipzo-ink)] focus:outline-none focus:ring-2 focus:ring-[color:var(--chipzo-primary)] focus:ring-offset-1"
-                        >
-                          <ShoppingCart size={14} strokeWidth={2.4} />
-                          Add
-                        </button>
+                        {/* Product Price & Add Button Row */}
+                        <div className="flex items-center justify-between mt-3 pt-2 border-t border-[color:var(--chipzo-rule)] gap-1.5 sm:gap-2">
+                          <div className="min-w-0">
+                            <p className="tabular-prices text-xs sm:text-sm font-black tracking-[-0.03em] text-[color:var(--chipzo-primary)] leading-none">
+                              {product.price}
+                            </p>
+                            <p className="text-[7px] sm:text-[8px] font-bold uppercase tracking-[0.05em] text-[color:var(--chipzo-muted)] mt-0.5 whitespace-nowrap overflow-hidden text-ellipsis">
+                              {product.note}
+                            </p>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              onAddToCart?.({
+                                id: product.id,
+                                _backendProductId: product._id,
+                                code: product.code,
+                                title: product.title,
+                                category: product.category,
+                                specs: product.specs,
+                                price: product.priceNum,
+                                image: product.image || 'https://images.unsplash.com/photo-1591453089816-0fbb971b454c?w=400&q=80',
+                                status: 'Operational'
+                              });
+                            }}
+                            className="flex items-center gap-1 border-[1.5px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-ink)] px-1.5 sm:px-2 py-1 text-[9px] sm:text-xs font-black uppercase tracking-[0.05em] text-[color:var(--chipzo-paper)] shadow-[1px_1px_0_var(--chipzo-ink)] transition-all hover:bg-[color:var(--chipzo-primary)] active:translate-x-[0.5px] active:translate-y-[0.5px] active:shadow-none focus:outline-none shrink-0"
+                          >
+                            <ShoppingCart size={9} strokeWidth={2.6} />
+                            Add
+                          </button>
+                        </div>
                       </div>
                     </div>
                   ))
                 )}
               </div>
-            </div>
             )}
 
             <div className="mt-6 grid gap-4 brutal-border brutal-shadow bg-[color:var(--chipzo-surface)] px-4 py-4 lg:grid-cols-[1fr_auto_1fr] lg:items-center">

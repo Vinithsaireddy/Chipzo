@@ -21,6 +21,32 @@ export default function Navbar({ onNavigate, currentPage = 'home', activeCategor
     return ''
   })
 
+  const [keyboardHeight, setKeyboardHeight] = useState(0)
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.visualViewport) return
+    
+    const handleViewportChange = () => {
+      const vv = window.visualViewport
+      const heightDifference = window.innerHeight - vv.height
+      
+      // Virtual keyboard height threshold
+      if (heightDifference > 150) {
+        setKeyboardHeight(heightDifference)
+      } else {
+        setKeyboardHeight(0)
+      }
+    }
+
+    window.visualViewport.addEventListener('resize', handleViewportChange)
+    window.visualViewport.addEventListener('scroll', handleViewportChange)
+    
+    return () => {
+      window.visualViewport.removeEventListener('resize', handleViewportChange)
+      window.visualViewport.removeEventListener('scroll', handleViewportChange)
+    }
+  }, [])
+
   // Debounced dynamic search — updates URL as user types
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -300,7 +326,12 @@ export default function Navbar({ onNavigate, currentPage = 'home', activeCategor
             </div>
           ) : (
             /* Full Expanded Search Bar - Centered Horizontally */
-            <div className="fixed bottom-24 left-0 right-0 z-40 flex w-full justify-center pointer-events-none lg:hidden">
+            <div 
+              className="fixed left-0 right-0 z-40 flex w-full justify-center pointer-events-none lg:hidden transition-all duration-100"
+              style={{
+                bottom: keyboardHeight > 0 ? `${keyboardHeight + 12}px` : '96px'
+              }}
+            >
               <div
                 onClick={handleSearchBarClick}
                 className="pointer-events-auto w-[92%] max-w-md group flex items-stretch border-[3px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-surface)] shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all duration-200 focus-within:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] focus-within:translate-x-[2px] focus-within:translate-y-[2px]"
@@ -316,7 +347,7 @@ export default function Navbar({ onNavigate, currentPage = 'home', activeCategor
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onKeyDown={handleSearchKeyDown}
                   placeholder="SEARCH PARTS OR SPECS..."
-                  className="flex-1 bg-transparent px-3 py-2.5 text-xs font-black uppercase tracking-[0.1em] text-[color:var(--chipzo-ink)] placeholder:text-[color:var(--chipzo-muted)] focus:outline-none"
+                  className="flex-1 bg-transparent px-3 py-2.5 text-base sm:text-xs placeholder:text-xs font-black uppercase tracking-[0.1em] text-[color:var(--chipzo-ink)] placeholder:text-[color:var(--chipzo-muted)] focus:outline-none"
                 />
                 <button
                   type="button"

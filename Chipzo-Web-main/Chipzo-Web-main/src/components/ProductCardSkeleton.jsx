@@ -1,38 +1,38 @@
 export function ProductCardSkeleton() {
   return (
-    <div className="brutal-border brutal-shadow bg-[color:var(--chipzo-paper)] overflow-hidden flex flex-col justify-between select-none pointer-events-none">
-      {/* Image area */}
-      <div className="bg-[color:var(--chipzo-surface)] border-b-[2px] border-[color:var(--chipzo-ink)] flex items-center justify-center p-3 relative h-24 sm:h-28 shrink-0">
-        <div className="flex h-full w-full items-center justify-center scale-75 sm:scale-90">
+    <div className="brutal-border brutal-shadow bg-[color:var(--chipzo-paper)] overflow-hidden flex flex-col select-none pointer-events-none">
+      {/* Image area - fills most of card */}
+      <div className="bg-[color:var(--chipzo-surface)] overflow-hidden relative flex-1 min-h-[260px] sm:min-h-[300px]">
+        <div className="flex h-full w-full items-center justify-center">
           {/* IC schematic skeleton */}
-          <div className="relative h-12 w-16 border-2 border-[color:var(--chipzo-ink)]/20 skeleton-base">
-            <div className="absolute left-[-10px] top-1/2 h-[2px] w-3 -translate-y-1/2 bg-[color:var(--chipzo-ink)]/20" />
-            <div className="absolute right-[-10px] top-1/2 h-[2px] w-3 -translate-y-1/2 bg-[color:var(--chipzo-ink)]/20" />
-            <div className="absolute left-1 top-1 h-2 w-2 bg-[color:var(--chipzo-primary)]/20" />
-            <div className="absolute right-1 bottom-1 h-2 w-2 bg-[color:var(--chipzo-lime)]/20" />
+          <div className="relative h-20 w-28 border-2 border-[color:var(--chipzo-ink)]/20 skeleton-base">
+            <div className="absolute left-[-14px] top-1/2 h-[2px] w-4 -translate-y-1/2 bg-[color:var(--chipzo-ink)]/20" />
+            <div className="absolute right-[-14px] top-1/2 h-[2px] w-4 -translate-y-1/2 bg-[color:var(--chipzo-ink)]/20" />
+            <div className="absolute left-2 top-2 h-3 w-3 bg-[color:var(--chipzo-primary)]/20" />
+            <div className="absolute right-2 bottom-2 h-3 w-3 bg-[color:var(--chipzo-lime)]/20" />
             <div className="absolute inset-x-2 top-1/2 h-[2px] -translate-y-1/2 bg-[color:var(--chipzo-ink)]/20" />
           </div>
         </div>
         {/* Status badge placeholder */}
-        <div className="absolute top-2 left-2 h-3.5 w-16 skeleton-base" />
+        <div className="absolute top-3 left-3 h-4 w-20 skeleton-base" />
       </div>
 
-      {/* Content area */}
-      <div className="p-2 sm:p-3 flex flex-col justify-between flex-grow min-w-0">
+      {/* Bottom info strip */}
+      <div className="border-t-[2px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-paper)] p-3 sm:p-4">
         {/* Title placeholders */}
-        <div className="min-w-0 space-y-1.5">
-          <div className="h-2.5 w-full skeleton-base" />
-          <div className="h-2.5 w-3/5 skeleton-base" />
+        <div className="space-y-1.5">
+          <div className="h-3 w-full skeleton-base" />
+          <div className="h-3 w-3/5 skeleton-base" />
         </div>
 
         {/* Price & Button row */}
-        <div className="flex items-end justify-between mt-3 pt-2 border-t border-[color:var(--chipzo-rule)] gap-1 sm:gap-2">
-          <div className="min-w-0 space-y-1">
-            <div className="h-4 w-14 sm:w-16 skeleton-base" />
-            <div className="h-2 w-10 skeleton-base" />
+        <div className="flex items-end justify-between mt-3 gap-2">
+          <div className="space-y-1">
+            <div className="h-5 w-16 sm:w-20 skeleton-base" />
+            <div className="h-2.5 w-12 skeleton-base" />
           </div>
           {/* Add button placeholder */}
-          <div className="h-7 w-12 sm:w-14 border-[1.5px] border-[color:var(--chipzo-ink)]/30 skeleton-base shrink-0" />
+          <div className="h-9 w-16 border-[2px] border-[color:var(--chipzo-ink)]/30 skeleton-base shrink-0" />
         </div>
       </div>
     </div>
