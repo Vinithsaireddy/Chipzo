@@ -214,7 +214,12 @@ async function sendOrderConfirmation(email, name, order, invoiceBuffer) {
     )
     .join('');
 
-  const shipping = 40.0;
+  const calculateDeliveryFee = (cartTotal) => {
+    if (cartTotal > 1000) return 49;
+    if (cartTotal >= 250) return 79;
+    return 99;
+  };
+  const shipping = calculateDeliveryFee(order.totalAmount);
   const total = order.totalAmount + shipping;
 
   const html = `

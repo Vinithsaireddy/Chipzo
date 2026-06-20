@@ -137,6 +137,18 @@ const orderSchema = new mongoose.Schema(
       type: String,
       default: null,
     },
+    refundId: {
+      type: String,
+      default: null,
+    },
+    refundError: {
+      type: String,
+      default: null,
+    },
+    deliveryError: {
+      type: String,
+      default: null,
+    },
   },
   {
     timestamps: true,

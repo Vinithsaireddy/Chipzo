@@ -1,5 +1,7 @@
 'use strict';
 
+const env = require('../config/env');
+
 const DELIVERY_STATUSES = [
   'not_assigned',
   'order_confirmed',
@@ -47,12 +49,12 @@ const SHIPROCKET_STATUS_MAP = {
 };
 
 const PICKUP_LOCATION = {
-  name: 'BIT MENS HOSTEL',
-  address: 'KR Road, VV Puram',
-  city: 'Bangalore',
-  state: 'Karnataka',
-  pincode: '560004',
-  phone: '080-22421739',
+  name: env.SHIPROCKET_PICKUP_NAME,
+  address: env.SHIPROCKET_PICKUP_ADDRESS,
+  city: env.SHIPROCKET_PICKUP_CITY,
+  state: env.SHIPROCKET_PICKUP_STATE,
+  pincode: env.SHIPROCKET_PICKUP_PINCODE,
+  phone: env.SHIPROCKET_PICKUP_PHONE,
   country: 'India',
 };
 

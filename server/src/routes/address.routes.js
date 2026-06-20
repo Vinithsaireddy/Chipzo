@@ -8,6 +8,7 @@ const { protect } = require('../middleware/auth.middleware');
 router.use(protect);
 
 router.get('/', addressController.getAddresses);
+router.get('/reverse-geocode', addressController.reverseGeocode);
 router.get('/:id', addressController.getAddress);
 router.post('/', addressController.createAddress);
 router.put('/:id', addressController.updateAddress);

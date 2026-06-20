@@ -80,4 +80,30 @@ const verifySignature = ({ razorpayOrderId, razorpayPaymentId, razorpaySignature
   return true;
 };
 
-module.exports = { createRazorpayOrder, verifySignature };
+/**
+ * Processes a full refund for a Razorpay payment.
+ *
+ * @param {object} params
+ * @param {string} params.paymentId  - The Razorpay payment ID to refund
+ * @param {number} params.amount     - Amount in INR (optional; full refund if omitted)
+ * @returns {Promise<object>}        - Razorpay refund object
+ */
+const processRefund = async ({ paymentId, amount }) => {
+  try {
+    const refundOptions = {};
+    if (amount != null) {
+      refundOptions.amount = Math.round(amount * 100);
+    }
+    const refund = await razorpay.payments.refund(paymentId, refundOptions);
+    logger.info(`[Payment] Refund processed — paymentId: ${paymentId}, refundId: ${refund.id}, amount: ${refund.amount}`);
+    return refund;
+  } catch (error) {
+    logger.error(`[Payment] Refund failed for paymentId: ${paymentId} — ${error.error?.description || error.message}`);
+    throw new ApiError(
+      502,
+      `Refund failed: ${error.error?.description || error.message}`
+    );
+  }
+};
+
+module.exports = { createRazorpayOrder, verifySignature, processRefund };

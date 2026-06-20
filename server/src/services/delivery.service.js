@@ -3,6 +3,7 @@
 const Order = require('../models/Order');
 const logger = require('../utils/logger');
 const env = require('../config/env');
+const paymentService = require('./payment.service');
 const {
   STATUS_LABELS,
   CANCELLABLE_STATUSES,
@@ -115,11 +116,11 @@ async function ensurePickupLocation() {
     const existing = await shiprocketRequest('/settings/company/pickup');
     const locations = existing.data || existing.pickup_locations || [];
     const alreadyExists = locations.some(
-      (loc) => loc.name && loc.name.toLowerCase().includes('bit mens hostel')
+      (loc) => loc.name && loc.name.toLowerCase() === PICKUP_LOCATION.name.toLowerCase()
     );
 
     if (!alreadyExists) {
-      logger.info('[Shiprocket] Registering pickup location: BIT MENS HOSTEL');
+      logger.info(`[Shiprocket] Registering pickup location: ${PICKUP_LOCATION.name}`);
       const result = await shiprocketRequest('/settings/company/add/pickup', {
         method: 'POST',
         body: JSON.stringify({
@@ -316,7 +317,14 @@ async function cancelShipment(order) {
       cancelReason: 'Cancelled by user',
     };
     if (order.paymentMethod === 'razorpay' && order.paymentStatus === 'paid') {
-      updates.paymentStatus = 'refunded';
+      try {
+        const refund = await paymentService.processRefund({ paymentId: order.paymentId, amount: order.totalAmount });
+        updates.refundId = refund.id;
+        updates.paymentStatus = 'refunded';
+      } catch (refundErr) {
+        logger.error(`[Cancel] Refund failed for order ${order._id}: ${refundErr.message}`);
+        updates.refundError = refundErr.message;
+      }
     }
     await Order.findByIdAndUpdate(order._id, updates);
     await addDeliveryHistory(order._id, 'cancelled', '', 'Order cancelled by user');
@@ -337,7 +345,14 @@ async function cancelShipment(order) {
       cancelReason: 'Cancelled by user',
     };
     if (order.paymentMethod === 'razorpay' && order.paymentStatus === 'paid') {
-      updates.paymentStatus = 'refunded';
+      try {
+        const refund = await paymentService.processRefund({ paymentId: order.paymentId, amount: order.totalAmount });
+        updates.refundId = refund.id;
+        updates.paymentStatus = 'refunded';
+      } catch (refundErr) {
+        logger.error(`[Cancel] Refund failed for order ${order._id}: ${refundErr.message}`);
+        updates.refundError = refundErr.message;
+      }
     }
     await Order.findByIdAndUpdate(order._id, updates);
     await addDeliveryHistory(order._id, 'cancelled', '', 'Shipment cancelled via Shiprocket API');
@@ -352,7 +367,14 @@ async function cancelShipment(order) {
       cancelReason: 'Cancelled by user (Shiprocket error)',
     };
     if (order.paymentMethod === 'razorpay' && order.paymentStatus === 'paid') {
-      updates.paymentStatus = 'refunded';
+      try {
+        const refund = await paymentService.processRefund({ paymentId: order.paymentId, amount: order.totalAmount });
+        updates.refundId = refund.id;
+        updates.paymentStatus = 'refunded';
+      } catch (refundErr) {
+        logger.error(`[Cancel] Refund failed for order ${order._id}: ${refundErr.message}`);
+        updates.refundError = refundErr.message;
+      }
     }
     await Order.findByIdAndUpdate(order._id, updates);
     return { success: true, message: 'Order cancelled locally', refundInitiated: updates.paymentStatus === 'refunded' };
@@ -377,6 +399,7 @@ function buildTrackingResponse(order) {
     cancelledAt: order.cancelledAt,
     cancelReason: order.cancelReason,
     canCancel: CANCELLABLE_STATUSES.includes(order.deliveryStatus),
+    deliveryError: order.deliveryError || null,
     history: history.map((h) => ({
       status: h.status,
       statusLabel: STATUS_LABELS[h.status] || h.status,
@@ -384,34 +407,54 @@ function buildTrackingResponse(order) {
       description: h.description,
       updatedAt: h.updatedAt,
     })),
-    isMocked: !order.shipmentId,
   };
 }
 
 // ─── Public API ─────────────────────────────────────────────────────────────
+
+const validateShiprocketCreds = () => {
+  const missing = [];
+  if (!env.SHIPROCKET_API_KEY && !env.SHIPROCKET_EMAIL) {
+    missing.push('SHIPROCKET_EMAIL (or SHIPROCKET_API_KEY)');
+  }
+  if (!env.SHIPROCKET_API_KEY && !env.SHIPROCKET_PASSWORD) {
+    missing.push('SHIPROCKET_PASSWORD (or SHIPROCKET_API_KEY)');
+  }
+  return missing;
+};
 
 const assignDelivery = async (orderId) => {
   try {
     const order = await Order.findById(orderId);
     if (!order) return null;
 
-    const hasShiprocketCreds = env.SHIPROCKET_API_KEY || (env.SHIPROCKET_EMAIL && env.SHIPROCKET_PASSWORD);
+    const missingCreds = validateShiprocketCreds();
+    if (missingCreds.length > 0) {
+      const errorMsg = `Shiprocket credentials incomplete. Missing: ${missingCreds.join(', ')}`;
+      logger.error(`[Delivery] ${errorMsg}`);
+      await Order.findByIdAndUpdate(orderId, {
+        deliveryStatus: 'not_assigned',
+        deliveryError: errorMsg,
+      });
+      throw new Error(errorMsg);
+    }
 
-    if (hasShiprocketCreds) {
-      await ensurePickupLocation();
-      const shipmentResult = await createShiprocketOrder(order);
-      if (shipmentResult && shipmentResult.shipment_id) {
-        const refreshedOrder = await Order.findById(orderId);
-        await bookCourier(refreshedOrder);
-      }
-    } else {
-      await assignMockDelivery(order);
+    await ensurePickupLocation();
+    const shipmentResult = await createShiprocketOrder(order);
+    if (shipmentResult && shipmentResult.shipment_id) {
+      const refreshedOrder = await Order.findById(orderId);
+      await bookCourier(refreshedOrder);
     }
 
     return { trackingId: order.deliveryTrackingId, status: order.deliveryStatus };
   } catch (err) {
     logger.error(`[Delivery] Assign delivery failed for ${orderId}: ${err.message}`);
-    return assignMockFallback(orderId);
+    const errorMsg = `Delivery assignment failed: ${err.message}`;
+    await Order.findByIdAndUpdate(orderId, {
+      deliveryStatus: 'not_assigned',
+      deliveryError: errorMsg,
+    });
+    return { error: errorMsg, status: 'not_assigned' };
   }
 };
 
@@ -480,36 +523,6 @@ const handleWebhook = async (payload) => {
     logger.error(`[Webhook] Error processing payload: ${err.message}`);
     throw err;
   }
-};
-
-// ─── Mock implementations ───────────────────────────────────────────────────
-
-const assignMockDelivery = async (order) => {
-  const { v4: uuidv4 } = require('uuid');
-  const trackingId = `VOLTEX-${uuidv4().slice(0, 8).toUpperCase()}`;
-  logger.info(`[Delivery] Mock assigned: orderId=${order._id}, trackingId=${trackingId}`);
-
-  const now = new Date();
-  await Order.findByIdAndUpdate(order._id, {
-    deliveryStatus: 'order_confirmed',
-    deliveryTrackingId: trackingId,
-    estimatedDelivery: new Date(now.getTime() + 90 * 60000),
-  });
-  await addDeliveryHistory(order._id, 'order_confirmed', 'Dispatch Center', 'Order confirmed and queued');
-
-  return { trackingId, status: 'order_confirmed' };
-};
-
-const assignMockFallback = async (orderId) => {
-  const { v4: uuidv4 } = require('uuid');
-  const trackingId = `VOLTEX-${uuidv4().slice(0, 8).toUpperCase()}`;
-
-  await Order.findByIdAndUpdate(orderId, {
-    deliveryStatus: 'order_confirmed',
-    deliveryTrackingId: trackingId,
-  });
-
-  return { trackingId, status: 'order_confirmed' };
 };
 
 module.exports = {

@@ -1,6 +1,7 @@
 'use strict';
 
 const addressService = require('../services/address.service');
+const geocodingService = require('../services/geocoding.service');
 const ApiResponse = require('../utils/ApiResponse');
 const asyncHandler = require('../utils/asyncHandler');
 
@@ -34,6 +35,12 @@ const setDefaultAddress = asyncHandler(async (req, res) => {
   return new ApiResponse(200, 'Default address updated', { address }).send(res);
 });
 
+const reverseGeocode = asyncHandler(async (req, res) => {
+  const { lat, lng } = req.query;
+  const address = await geocodingService.reverseGeocode(lat, lng);
+  return new ApiResponse(200, 'Location reverse-geocoded successfully', { address }).send(res);
+});
+
 module.exports = {
   getAddresses,
   getAddress,
@@ -41,4 +48,5 @@ module.exports = {
   updateAddress,
   deleteAddress,
   setDefaultAddress,
+  reverseGeocode,
 };

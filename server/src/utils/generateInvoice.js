@@ -177,8 +177,13 @@ function generateInvoicePdf(order) {
       y += 10;
 
       // ─── Invoice Totals ───────────────────────────────────────────────────────────
-      const shipping = 40.0; // standard delivery fee
+      const calculateDeliveryFee = (cartTotal) => {
+        if (cartTotal > 1000) return 49;
+        if (cartTotal >= 250) return 79;
+        return 99;
+      };
       const subtotal = order.totalAmount;
+      const shipping = calculateDeliveryFee(subtotal);
       const grandTotal = subtotal + shipping;
 
       doc
