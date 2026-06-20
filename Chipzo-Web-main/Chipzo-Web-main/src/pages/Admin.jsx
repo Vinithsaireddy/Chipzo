@@ -5,7 +5,8 @@ import {
   Settings as SettingsIcon, LogOut, Search, Edit, Trash2, Plus, X, 
   Upload, AlertTriangle, CheckCircle2, TrendingUp, 
   Coins, AlertCircle, ArrowUpRight, Globe, FileText, Sparkles,
-  Download, Eye, ShoppingBag, Truck, CreditCard, ChevronRight, ChevronLeft
+  Download, Eye, ShoppingBag, Truck, CreditCard, ChevronRight, ChevronLeft,
+  Loader2
 } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext.jsx'
 import { productsAPI, ordersAPI } from '../services/api.js'
@@ -455,7 +456,7 @@ Date & Time Issued:  ${dateStr}
 Payment Protocol:    ${order.paymentMethod.toUpperCase()}
 Payment Clearance:  ${order.paymentStatus.toUpperCase()}
 Logistics Status:   ${order.deliveryStatus.toUpperCase()}
-Tracking Code:       ${order.deliveryTrackingId || 'VOLTEX-NOT-ASSIGNED'}
+Tracking Code:       ${order.deliveryTrackingId || 'NOT ASSIGNED'}${order.deliveryError ? `\nDelivery Error:   ${order.deliveryError}` : ''}
 ------------------------------------------------------------------------
 SHIPPING AND CONTACT DIRECTORY:
 ------------------------------------------------------------------------
@@ -1344,6 +1345,11 @@ TOTAL OUTFLOW:        ₹${order.totalAmount.toFixed(2)} INR
                           }`}>
                             {order.deliveryStatus?.replace('_', ' ')}
                           </span>
+                          {order.deliveryError && (
+                            <span className="block text-[7px] font-bold text-red-600 uppercase mt-0.5 max-w-[100px] leading-tight" title={order.deliveryError}>
+                              ERROR
+                            </span>
+                          )}
                         </td>
 
                         <td className="p-4">
@@ -1562,6 +1568,12 @@ TOTAL OUTFLOW:        ₹${order.totalAmount.toFixed(2)} INR
                         {selectedOrder.address?.city}, {selectedOrder.address?.state} - {selectedOrder.address?.pincode}
                       </p>
                     </div>
+                    {selectedOrder.deliveryError && (
+                      <div className="mt-2 p-2 bg-red-50 border border-red-400 text-red-800">
+                        <p className="text-[8px] font-black uppercase tracking-wider">DELIVERY ERROR</p>
+                        <p className="text-[9px] font-mono mt-0.5 break-all">{selectedOrder.deliveryError}</p>
+                      </div>
+                    )}
                   </div>
 
                   {/* ACTIVE STATUS CONTROL PANEL */}
@@ -1628,7 +1640,7 @@ TOTAL OUTFLOW:        ₹${order.totalAmount.toFixed(2)} INR
                           type="text"
                           defaultValue={selectedOrder.deliveryTrackingId || ''}
                           onBlur={(e) => handleUpdateOrderStatus(selectedOrder._id, { deliveryTrackingId: e.target.value.trim() || null })}
-                          placeholder="e.g. VOLTEX-9283921"
+                          placeholder="e.g. AWB-123456789"
                           className="flex-1 bg-white text-[color:var(--chipzo-ink)] px-2.5 py-1 text-[10px] font-mono tracking-wider outline-none"
                         />
                         <span className="bg-[color:var(--chipzo-lime)] text-[color:var(--chipzo-ink)] text-[8px] font-black px-2 flex items-center justify-center uppercase select-none">

@@ -13,7 +13,7 @@ export default defineConfig({
   server: {
     host: true,
     allowedHosts: [
-      '0519-205-254-184-13.ngrok-free.app'
+      '11c8-205-254-184-13.ngrok-free.app'
     ],
     proxy: {
       '/api': {

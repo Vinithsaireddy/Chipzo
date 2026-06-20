@@ -8,6 +8,7 @@ export function useAsyncStatus(options = {}) {
   const resetTimer = useRef(null)
 
   useEffect(() => {
+    mountedRef.current = true
     return () => {
       mountedRef.current = false
       if (resetTimer.current) clearTimeout(resetTimer.current)
@@ -41,7 +42,7 @@ export function useAsyncStatus(options = {}) {
       if (onError) onError(err)
 
       const elapsed = Date.now() - start
-      const remaining = Math.max(0, 2000 - elapsed)
+      const remaining = Math.max(0, minDuration - elapsed)
       if (remaining > 0) await new Promise(r => setTimeout(r, remaining))
 
       if (mountedRef.current) setStatus('idle')
@@ -54,5 +55,11 @@ export function useAsyncStatus(options = {}) {
     if (mountedRef.current) setStatus(s)
   }, [])
 
-  return { status, execute, setStatus: setStatusDirect, isIdle: status === 'idle' }
+  const reset = useCallback(() => {
+    if (resetTimer.current) clearTimeout(resetTimer.current)
+    if (mountedRef.current) setStatus('idle')
+    lockRef.current = false
+  }, [])
+
+  return { status, execute, setStatus: setStatusDirect, reset, isIdle: status === 'idle' }
 }

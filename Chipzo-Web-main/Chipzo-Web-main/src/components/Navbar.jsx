@@ -1,11 +1,11 @@
-import { useEffect, useRef, useState } from 'react'
+﻿import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
-import { Search, ShoppingCart, UserRound, X } from 'lucide-react'
+import { Search, ShoppingCart, UserRound, X, LayoutDashboard } from 'lucide-react'
 import ProfilePanel from './ProfilePanel'
 import { useAuth } from '../contexts/AuthContext.jsx'
 
 export default function Navbar({ onNavigate, currentPage = 'home', activeCategory = '', cartCount = 0 }) {
-  const { isLoggedIn } = useAuth()
+  const { isLoggedIn, user } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
   const [scrolled, setScrolled] = useState(false)
@@ -164,6 +164,18 @@ export default function Navbar({ onNavigate, currentPage = 'home', activeCategor
 
           {/* Right Actions */}
           <div className="flex items-center gap-2 sm:gap-3">
+            {/* Admin Dashboard — Desktop Only */}
+            {user?.role === 'admin' && (
+              <button
+                type="button"
+                aria-label="Admin Dashboard"
+                onClick={() => navigate('/admin')}
+                className="group relative hidden lg:flex h-9 w-9 items-center justify-center border-[3px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-lime)] text-[color:var(--chipzo-ink)] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all sm:h-11 sm:w-11 hover:-translate-x-[2px] hover:-translate-y-[2px] hover:bg-[color:var(--chipzo-ink)] hover:text-[color:var(--chipzo-lime)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)]"
+              >
+                <LayoutDashboard strokeWidth={2.5} className="h-[18px] w-[18px] transition-transform group-hover:scale-110 sm:h-[22px] sm:w-[22px]" />
+              </button>
+            )}
+
             {/* Cart */}
             <button
               type="button"
@@ -223,6 +235,18 @@ export default function Navbar({ onNavigate, currentPage = 'home', activeCategor
 
             {/* Right Actions */}
             <div className="flex items-center gap-2 sm:gap-3">
+
+              {/* Admin Dashboard — Mobile */}
+              {user?.role === 'admin' && (
+                <button
+                  type="button"
+                  aria-label="Admin Dashboard"
+                  onClick={() => navigate('/admin')}
+                  className="group relative flex h-9 w-9 items-center justify-center border-[3px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-lime)] text-[color:var(--chipzo-ink)] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all sm:h-11 sm:w-11 hover:-translate-x-[2px] hover:-translate-y-[2px] hover:bg-[color:var(--chipzo-ink)] hover:text-[color:var(--chipzo-lime)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)]"
+                >
+                  <LayoutDashboard strokeWidth={2.5} className="h-[18px] w-[18px] transition-transform group-hover:scale-110 sm:h-[22px] sm:w-[22px]" />
+                </button>
+              )}
 
               {/* Cart */}
               <button

@@ -8,7 +8,7 @@ const CATEGORY_DATA = [
     itemCount: 7,
     badge: 'BEST SELLER',
     slug: 'Microcontroller',
-    image: '/assets/MIcrocontrollers.jpeg'
+    image: '/assets/microcontrollers.png'
   },
   {
     name: 'Sensors',
@@ -16,7 +16,7 @@ const CATEGORY_DATA = [
     itemCount: 14,
     badge: 'POPULAR',
     slug: 'Sensor',
-    image: '/assets/Sensors.jpeg'
+    image: '/assets/Sensors.png'
   },
   {
     name: 'Motors & Actuators',
@@ -24,7 +24,7 @@ const CATEGORY_DATA = [
     itemCount: 6,
     badge: 'ROBOTICS',
     slug: 'Motor',
-    image: '/assets/Motors.jpeg'
+    image: '/assets/Motors.png'
   },
   {
     name: 'Displays',
@@ -32,7 +32,7 @@ const CATEGORY_DATA = [
     itemCount: 37,
     badge: 'VISUAL',
     slug: 'Display',
-    image: '/assets/Displays.jpeg'
+    image: '/assets/display.png'
   },
   {
     name: 'Batteries & Power',
@@ -40,7 +40,7 @@ const CATEGORY_DATA = [
     itemCount: 10,
     badge: 'MOST USED',
     slug: 'Battery',
-    image: '/assets/Battery.jpeg'
+    image: '/assets/Battery.png'
   }
 ]
 

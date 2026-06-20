@@ -237,7 +237,7 @@ export default function Tracking({ onNavigate, activeCategory, completedOrder })
                         ETA: {new Date(tracking.estimatedDelivery).toLocaleString('en-IN')}
                       </p>
                     )}
-                    {!tracking.isMocked && !isDelivered && !isCancelled && !isFailed && (
+                    {tracking.trackingId && !isDelivered && !isCancelled && !isFailed && (
                       <p className="text-[9px] font-bold text-[color:var(--chipzo-muted)]/60 mt-1 flex items-center gap-1">
                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
                         Auto-refreshing every {POLL_INTERVAL/1000}s
@@ -419,10 +419,16 @@ export default function Tracking({ onNavigate, activeCategory, completedOrder })
                       <span className="text-[color:var(--chipzo-muted)] uppercase">Updates</span>
                       <span className="font-black">{tracking.history?.length || 0} events</span>
                     </div>
-                    {tracking.isMocked && (
+                    {tracking.deliveryError && (
+                      <div className="mt-3 p-3 bg-red-50 border-2 border-red-400 text-red-800 text-[10px] font-bold uppercase">
+                        <XCircle size={12} className="inline mr-1" />
+                        {tracking.deliveryError}
+                      </div>
+                    )}
+                    {!tracking.trackingId && !tracking.deliveryError && (
                       <div className="mt-3 p-3 bg-amber-50 border-2 border-amber-400 text-amber-800 text-[10px] font-bold uppercase">
-                        <ShieldAlert size={12} className="inline mr-1" />
-                        Mock mode — connect Shiprocket for live tracking
+                        <AlertTriangle size={12} className="inline mr-1" />
+                        Tracking not yet available — shipment is being assigned
                       </div>
                     )}
                   </div>

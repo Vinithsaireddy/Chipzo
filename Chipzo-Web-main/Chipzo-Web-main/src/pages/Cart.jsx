@@ -14,9 +14,9 @@ import { getProductImageUrl } from '../utils/imageUtils.js'
 /* ================= FUTURISTIC DELIVERY AND VALIDATION COMPONENTS ================= */
 
 const calculateDeliveryFee = (cartTotal) => {
-  if (cartTotal >= 1000) return 50;
-  if (cartTotal >= 250) return 100;
-  return 0;
+  if (cartTotal > 1000) return 49;
+  if (cartTotal >= 250) return 79;
+  return 99;
 };
 
 const DYNAMIC_UPSELLS = [
@@ -106,11 +106,14 @@ function CheckoutProgressBar({ progress, total }) {
   )
 }
 
-function DeliveryFeePanel({ subtotal, deliveryFee, isEligible }) {
+function DeliveryFeePanel({ subtotal, deliveryFee }) {
+  const showDiscount = subtotal >= 250;
+  const baseFee = 99;
+  
   return (
     <div className="flex justify-between font-black text-xs uppercase tracking-wider items-center">
       <span>DELIVERY FEE</span>
-      {isEligible ? (
+      {showDiscount ? (
         <motion.div 
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
@@ -118,7 +121,7 @@ function DeliveryFeePanel({ subtotal, deliveryFee, isEligible }) {
           style={{ boxShadow: '0 0 10px rgba(16,185,129,0.3), 2px 2px 0px 0px rgba(16,185,129,1)' }}
         >
           <span className="animate-pulse">●</span>
-          <span className="line-through text-emerald-600/70 mr-1">₹100.00</span>
+          <span className="line-through text-emerald-600/70 mr-1">₹{baseFee.toFixed(2)}</span>
           <span>₹{deliveryFee.toFixed(2)}</span>
         </motion.div>
       ) : (
@@ -130,12 +133,12 @@ function DeliveryFeePanel({ subtotal, deliveryFee, isEligible }) {
   )
 }
 
-function DeliveryProgressBar({ progress, total }) {
+function DeliveryProgressBar({ progress, total, label, target }) {
   return (
     <div className="flex flex-col gap-1.5 font-mono">
       <div className="flex justify-between text-[9px] font-black uppercase text-[color:var(--chipzo-muted)]">
-        <span>DELIVERY OPTIMIZER: {Math.round(progress)}%</span>
-        <span>₹{total.toFixed(2)} / ₹1000.00 TARGET</span>
+        <span>{label}</span>
+        <span>₹{total.toFixed(2)} / ₹{target.toFixed(2)}</span>
       </div>
       <div className="h-3 w-full bg-[color:var(--chipzo-surface)] border-2 border-[color:var(--chipzo-ink)] p-0.5 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] relative overflow-hidden">
         <motion.div 
@@ -316,15 +319,31 @@ export default function Cart({ onNavigate, activeCategory, cart = [], isCartLoad
     })
   )
 
-  const MIN_CART_VALUE = 250;
-  const canCheckout = subtotal >= MIN_CART_VALUE;
-  const remainingAmount = Math.max(MIN_CART_VALUE - subtotal, 0);
-  const progress = Math.min((subtotal / MIN_CART_VALUE) * 100, 100);
+  const MIN_CART_VALUE = 0;
+  const canCheckout = true;
+  const remainingAmount = 0;
+  const progress = 100;
 
   const deliveryFee = calculateDeliveryFee(subtotal);
-  const isEligibleForReducedDelivery = subtotal >= 1000;
-  const amountNeededForReducedDelivery = Math.max(1000 - subtotal, 0);
-  const deliveryProgress = Math.min((subtotal / 1000) * 100, 100);
+  
+  let deliveryProgress = 0;
+  let deliveryTarget = 1000;
+  let deliveryProgressLabel = '';
+
+  if (subtotal < 250) {
+    deliveryProgress = Math.min((subtotal / 250) * 100, 100);
+    deliveryTarget = 250;
+    deliveryProgressLabel = `ADD ₹${(250 - subtotal).toFixed(2)} MORE FOR ₹79 DELIVERY`;
+  } else if (subtotal < 1000) {
+    deliveryProgress = Math.min((subtotal / 1000) * 100, 100);
+    deliveryTarget = 1000;
+    deliveryProgressLabel = `ADD ₹${(1000 - subtotal).toFixed(2)} MORE FOR ₹49 DELIVERY`;
+  } else {
+    deliveryProgress = 100;
+    deliveryTarget = 1000;
+    deliveryProgressLabel = 'MINIMUM DELIVERY CHARGE ₹49 UNLOCKED';
+  }
+
   const orderTotal = subtotal + deliveryFee;
 
   useEffect(() => {
@@ -616,11 +635,11 @@ export default function Cart({ onNavigate, activeCategory, cart = [], isCartLoad
                         <span className="tabular-prices">₹{subtotal.toFixed(2)}</span>
                       </div>
                       
-                      <DeliveryFeePanel subtotal={subtotal} deliveryFee={deliveryFee} isEligible={isEligibleForReducedDelivery} />
+                      <DeliveryFeePanel subtotal={subtotal} deliveryFee={deliveryFee} />
 
                       {/* DELIVERY STATUS PROGRESS BAR */}
                       <div className="border-t border-dashed border-[color:var(--chipzo-ink)] pt-2.5 mt-0.5">
-                        <DeliveryProgressBar progress={deliveryProgress} total={subtotal} />
+                        <DeliveryProgressBar progress={deliveryProgress} total={subtotal} label={deliveryProgressLabel} target={deliveryTarget} />
                       </div>
 
                       <div className="flex justify-between font-black text-xs uppercase text-[color:var(--chipzo-primary)]">
@@ -647,36 +666,16 @@ export default function Cart({ onNavigate, activeCategory, cart = [], isCartLoad
                         <span className="tabular-prices font-mono">₹{orderTotal.toFixed(2)}</span>
                       </div>
 
-                      {/* MINIMUM CART SYSTEM PROTOCOLS */}
-                      <div className="flex flex-col gap-4 border-t-2 border-dashed border-[color:var(--chipzo-ink)] pt-4 mt-1">
-                        <CheckoutProgressBar progress={progress} total={subtotal} />
-                      </div>
-                      
-                      {canCheckout ? (
-                        <LoadingButton
-                          type="button"
-                          onClick={handleCheckout}
-                          status={checkoutStatus}
-                          variant="lime"
-                          size="lg"
-                          className="mt-2 w-full"
-                        >
-                          CHECKOUT →
-                        </LoadingButton>
-                      ) : (
-                        <motion.button 
-                          type="button"
-                          disabled
-                          whileHover={{ 
-                            x: [0, -3, 3, -3, 3, 0],
-                            transition: { duration: 0.4 }
-                          }}
-                          className="mt-2 w-full bg-neutral-800 text-neutral-400 font-black text-sm py-3.5 px-4 brutal-border opacity-70 cursor-not-allowed uppercase tracking-wider flex items-center justify-center gap-2 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-[3px_3px_0px_0px_rgba(245,158,11,0.5)] border-red-500"
-                        >
-                          <Lock size={14} className="text-red-500 shrink-0" />
-                          <span>MIN ₹250 REQUIRED</span>
-                        </motion.button>
-                      )}
+                      <LoadingButton
+                        type="button"
+                        onClick={handleCheckout}
+                        status={checkoutStatus}
+                        variant="lime"
+                        size="lg"
+                        className="mt-4 w-full"
+                      >
+                        CHECKOUT →
+                      </LoadingButton>
                     </div>
                   </div>
                 </div>
@@ -703,8 +702,7 @@ export default function Cart({ onNavigate, activeCategory, cart = [], isCartLoad
               
               {/* Dynamic Delivery progress / upsell on Mobile Sticky Checkout Bar */}
               <div className="mb-2 flex flex-col gap-2 border-t border-[color:var(--chipzo-rule)] pt-2">
-                <CheckoutProgressBar progress={progress} total={subtotal} />
-                <DeliveryProgressBar progress={deliveryProgress} total={subtotal} />
+                <DeliveryProgressBar progress={deliveryProgress} total={subtotal} label={deliveryProgressLabel} target={deliveryTarget} />
               </div>
 
               <div className="flex items-center justify-between gap-4">
@@ -713,29 +711,18 @@ export default function Cart({ onNavigate, activeCategory, cart = [], isCartLoad
                   <p className="tabular-prices text-xl font-black text-[color:var(--chipzo-ink)] leading-none">₹{orderTotal.toFixed(2)}</p>
                 </div>
                 
-                {canCheckout ? (
-                  <LoadingButton
-                    type="button"
-                    onClick={handleCheckout}
-                    status={checkoutStatus}
-                    variant="lime"
-                    size="lg"
-                    icon={ArrowRight}
-                    fullWidth
-                    className="flex-1"
-                  >
-                    Proceed to Checkout
-                  </LoadingButton>
-                ) : (
-                  <button
-                    type="button"
-                    disabled
-                    className="flex flex-1 items-center justify-center gap-2 border-[3px] border-red-500 bg-neutral-800 py-3 text-sm font-black uppercase tracking-[0.1em] text-neutral-400 opacity-80 shadow-[2px_2px_0_rgba(0,0,0,1)] cursor-not-allowed active:translate-x-[1px] active:translate-y-[1px] flex justify-center items-center gap-1.5"
-                  >
-                    <Lock size={12} className="text-red-500 shrink-0" />
-                    <span>MIN ₹250 REQUIRED</span>
-                  </button>
-                )}
+                <LoadingButton
+                  type="button"
+                  onClick={handleCheckout}
+                  status={checkoutStatus}
+                  variant="lime"
+                  size="lg"
+                  icon={ArrowRight}
+                  fullWidth
+                  className="flex-1"
+                >
+                  Proceed to Checkout
+                </LoadingButton>
               </div>
             </div>
           </div>

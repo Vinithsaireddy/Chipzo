@@ -204,6 +204,7 @@ export const addressAPI = {
   update: (id, data) => request(`/addresses/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
   delete: (id) => request(`/addresses/${id}`, { method: 'DELETE' }),
   setDefault: (id) => request(`/addresses/${id}/default`, { method: 'PATCH' }),
+  reverseGeocode: (lat, lng) => request(`/addresses/reverse-geocode?lat=${lat}&lng=${lng}`),
 };
 
 export const deliveryAPI = {

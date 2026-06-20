@@ -4,7 +4,7 @@ import Navbar from '../components/Navbar.jsx';
 import Footer from '../components/Footer.jsx';
 import {
   ArrowRight, ArrowLeft, Check, AlertTriangle,
-  MapPin, Trash2, CreditCard, Banknote, Plus, Edit3, Star,
+  MapPin, Trash2, CreditCard, Banknote, Plus, Edit3, Star, Loader,
 } from 'lucide-react';
 import { ordersAPI, paymentAPI, addressAPI } from '../services/api.js';
 import { useAuth } from '../contexts/AuthContext.jsx';
@@ -29,6 +29,8 @@ export default function Checkout({ onNavigate, activeCategory, cart = [], onChec
 
   const [currentStep, setCurrentStep] = useState('address');
   const [errorMessage, setErrorMessage] = useState('');
+  const [detectingLocation, setDetectingLocation] = useState(false);
+  const [detectingLocationStep, setDetectingLocationStep] = useState('');
   const { status: processingStatus, execute: executeProcessing } = useAsyncStatus({ minDuration: 2000, successDuration: 800 });
   const { status: saveStatus, execute: executeSave } = useAsyncStatus({ minDuration: 2000, successDuration: 800 });
   const [paymentMethod, setPaymentMethod] = useState('razorpay');
@@ -140,6 +142,52 @@ export default function Checkout({ onNavigate, activeCategory, cart = [], onChec
 
   const cancelEdit = () => {
     resetForm();
+  };
+
+  const handleDetectLocation = () => {
+    if (!navigator.geolocation) {
+      setErrorMessage('Geolocation is not supported by your browser.');
+      return;
+    }
+
+    setDetectingLocation(true);
+    setDetectingLocationStep('Accessing GPS...');
+    setErrorMessage('');
+
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        try {
+          const { latitude, longitude } = position.coords;
+          setDetectingLocationStep('Geocoding...');
+
+          const data = await addressAPI.reverseGeocode(latitude, longitude);
+          const address = data?.data?.address || data?.address;
+
+          if (address) {
+            setFormData((prev) => ({
+              ...prev,
+              street: address.street || prev.street,
+              city: address.city || prev.city,
+              state: address.state || prev.state || 'Karnataka',
+              pincode: address.pincode || prev.pincode,
+            }));
+          }
+          setDetectingLocation(false);
+        } catch (err) {
+          setErrorMessage(err.message || 'Failed to detect location.');
+          setDetectingLocation(false);
+        }
+      },
+      (error) => {
+        let msg = 'Failed to get location.';
+        if (error.code === 1) msg = 'Location permission denied. Please allow location access in your browser settings.';
+        else if (error.code === 2) msg = 'Location position unavailable.';
+        else if (error.code === 3) msg = 'Location request timed out.';
+        setErrorMessage(msg);
+        setDetectingLocation(false);
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+    );
   };
 
   const handleSaveAddress = async () => {
@@ -481,6 +529,9 @@ export default function Checkout({ onNavigate, activeCategory, cart = [], onChec
                                     formErrors={formErrors}
                                     onChange={handleInputChange}
                                     inputCls={inputCls}
+                                    detectingLocation={detectingLocation}
+                                    detectingLocationStep={detectingLocationStep}
+                                    onDetectLocation={handleDetectLocation}
                                   />
                                   <div className="flex gap-2 mt-4">
                                     <LoadingButton
@@ -579,6 +630,9 @@ export default function Checkout({ onNavigate, activeCategory, cart = [], onChec
                                 formErrors={formErrors}
                                 onChange={handleInputChange}
                                 inputCls={inputCls}
+                                detectingLocation={detectingLocation}
+                                detectingLocationStep={detectingLocationStep}
+                                onDetectLocation={handleDetectLocation}
                               />
                           <div className="flex gap-2 mt-4">
                             <LoadingButton
@@ -807,9 +861,26 @@ export default function Checkout({ onNavigate, activeCategory, cart = [], onChec
 }
 
 /* ─── Address Form Sub-Component ─── */
-function AddressFormFields({ formData, formErrors, onChange, inputCls }) {
+function AddressFormFields({ formData, formErrors, onChange, inputCls, detectingLocation, detectingLocationStep, onDetectLocation }) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <button
+        type="button"
+        onClick={onDetectLocation}
+        disabled={detectingLocation}
+        className="w-full md:col-span-2 mb-2 border-[3px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-primary)] hover:bg-[color:var(--chipzo-lime)] hover:-translate-y-[1px] hover:-translate-x-[1px] px-4 py-2.5 text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer shadow-[3px_3px_0_rgba(0,0,0,1)] disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        {detectingLocation ? (
+          <>
+            <Loader size={12} className="animate-spin" /> {detectingLocationStep}
+          </>
+        ) : (
+          <>
+            <MapPin size={12} fill="currentColor" /> Use Current Location
+          </>
+        )}
+      </button>
+
       <div className="flex flex-col gap-1.5 md:col-span-2">
         <label className="text-[10px] font-black uppercase tracking-widest text-[color:var(--chipzo-muted)]">FULL NAME *</label>
         <input required name="fullName" value={formData.fullName} onChange={onChange} className={inputCls('fullName')} placeholder="Jane Doe" type="text" />

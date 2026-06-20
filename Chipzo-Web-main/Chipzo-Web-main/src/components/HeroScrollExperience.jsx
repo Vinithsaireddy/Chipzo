@@ -348,16 +348,16 @@ function MobileHero() {
               />
             </div>
           </div>
-          <div className="mt-5 flex flex-row justify-center gap-3 w-full max-w-xs mx-auto">
+          <div className="mt-5 flex flex-col justify-center gap-3 w-full max-w-xs mx-auto">
+            <button className="border-[2px] border-[color:var(--chipzo-paper)] bg-transparent w-full py-3.5 text-sm font-black uppercase text-[color:var(--chipzo-paper)] text-center hover:bg-[color:var(--chipzo-surface)] hover:text-[color:var(--chipzo-ink)] transition-colors">
+              Discord
+            </button>
             <Link
               to="/shop"
-              className="brutal-border brutal-shadow-sm flex-1 bg-[color:var(--chipzo-primary)] py-2.5 text-xs font-black uppercase text-[color:var(--chipzo-paper)] text-center transition-transform hover:-translate-x-1 hover:-translate-y-1 active:translate-x-0 active:translate-y-0 animate-pulse-light"
+              className="brutal-border brutal-shadow-sm w-full bg-[color:var(--chipzo-primary)] py-3.5 text-sm font-black uppercase text-[color:var(--chipzo-paper)] text-center transition-transform hover:-translate-x-1 hover:-translate-y-1 active:translate-x-0 active:translate-y-0 animate-pulse-light"
             >
               Explore
             </Link>
-            <button className="border-[2px] border-[color:var(--chipzo-paper)] bg-transparent flex-1 py-2.5 text-xs font-black uppercase text-[color:var(--chipzo-paper)] text-center hover:bg-[color:var(--chipzo-surface)] hover:text-[color:var(--chipzo-ink)] transition-colors">
-              Discord
-            </button>
           </div>
         </div>
       </div>
