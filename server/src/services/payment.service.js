@@ -42,14 +42,6 @@ const createRazorpayOrder = async ({ amount, receipt }) => {
  * @returns {boolean} true if valid
  */
 const verifySignature = ({ razorpayOrderId, razorpayPaymentId, razorpaySignature }) => {
-  // Development bypass for easy manual/Postman testing with mock signatures
-  if (
-    env.NODE_ENV === 'development' &&
-    (razorpaySignature === 'signature_xxx' || razorpaySignature.startsWith('mock_'))
-  ) {
-    logger.warn('[Payment] ⚠️ DEV BYPASS: Skipping signature verification for mock signature.');
-    return true;
-  }
 
   const body = `${razorpayOrderId}|${razorpayPaymentId}`;
   const expectedSignature = crypto

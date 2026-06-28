@@ -39,7 +39,7 @@ const signup = asyncHandler(async (req, res) => {
     console.error('[Welcome Email Error] Failed to send welcome mail:', err.message);
   });
 
-  const token = authService.signToken(user._id);
+  const token = authService.signToken(user);
 
   const userObj = user.toObject();
   delete userObj.password;
@@ -69,7 +69,7 @@ const login = asyncHandler(async (req, res) => {
     throw new ApiError(401, 'Invalid email or password.');
   }
 
-  const token = authService.signToken(user._id);
+  const token = authService.signToken(user);
 
   const userObj = user.toObject();
   delete userObj.password;

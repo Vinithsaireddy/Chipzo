@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react'
-import { Package, ChevronRight, AlertTriangle, RefreshCw, Clock, MapPin, CreditCard, Truck, XCircle, Eye, Bell, X } from 'lucide-react'
+import { Link } from 'react-router-dom'
+import { Package, ChevronRight, AlertTriangle, RefreshCw, Clock, MapPin, CreditCard, Truck, Eye, Bell, X } from 'lucide-react'
 import SmoothScroll from '../components/SmoothScroll.jsx'
 import Navbar from '../components/Navbar.jsx'
 import Footer from '../components/Footer.jsx'
-import CancelOrderModal from '../components/CancelOrderModal.jsx'
-import { ordersAPI, deliveryAPI } from '../services/api.js'
+import { ordersAPI } from '../services/api.js'
 import { useAuth } from '../contexts/AuthContext.jsx'
 
 const STATUS_LABELS = {
@@ -18,8 +18,6 @@ const STATUS_LABELS = {
   cancelled: 'Cancelled',
   failed_delivery: 'Failed Delivery',
 }
-
-const CANCELLABLE_STATUSES = ['order_confirmed', 'bike_booked', 'pickup_started']
 
 function Toast({ message, type, onClose }) {
   useEffect(() => { const t = setTimeout(onClose, 4000); return () => clearTimeout(t); }, [onClose]);
@@ -40,9 +38,6 @@ export default function MyOrders({ onNavigate, activeCategory, cartCount }) {
   const [apiError, setApiError] = useState('')
   const [expandedOrder, setExpandedOrder] = useState(null)
   const [retryKey, setRetryKey] = useState(0)
-  const [cancellingId, setCancellingId] = useState(null)
-  const [showCancelModal, setShowCancelModal] = useState(false)
-  const [cancelTargetId, setCancelTargetId] = useState(null)
   const [toast, setToast] = useState(null)
 
   const showToast = (message, type = 'info') => setToast({ message, type })
@@ -91,24 +86,6 @@ export default function MyOrders({ onNavigate, activeCategory, cartCount }) {
       'failed_delivery': 'text-orange-500',
     }
     return map[status] || 'text-[color:var(--chipzo-muted)]'
-  }
-
-  const handleCancelConfirm = async (reason) => {
-    if (!cancelTargetId) return
-    setCancellingId(cancelTargetId)
-    try {
-      await deliveryAPI.cancel(cancelTargetId, reason)
-      setOrders(prev => prev.map(o =>
-        o._id === cancelTargetId ? { ...o, deliveryStatus: 'cancelled', paymentStatus: o.paymentMethod === 'razorpay' && o.paymentStatus === 'paid' ? 'refunded' : o.paymentStatus } : o
-      ))
-      setShowCancelModal(false)
-      setCancelTargetId(null)
-      showToast('Order cancelled successfully.', 'success')
-    } catch (err) {
-      showToast(err.message || 'Failed to cancel order', 'error')
-    } finally {
-      setCancellingId(null)
-    }
   }
 
   return (
@@ -165,7 +142,6 @@ export default function MyOrders({ onNavigate, activeCategory, cartCount }) {
           ) : (
             <div className="space-y-4">
               {orders.map((order) => {
-                const isCancellable = CANCELLABLE_STATUSES.includes(order.deliveryStatus)
                 return (
                   <div key={order._id} className="brutal-border brutal-shadow bg-[color:var(--chipzo-surface)] overflow-hidden">
                     <div className="px-5 py-4 border-b-[3px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-paper)] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
@@ -205,10 +181,27 @@ export default function MyOrders({ onNavigate, activeCategory, cartCount }) {
                               </div>
                             ))}
                           </div>
-                          <div className="flex justify-between items-center mt-3 pt-3 border-t-2 border-dashed border-[color:var(--chipzo-rule)]">
-                            <span className="font-black uppercase text-sm">Total</span>
-                            <span className="tabular-prices text-xl font-black">₹{order.totalAmount?.toFixed(2)}</span>
-                          </div>
+                          {(() => {
+                            const subtotal = order.items?.reduce((sum, item) => sum + (item.price * item.quantity), 0) || 0;
+                            return (
+                              <>
+                                <div className="mt-3 pt-3 border-t border-dashed border-[color:var(--chipzo-rule)] space-y-1.5 text-xs">
+                                  <div className="flex justify-between">
+                                    <span className="font-bold uppercase text-[color:var(--chipzo-muted)]">Subtotal</span>
+                                    <span className="tabular-prices font-bold">₹{subtotal.toFixed(2)}</span>
+                                  </div>
+                                  <div className="flex justify-between">
+                                    <span className="font-bold uppercase text-[color:var(--chipzo-muted)]">Delivery</span>
+                                    <span className="tabular-prices font-bold">{(order.deliveryFee || 0) === 0 ? 'FREE' : `₹${(order.deliveryFee || 0).toFixed(2)}`}</span>
+                                  </div>
+                                </div>
+                                <div className="flex justify-between items-center mt-3 pt-3 border-t-2 border-dashed border-[color:var(--chipzo-rule)]">
+                                  <span className="font-black uppercase text-sm">Total</span>
+                                  <span className="tabular-prices text-xl font-black">₹{order.totalAmount?.toFixed(2)}</span>
+                                </div>
+                              </>
+                            );
+                          })()}
                         </div>
 
                         <div>
@@ -266,15 +259,15 @@ export default function MyOrders({ onNavigate, activeCategory, cartCount }) {
                               <Eye size={14} /> TRACK ORDER
                             </button>
                           )}
-                          {isCancellable && (
-                            <button
-                              onClick={() => { setCancelTargetId(order._id); setShowCancelModal(true) }}
-                              disabled={cancellingId === order._id}
-                              className="flex items-center justify-center gap-2 bg-red-500 text-white brutal-border border-red-700 px-4 py-2.5 text-xs font-black uppercase cursor-pointer flex-1 disabled:opacity-50 hover:bg-red-600 transition-all"
-                            >
-                              {cancellingId === order._id ? <><RefreshCw size={14} className="animate-spin" /> CANCELLING...</> : <><XCircle size={14} /> CANCEL</>}
-                            </button>
-                          )}
+                          <div className="flex items-center gap-2 py-2 text-center w-full justify-center">
+                            <AlertTriangle size={12} className="text-amber-600 shrink-0" strokeWidth={2.5} />
+                            <p className="text-[10px] font-bold text-[color:var(--chipzo-muted)]">
+                              Orders cannot be canceled once placed. Need assistance?{' '}
+                              <Link to="/help" className="underline font-black hover:text-[color:var(--chipzo-primary)] transition-colors cursor-pointer">
+                                Contact our support team
+                              </Link>.
+                            </p>
+                          </div>
                         </div>
                       </div>
                     )}
@@ -284,14 +277,6 @@ export default function MyOrders({ onNavigate, activeCategory, cartCount }) {
             </div>
           )}
         </main>
-
-        <CancelOrderModal
-          isOpen={showCancelModal}
-          onClose={() => { setShowCancelModal(false); setCancelTargetId(null) }}
-          onConfirm={handleCancelConfirm}
-          isCancelling={!!cancellingId}
-        />
-
         <Footer />
       </div>
     </SmoothScroll>

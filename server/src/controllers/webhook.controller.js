@@ -6,23 +6,24 @@ const asyncHandler = require('../utils/asyncHandler');
 const logger = require('../utils/logger');
 
 /**
- * POST /api/webhook/shiprocket
- * Receives shipment status updates from Shiprocket.
- * This endpoint should be configured in Shiprocket dashboard as a webhook URL.
+ * POST /api/webhook/borzo
+ * Receives real-time delivery status updates from Borzo.
+ * Configure the Callback URL in your Borzo Business dashboard → Personal Cabinet → Integration.
+ * Borzo sends: order_created, order_changed, delivery_created, delivery_changed events.
  */
-const shiprocketWebhook = asyncHandler(async (req, res) => {
+const borzoWebhook = asyncHandler(async (req, res) => {
   const payload = req.body;
 
-  logger.info(`[Webhook] Received Shiprocket webhook: ${JSON.stringify(payload).slice(0, 300)}`);
+  logger.info(`[Borzo Webhook] Received event: ${payload?.event_type || 'unknown'} ${JSON.stringify(payload).slice(0, 300)}`);
 
-  if (!payload || (!payload.shipment_id && !payload.awb && !payload.order_id)) {
-    logger.warn('[Webhook] Invalid payload — missing shipment_id or awb');
-    return new ApiResponse(400, 'Invalid webhook payload').send(res);
+  if (!payload || (!payload.order && !payload.delivery)) {
+    logger.warn('[Borzo Webhook] Invalid payload — missing order or delivery object');
+    return new ApiResponse(400, 'Invalid Borzo webhook payload').send(res);
   }
 
-  await deliveryService.handleWebhook(payload);
+  const result = await deliveryService.handleBorzoWebhook(payload);
 
-  return new ApiResponse(200, 'Webhook processed successfully').send(res);
+  return new ApiResponse(200, 'Borzo webhook processed successfully', result || null).send(res);
 });
 
-module.exports = { shiprocketWebhook };
+module.exports = { borzoWebhook };

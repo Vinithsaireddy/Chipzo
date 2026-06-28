@@ -1,0 +1,360 @@
+PART B — Chipzo Project Kits
+Each kit is a complete bundle. One purchase, multiple buildable projects. No extra components needed. Designed for school,
+college, and hackathon students.
+
+Kit 1 — Arduino Starter & Basics Kit
+
+Perfect first kit · Ages 12+ · School to Diploma level
+
+Components Included
+
+Projects You Can Build (10)
+
+• Arduino Uno R3 (CH340) x1
+
+1. LED Blinking & Traffic Light
+Control LED sequences, learn digital I/O
+
+• USB Type-A to Type-B cable x1
+• Breadboard 830 point x1
+• Jumper wires M-M 20cm (40 pcs)
+• Jumper wires M-F 20cm (40 pcs)
+• LEDs red, green, blue, yellow, white x10 each
+• Resistor pack 220Ω, 1kΩ, 10kΩ (20 each)
+• Capacitor 100nF ceramic x10
+• Push-button tactile switch x5
+• SPDT slide switch x2
+• Active buzzer 5V x1
+• 9V battery holder x1
+• 16x2 LCD with I2C backpack x1
+• DHT11 sensor x1
+• HC-SR04 Ultrasonic sensor x1
+• Relay module 1-channel x1
+• Servo SG90 x1
+• Potentiometer 10kΩ x2
+• NPN transistor BC547 x5
+
+2. Push-button Counter
+Count presses and show on LCD
+3. Temperature Monitor
+Read DHT11, display on LCD
+4. Ultrasonic Distance Meter
+Measure and display distance
+5. Smart Light with Relay
+Auto-switch light on ambient brightness
+6. Servo Angle Controller
+Control servo with potentiometer
+7. Burglar Alarm
+Ultrasonic + buzzer + relay
+8. Password Door Lock
+Button keypad + servo latch
+9. Simple Weather Station
+Temp, humidity, heat index on LCD
+10. Plant Watering Alarm
+DHT + buzzer for dry soil alert
+
+• Diode 1N4007 x5
+
+Kit 2 — IoT & Wi-Fi Smart Projects Kit
+Components Included
+
+Cloud connect · Ages 15+ · Diploma / B.Tech semester
+projects
+
+Projects You Can Build (10)
+
+• ESP32 WROOM-32 Dev Board x1
+• USB Type-A to USB-C cable x1
+• Breadboard 830 point x1
+• Jumper wires M-M and M-F (40 pcs each)
+• DHT22 Temp and Humidity sensor x1
+• Soil Moisture Sensor module x1
+• MQ-2 Gas Sensor x1
+• PIR Motion Sensor x1
+• Relay module 4-channel x1
+• 0.96 inch OLED I2C display x1
+• LED assortment + 220Ω resistors x10
+• Active buzzer x1
+• Push-button switches x3
+• 18650 Li-Ion cell + holder x1
+• TP4056 charging module USB-C x1
+• Potentiometer 10kΩ x1
+
+1. IoT Weather Station
+Send temp/humidity to Blynk/ThingSpeak cloud
+2. Smart Home Automation
+Control 4 appliances via mobile app over Wi-Fi
+3. Gas Leak Detector + Alert
+MQ-2 triggers notification via ESP32
+4. Smart Security System
+PIR + OLED + relay + cloud push notification
+5. Automatic Plant Irrigation
+Soil moisture auto-triggers water pump relay
+6. Air Quality Monitor Dashboard
+MQ-135 + OLED + live web dashboard
+7. Energy Monitor
+ACS712 + ESP32 logs power usage to cloud
+8. Wi-Fi Attendance System
+RFID + ESP32 logs to Google Sheets
+9. ESP32-CAM Smart Doorbell
+Motion photo capture + Telegram notification
+10. Smart Parking Counter
+Ultrasonic sensors count slots on web UI
+
+Kit 3 — Robotics & Motor Control Kit
+
+Build and drive · Ages 14+ · School robotics / hackathons
+
+Components Included
+
+Projects You Can Build (8)
+
+• Arduino Uno R3 x1
+
+1. Obstacle-Avoidance Robot
+Ultrasonic + servo scanner auto-navigates
+
+• L298N Motor Driver Module x1
+• BO Motor 150 RPM x2
+• Robot Wheel 65mm x2
+• Ball Caster Wheel 1 inch x1
+• 2WD Acrylic Chassis base x1
+• Breadboard 400 point x1
+• IR Obstacle Sensor module x2
+• IR Line-follower sensor module x2
+• HC-SR04 Ultrasonic Sensor x1
+• Servo SG90 x1
+• Bluetooth Module HC-06 x1
+• Jumper wires M-M and M-F (30 pcs each)
+• 4xAA Battery Holder x1
+• LED assortment + 220Ω x5
+
+2. Line-Follower Robot
+IR sensors follow black tape on surface
+3. Bluetooth-Controlled Car
+Drive robot from phone via HC-06 app
+4. Object-Sorting Robot
+Colour sensor + servo arm sorts blocks
+5. Maze-Solving Robot
+IR + ultrasonic algorithm navigation
+6. Wall-Following Robot
+Maintain fixed distance from wall
+7. Gesture-Controlled Robot
+MPU-6050 glove controls direction
+8. Voice-Controlled Robot
+Bluetooth + voice commands from phone
+
+• Push-button x2
+
+Kit 4 — Sensor & Data Logging Kit
+Components Included
+
+Measure everything · Ages 16+ · Final year / research projects
+
+Projects You Can Build (8)
+
+• Arduino Mega 2560 x1
+• DHT22 Temp and Humidity x1
+• BMP280 Pressure and Altitude x1
+• DS18B20 Waterproof Temp Probe x1
+• MQ-135 Air Quality Sensor x1
+• Rain Sensor Module x1
+• Current Sensor ACS712 20A x1
+• Load Cell 5kg + HX711 module x1
+• MPU-6050 Gyro + Accelerometer x1
+• Pulse Oximeter MAX30102 x1
+• 0.96 inch OLED display x1
+• MicroSD card module x1
+• MicroSD card 8GB x1
+• DS3231 Real-Time Clock module x1
+• Jumper wires full set
+
+1. Multi-Parameter Weather Station
+Logs temp, humidity, pressure, rain to SD
+2. Smart Energy Meter
+ACS712 measures current, logs consumption
+3. Digital Smart Weighing Scale
+Load cell + HX711 displays weight on OLED
+4. Health Monitoring Band
+MAX30102 SpO2 + heart rate logged with RTC
+5. Earthquake Pre-Alert System
+MPU-6050 detects vibration spikes with timestamp
+6. Air Quality Data Logger
+MQ-135 + BMP280 log air data every minute
+7. Cold Chain Monitor
+DS18B20 logs food/medicine storage temperature
+8. Posture Correction Device
+MPU-6050 alerts when back angle is wrong
+
+• Breadboard 830 point x1
+• 9V power adapter x1
+
+Kit 5 — Wireless Communication & GPS
+Kit
+
+Connect and locate · Ages 17+ · Advanced / Hackathon
+projects
+
+Components Included
+
+Projects You Can Build (8)
+
+• ESP32 Dev Board x1
+
+1. GPS Vehicle Tracker
+NEO-6M + SIM800L sends location via SMS
+
+• SIM800L GSM Module x1
+• NEO-6M GPS Module x1
+• HC-05 Bluetooth Module x1
+• NRF24L01+PA+LNA RF Module x2
+• RC522 RFID Module x1
+• RFID cards + key fobs x5
+• 0.96 inch OLED display x1
+• Active Buzzer x1
+• Relay module 2-channel x1
+• Breadboard 830 point x1
+• Jumper wires full set 100 pcs
+• 18650 cell + holder x1
+• TP4056 USB-C charging module x1
+• SIM card (user-provided)
+
+Kit 6 — Display & User Interface Kit
+Components Included
+
+2. RFID Smart Attendance
+RC522 logs attendance to cloud via ESP32
+3. Wireless Multi-Room Sensor Network
+Two NRF24L01 nodes share sensor data
+4. GSM Security Alarm
+PIR + SIM800L calls/SMS on intrusion
+5. Bluetooth Walkie-Talkie
+Two HC-05 boards relay messages
+6. Smart Access Control
+RFID lock + Bluetooth monitor + cloud log
+7. Pet and Luggage Tracker
+GPS + GSM periodic SMS location tracker
+8. Emergency SOS Device
+Button + GPS + SIM800L sends coordinates
+
+Show it off · Ages 14+ · Exhibition / hackathon demos
+
+Projects You Can Build (8)
+
+• Arduino Uno R3 x1
+• 16x2 LCD I2C x1
+• 0.96 inch OLED I2C x1
+• 2.4 inch TFT SPI colour display x1
+• TM1637 4-digit 7-segment module x1
+• 8x8 Dot Matrix LED MAX7219 x1
+• WS2812B Addressable RGB LED strip 8 LEDs x1
+• Potentiometer 10kΩ x2
+• Push-button x4
+• Passive buzzer x1
+• DHT11 sensor x1
+• Breadboard 830 point x1
+• Jumper wires full set
+• USB cable x1
+
+Kit 7 — Power Electronics & Circuit
+Design Kit
+
+1. Digital Alarm Clock
+DS3231 + TM1637 displays time, buzzer alarm
+2. Mini Weather Display
+DHT11 + colour TFT shows data graphically
+3. Scrolling LED Matrix Sign
+Custom messages scroll on 8x8 matrix
+4. RGB Mood Lamp
+WS2812B cycles colours, pot controls speed
+5. Simple Game Console
+2-button game on OLED display
+6. Animated Countdown Timer
+Colour TFT countdown with progress bar
+7. Music Visualiser
+Sound sensor drives WS2812B intensity
+8. Multi-sensor Dashboard
+TFT shows live readings from sensors
+
+Understand power · Ages 16+ · Electronics and EEE students
+
+Components Included
+
+Projects You Can Build (8)
+
+• LM2596 Adjustable Buck Converter x1
+
+1. Variable Power Supply
+LM2596 + voltmeter display, 1.25-35V adjustable
+
+• MT3608 Boost Converter Module x1
+• L7805 Voltage Regulator TO-220 x2
+• AMS1117 3.3V Regulator x3
+• 555 Timer IC NE555 x3
+• LM358 Op-Amp x3
+• LM324 Quad Op-Amp x2
+• BC547 NPN Transistor x10
+• TIP122 Darlington NPN x3
+• IRFZ44N N-MOSFET x3
+• 1N4007 Rectifier Diode x10
+• 1N5819 Schottky Diode x5
+• Zener Diodes 3.3V, 5V, 12V x3 each
+• Resistor assortment 220Ω-100kΩ (200 pcs)
+• Capacitor assortment 100nF-470uF (50 pcs)
+
+2. PWM Motor Speed Controller
+555 timer PWM + MOSFET drives DC motor
+3. Audio Amplifier Circuit
+LM358 amplifies mic signal to 8Ω speaker
+4. LED Dimmer Circuit
+555 PWM + MOSFET dims LED strip smoothly
+5. Transistor-based Switch
+BC547/TIP122 switch relay from 3.3V logic
+6. Voltage Regulator Board
+L7805 + filter caps make clean 5V from 12V
+7. Comparator Circuit
+LM358 compares voltages, triggers relay/LED
+8. Solar Charge Controller
+MOSFET + Zener + op-amp basic MPPT circuit
+
+• Vero Stripboard 10x15cm x2
+• Digital Multimeter x1
+• Breadboard 830 point x1
+• Jumper wires full set
+
+Kit 8 — Mini Drone Build Kit
+Components Included
+
+Take flight · Ages 18+ · Final year / aerospace projects
+
+Projects You Can Build (5)
+
+• F450 Quadcopter Frame Kit 450mm x1
+• Brushless Motor 2212 920KV x4
+• 30A BLHeli ESC x4
+• Propeller 1045 CW+CCW pairs x2 sets
+• Flysky FS-i6 6-CH Transmitter + FS-iA6 Receiver x1
+• LiPo Battery 7.4V 2200mAh 2S 25C XT60 x1
+• iMax B3 Pro LiPo Balance Charger x1
+• Flight Controller F3/F4 compatible x1
+• XT60 connector pair x2
+
+1. Build and Fly Quadcopter
+Full F450 assembly — frame, motors, ESC, FC, remote
+2. Altitude Hold Drone
+Barometric sensor + FC firmware for stable hover
+3. FPV Camera Drone
+ESP32-CAM + video transmitter for first-person view
+4. GPS Return-to-Home Drone
+NEO-M8N GPS + ArduPilot autonomous return
+5. Payload Drop Drone
+Servo mechanism drops payload on command
+
+• Power Distribution Board PDB x1
+• Zip ties + standoffs hardware set
+• LiPo battery voltage alarm buzzer x1
+
+Chipzo Official Inventory v2 — June 2026 · 168 products · 8 kits · 65 buildable projects · For students aged 5–35 across school, college,
+degree and hackathon levels. 3D Printing section updated: printers removed, filament and spare parts retained.
+
+

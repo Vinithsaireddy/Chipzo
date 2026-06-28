@@ -65,13 +65,19 @@ const orderSchema = new mongoose.Schema(
       required: true,
       min: 0,
     },
+    deliveryFee: {
+      type: Number,
+      required: false,
+      default: 0,
+      min: 0,
+    },
     address: {
       type: addressSchema,
       required: true,
     },
     paymentMethod: {
       type: String,
-      enum: ['razorpay', 'cod'],
+      enum: ['razorpay'],
       default: 'razorpay',
     },
     paymentStatus: {
@@ -114,6 +120,11 @@ const orderSchema = new mongoose.Schema(
     },
     shipmentId: {
       type: String,
+      default: null,
+    },
+    deliveryProvider: {
+      type: String,
+      enum: ['borzo', null],
       default: null,
     },
     courierDetails: {

@@ -22,6 +22,7 @@ const PRODUCT_CATEGORIES = [
   'Kit',
   'Passive',
   'IC',
+  'Project Kits',
 ];
 
 const productSchema = new mongoose.Schema(
@@ -96,6 +97,22 @@ const productSchema = new mongoose.Schema(
       integer: true,
       min: [0, 'Stock cannot be negative'],
       default: 0,
+    },
+
+    // ── Project Kits Details ──────────────────────────────────────────────────
+    kitContents: {
+      type: [String],
+      default: [],
+    },
+
+    projectsIncluded: {
+      type: [String],
+      default: [],
+    },
+
+    features: {
+      type: [String],
+      default: [],
     },
 
     // ── Media ────────────────────────────────────────────────────────────────

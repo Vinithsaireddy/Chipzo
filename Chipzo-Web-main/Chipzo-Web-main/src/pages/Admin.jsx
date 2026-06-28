@@ -6,7 +6,7 @@ import {
   Upload, AlertTriangle, CheckCircle2, TrendingUp, 
   Coins, AlertCircle, ArrowUpRight, Globe, FileText, Sparkles,
   Download, Eye, ShoppingBag, Truck, CreditCard, ChevronRight, ChevronLeft,
-  Loader2
+  Loader2, Package
 } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext.jsx'
 import { productsAPI, ordersAPI } from '../services/api.js'
@@ -18,7 +18,7 @@ const BACKEND_CATEGORIES = [
   'Battery', 'Battery Holder', 'Wire', 'Microcontroller',
   'Communication', 'Sensor', 'Display', 'Motor',
   'Robotics', 'Drone', 'Switch', 'Output',
-  'Tool', 'Kit', 'Passive', 'IC',
+  'Tool', 'Kit', 'Passive', 'IC', 'Project Kits',
 ]
 
 export default function Admin() {
@@ -53,6 +53,9 @@ export default function Admin() {
     imageFile: null,
     imagePreview: '',
     isFeatured: false,
+    kitContents: '',
+    projectsIncluded: '',
+    features: '',
   })
 
   // --- UI feedback states ---
@@ -219,6 +222,9 @@ export default function Admin() {
         imagePreview: firstImage,
         isFeatured: prod.isFeatured || false,
         existingImages: prod.images || [],
+        kitContents: prod.kitContents ? prod.kitContents.join('\n') : '',
+        projectsIncluded: prod.projectsIncluded ? prod.projectsIncluded.join('\n') : '',
+        features: prod.features ? prod.features.join('\n') : '',
       })
       setEditingProduct(prod)
       setActiveTab('add')
@@ -235,6 +241,9 @@ export default function Admin() {
         imagePreview: '',
         isFeatured: false,
         existingImages: [],
+        kitContents: '',
+        projectsIncluded: '',
+        features: '',
       })
       setEditingProduct(null)
     }
@@ -308,6 +317,10 @@ export default function Admin() {
 
       const usesUpload = formData.imageMode === 'upload' && formData.imageFile
 
+      const kitContents = formData.kitContents ? formData.kitContents.split('\n').map(x => x.trim()).filter(Boolean) : []
+      const projectsIncluded = formData.projectsIncluded ? formData.projectsIncluded.split('\n').map(x => x.trim()).filter(Boolean) : []
+      const features = formData.features ? formData.features.split('\n').map(x => x.trim()).filter(Boolean) : []
+
       let payload
 
       if (usesUpload) {
@@ -319,6 +332,9 @@ export default function Admin() {
         bodyFormData.append('specifications', JSON.stringify(specsObj))
         bodyFormData.append('isFeatured', formData.isFeatured)
         bodyFormData.append('images', formData.imageFile)
+        bodyFormData.append('kitContents', JSON.stringify(kitContents))
+        bodyFormData.append('projectsIncluded', JSON.stringify(projectsIncluded))
+        bodyFormData.append('features', JSON.stringify(features))
 
         const slug = formData.name.trim().toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '')
         bodyFormData.append('id', slug)
@@ -334,6 +350,9 @@ export default function Admin() {
           description: formData.description.trim(),
           specifications: specsObj,
           isFeatured: formData.isFeatured,
+          kitContents,
+          projectsIncluded,
+          features,
         }
 
         // Only send images if user explicitly provided a URL (never send empty array which wipes existing)
@@ -356,7 +375,7 @@ export default function Admin() {
       showToast('success', editingProduct ? 'Product details updated successfully!' : 'New product initialized and registered!')
       initForm()
       setActiveTab('manage')
-      setCurrentPage(1)
+      // NOTE: intentionally NOT resetting currentPage so admin returns to the page they came from
       fetchProducts()
     }).catch((err) => {
       showToast('danger', err.message || 'Transmission failed.')
@@ -400,12 +419,12 @@ export default function Admin() {
     if (!orderDeleteId) return
     try {
       await ordersAPI.adminDelete(orderDeleteId)
-      showToast('success', 'Order has been permanently deleted/cancelled.')
+      showToast('success', 'Order has been permanently deleted.')
       setOrderDeleteId(null)
       setSelectedOrder(null)
       fetchOrders()
     } catch (err) {
-      showToast('danger', err.message || 'Order cancellation aborted.')
+      showToast('danger', err.message || 'Order deletion aborted.')
       setOrderDeleteId(null)
     }
   }
@@ -773,7 +792,7 @@ TOTAL OUTFLOW:        ₹${order.totalAmount.toFixed(2)} INR
               <div className="flex items-center gap-3">
                 <select
                   value={categoryFilter}
-                  onChange={(e) => { setCategoryFilter(e.target.value); setCurrentPage(1) }}
+                  onChange={(e) => { setCategoryFilter(e.target.value); setCurrentPage(1); setSearchQuery('') }}
                   className="border-[3px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-paper)] px-3 py-2 text-xs font-black uppercase tracking-wider focus:outline-none"
                 >
                   <option value="">ALL CATEGORIES</option>
@@ -1142,6 +1161,59 @@ TOTAL OUTFLOW:        ₹${order.totalAmount.toFixed(2)} INR
                   </div>
                 )}
               </div>
+
+              {/* Project Kit Fields (Conditionally Rendered) */}
+              {formData.category === 'Project Kits' && (
+                <div className="border-[3px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-surface)] p-6 space-y-6">
+                  <div className="flex items-center gap-2 border-b-2 border-[color:var(--chipzo-ink)] pb-2">
+                    <Package size={14} className="text-[color:var(--chipzo-primary)]" />
+                    <h3 className="text-xs font-black uppercase tracking-widest text-[color:var(--chipzo-ink)]">
+                      Project Kit Config Matrix
+                    </h3>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
+                      <label className="block text-[10px] font-black uppercase tracking-widest text-[color:var(--chipzo-ink)] mb-2">
+                        Kit Contents (One item per line)
+                      </label>
+                      <textarea
+                        rows={8}
+                        value={formData.kitContents}
+                        onChange={(e) => setFormData(prev => ({ ...prev, kitContents: e.target.value }))}
+                        placeholder="Arduino Uno R3 (CH340) x1&#10;USB Type-A to Type-B cable x1&#10;Breadboard 830 point x1"
+                        className="w-full border-[3px] border-[color:var(--chipzo-ink)] bg-white px-3 py-2 text-xs font-semibold text-[color:var(--chipzo-ink)] focus:outline-none"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[10px] font-black uppercase tracking-widest text-[color:var(--chipzo-ink)] mb-2">
+                        Projects You Can Build (One item per line)
+                      </label>
+                      <textarea
+                        rows={8}
+                        value={formData.projectsIncluded}
+                        onChange={(e) => setFormData(prev => ({ ...prev, projectsIncluded: e.target.value }))}
+                        placeholder="LED Blinking & Traffic Light (Control LED sequences)&#10;Push-button Counter (Count presses)"
+                        className="w-full border-[3px] border-[color:var(--chipzo-ink)] bg-white px-3 py-2 text-xs font-semibold text-[color:var(--chipzo-ink)] focus:outline-none"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[10px] font-black uppercase tracking-widest text-[color:var(--chipzo-ink)] mb-2">
+                        Key Features (One item per line)
+                      </label>
+                      <textarea
+                        rows={8}
+                        value={formData.features}
+                        onChange={(e) => setFormData(prev => ({ ...prev, features: e.target.value }))}
+                        placeholder="Perfect first kit&#10;Ages 12+&#10;No extra components needed"
+                        className="w-full border-[3px] border-[color:var(--chipzo-ink)] bg-white px-3 py-2 text-xs font-semibold text-[color:var(--chipzo-ink)] focus:outline-none"
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
 
               {/* Form Submission Actions Row */}
               <div className="border-t-[2px] border-[color:var(--chipzo-ink)] pt-6 flex items-center justify-end gap-4">

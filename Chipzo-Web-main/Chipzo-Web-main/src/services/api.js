@@ -143,14 +143,11 @@ export const cartAPI = {
 };
 
 export const ordersAPI = {
+  /** GET /api/orders/price-summary — backend-computed breakdown: subtotal, deliveryFee, total */
+  getPriceSummary: () => request('/orders/price-summary'),
+
   create: (address) =>
     request('/orders', {
-      method: 'POST',
-      body: JSON.stringify({ address }),
-    }),
-
-  createCOD: (address) =>
-    request('/orders/cod', {
       method: 'POST',
       body: JSON.stringify({ address }),
     }),
@@ -210,9 +207,7 @@ export const addressAPI = {
 export const deliveryAPI = {
   track: (orderId) => request(`/delivery/track/${orderId}`),
 
-  cancel: (orderId, reason = '') =>
-    request(`/delivery/cancel/${orderId}`, {
-      method: 'POST',
-      body: JSON.stringify({ reason }),
-    }),
+  /** GET /api/delivery/providers — returns the currently active delivery provider name */
+  getProvider: () => request('/delivery/provider'),
 };
+

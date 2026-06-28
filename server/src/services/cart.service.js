@@ -139,6 +139,44 @@ const computeTotal = (items = []) =>
     return total;
   }, 0);
 
+/**
+ * Returns the tiered delivery fee based on the product subtotal.
+ * This is the canonical delivery fee logic — shared by cart preview,
+ * order initiation, and payment verification.
+ *
+ * Tiers:
+ *   subtotal >= ₹1000  → ₹0 (Free Delivery)
+ *   subtotal >= ₹200   → ₹59
+ *   subtotal < ₹200    → ₹100
+ *
+ * @param {number} subtotal
+ * @returns {number}
+ */
+const computeDeliveryFee = (subtotal) => {
+  if (subtotal >= 1000) return 0;
+  if (subtotal >= 200) return 59;
+  return 100;
+};
+
+/**
+ * Computes a full price breakdown for a populated cart.
+ * This is the single authoritative pricing function used by:
+ *   - GET /api/orders/price-summary  (cart page / checkout page display)
+ *   - POST /api/orders               (Razorpay order creation amount)
+ *   - POST /api/payment/verify       (server-side amount tamper check)
+ *
+ * @param {Array} populatedItems - Populated cart items [{ productId: Product, quantity }]
+ * @param {number} [discountAmount=0] - Applied coupon discount (future use)
+ * @returns {{ subtotal: number, deliveryFee: number, discountAmount: number, total: number }}
+ */
+const computePriceSummary = (populatedItems = [], discountAmount = 0) => {
+  const subtotal = computeTotal(populatedItems);
+  const deliveryFee = computeDeliveryFee(subtotal);
+  const discount = Math.min(discountAmount, subtotal); // can't discount more than subtotal
+  const total = Number((subtotal + deliveryFee - discount).toFixed(2));
+  return { subtotal, deliveryFee, discountAmount: discount, total };
+};
+
 module.exports = {
   getCart,
   addToCart,
@@ -146,4 +184,6 @@ module.exports = {
   removeCartItem,
   clearCart,
   computeTotal,
+  computeDeliveryFee,
+  computePriceSummary,
 };

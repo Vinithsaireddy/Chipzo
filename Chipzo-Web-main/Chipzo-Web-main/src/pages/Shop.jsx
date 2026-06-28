@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { ChevronLeft, ChevronRight, ChevronDown, ShoppingCart, RefreshCw, AlertOctagon, Clock, Ban, X } from 'lucide-react'
 import SmoothScroll from '../components/SmoothScroll.jsx'
 import Navbar from '../components/Navbar.jsx'
@@ -27,6 +27,7 @@ const SHOP_CATEGORIES = [
   { label: 'Kit', value: 'Kit' },
   { label: 'Passive', value: 'Passive' },
   { label: 'IC', value: 'IC' },
+  { label: 'Project Kits', value: 'Project Kits' },
 ]
 
 const announcements = [
@@ -66,6 +67,9 @@ function mapProduct(p) {
     voltageMin,
     voltageMax,
     image: p.images?.length ? getProductImageUrl(p.images[0]) : '',
+    kitContents: p.kitContents || [],
+    projectsIncluded: p.projectsIncluded || [],
+    features: p.features || [],
   }
 }
 
@@ -655,9 +659,8 @@ export default function Shop({ onNavigate, activeCategory, setActiveCategory, ca
             <div>
               <h3 className="mb-4 text-sm font-black uppercase tracking-[0.16em] text-[color:var(--chipzo-lime)]">Legal</h3>
               <div className="grid gap-3 text-sm font-black uppercase tracking-[0.08em]">
-                <a href="#" className="transition-colors hover:text-[color:var(--chipzo-primary)] focus:outline-none focus:ring-2 focus:ring-[color:var(--chipzo-primary)] focus:ring-offset-1">Terms</a>
-                <a href="#" className="transition-colors hover:text-[color:var(--chipzo-primary)] focus:outline-none focus:ring-2 focus:ring-[color:var(--chipzo-primary)] focus:ring-offset-1">Privacy</a>
-                <a href="#" className="transition-colors hover:text-[color:var(--chipzo-primary)] focus:outline-none focus:ring-2 focus:ring-[color:var(--chipzo-primary)] focus:ring-offset-1">Contact</a>
+                <Link to="/terms" className="transition-colors hover:text-[color:var(--chipzo-primary)] focus:outline-none focus:ring-2 focus:ring-[color:var(--chipzo-primary)] focus:ring-offset-1">Terms & Conditions</Link>
+                <a href="mailto:support@shopchipzo.com" className="transition-colors hover:text-[color:var(--chipzo-primary)] focus:outline-none focus:ring-2 focus:ring-[color:var(--chipzo-primary)] focus:ring-offset-1">Contact Support</a>
               </div>
             </div>
           </div>

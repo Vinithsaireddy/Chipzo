@@ -33,8 +33,9 @@ router.delete('/admin/:id', adminOnly, orderController.deleteOrderAdmin);
 /** POST /api/orders — Initiate order (creates Razorpay order, not DB order) */
 router.post('/', validate(createOrderSchema), orderController.initiateOrder);
 
-/** POST /api/orders/cod — Create COD order directly */
-router.post('/cod', validate(createOrderSchema), orderController.createCODOrder);
+
+/** GET /api/orders/price-summary — Backend-computed price breakdown for the current user's cart */
+router.get('/price-summary', orderController.getPriceSummary);
 
 /** GET /api/orders — Get paginated order history */
 router.get('/', orderController.getOrders);

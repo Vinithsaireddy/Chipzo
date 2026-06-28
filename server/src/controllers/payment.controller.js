@@ -15,6 +15,9 @@ const logger = require('../utils/logger');
 const Product = require('../models/Product');
 const Order = require('../models/Order');
 
+// computePriceSummary is the single source of truth for pricing
+const { computePriceSummary } = require('../services/cart.service');
+
 /**
  * POST /api/payment/verify
  * Verifies Razorpay signature, creates Order, clears cart, assigns delivery.
@@ -43,30 +46,33 @@ const verifyPayment = asyncHandler(async (req, res) => {
     throw new ApiError(400, 'Missing address or cart snapshot for order creation.');
   }
 
-  // Normalize cartSnapshot to support both Array and Object structures
+  // Normalize cartSnapshot — support both Array and Object shapes from the client.
+  // NOTE: we only use productId and quantity from the client — prices come from DB.
   let items = [];
-  let totalAmount = 0;
 
   if (Array.isArray(cartSnapshot)) {
     items = cartSnapshot;
   } else if (typeof cartSnapshot === 'object') {
     items = cartSnapshot.items || [];
-    totalAmount = cartSnapshot.totalAmount || 0;
+    // cartSnapshot.totalAmount is intentionally ignored — computed server-side below.
   }
 
   if (items.length === 0) {
     throw new ApiError(400, 'Cart snapshot must contain at least one item.');
   }
 
-  // Look up products to ensure they exist and populate missing fields (like name, price)
+  // ── Look up products from DB ──────────────────────────────────────────────
   const productIds = items.map((item) => item.productId);
   const products = await Product.find({ _id: { $in: productIds } });
-  
+
   const productMap = {};
   products.forEach((p) => {
     productMap[p._id.toString()] = p;
   });
 
+  // ── Build validated items using ONLY DB prices (Fix 2) ────────────────────
+  // Client-sent price fields (item.price, item.priceAtPurchase, cartSnapshot.totalAmount)
+  // are never used. Only product.price fetched from the database is trusted.
   const validatedItems = items.map((item) => {
     if (!item.productId) {
       throw new ApiError(400, 'Each item in the cart snapshot must have a productId.');
@@ -75,19 +81,23 @@ const verifyPayment = asyncHandler(async (req, res) => {
     if (!product) {
       throw new ApiError(404, `Product not found in database: ${item.productId}`);
     }
-    const price = item.price || item.priceAtPurchase || product.price || 0;
     return {
       productId: item.productId,
-      name: item.name || product.name,
-      price: price,
+      name: product.name,           // from DB
+      price: product.price,         // from DB — client-sent price is ignored
       quantity: item.quantity || 1,
     };
   });
 
-  // Calculate total amount if not already populated
-  if (!totalAmount) {
-    totalAmount = validatedItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  }
+  // ── Compute server-side total using the canonical pricing function (includes delivery fee) ──
+  // Wrap items into the shape expected by computePriceSummary:
+  // [{ productId: { price }, quantity }]
+  const populatedItems = validatedItems.map(item => ({
+    productId: { price: item.price },
+    quantity: item.quantity,
+  }));
+  const pricing = computePriceSummary(populatedItems);
+  const serverTotal = pricing.total; // subtotal + deliveryFee
 
   // ── 1. Duplicate payment prevention ────────────────────────────────────────
   const existingPayment = await Order.findOne({ paymentId: razorpayPaymentId });
@@ -102,24 +112,52 @@ const verifyPayment = asyncHandler(async (req, res) => {
     return new ApiResponse(200, 'Order already placed for this payment.', { order: existingOrder }).send(res);
   }
 
-  // ── 2. Verify signature ───────────────────────────────────────────────────
+  // ── 2. Verify Razorpay HMAC signature ─────────────────────────────────────
   paymentService.verifySignature({ razorpayOrderId, razorpayPaymentId, razorpaySignature });
 
-  // ── 3. Create Order document ──────────────────────────────────────────────
+  // ── 3. Verify payment amount against Razorpay (Fix 3) ─────────────────────
+  // Fetch the Razorpay order to confirm the amount we created it with matches
+  // the server-computed total. This prevents a replay attack where an attacker
+  // uses a valid signature from a ₹1 payment to claim a ₹10,000 order.
+  const razorpay = require('../config/razorpay');
+
+  const rzpOrder = await razorpay.orders.fetch(razorpayOrderId);
+  const expectedAmountPaise = Math.round(serverTotal * 100);
+  if (parseInt(rzpOrder.amount, 10) !== expectedAmountPaise) {
+    logger.warn(
+      `[Payment] Amount mismatch — gateway: ₹${rzpOrder.amount / 100}, ` +
+      `server: ₹${serverTotal}, orderId: ${razorpayOrderId}`
+    );
+    throw new ApiError(400, 'Payment amount mismatch. Order rejected.');
+  }
+
+  // ── 4. Verify payment was actually captured (Fix 3) ───────────────────────
+  const rzpPayment = await razorpay.payments.fetch(razorpayPaymentId);
+  if (rzpPayment.status !== 'captured') {
+    logger.warn(`[Payment] Payment not captured — status: ${rzpPayment.status}, paymentId: ${razorpayPaymentId}`);
+    throw new ApiError(400, 'Payment not captured. Order rejected.');
+  }
+  if (rzpPayment.order_id !== razorpayOrderId) {
+    logger.warn(`[Payment] Payment/order mismatch — paymentId: ${razorpayPaymentId}, orderId: ${razorpayOrderId}`);
+    throw new ApiError(400, 'Payment does not belong to this order.');
+  }
+
+  // ── 5. Create Order document ──────────────────────────────────────────────
   const order = await orderService.createOrder({
     userId: req.user._id,
     items: validatedItems,
-    totalAmount,
+    totalAmount: serverTotal,     // server-computed total (subtotal + delivery)
+    deliveryFee: pricing.deliveryFee, // delivery fee snapshot for order records
     address,
     paymentId: razorpayPaymentId,
     razorpayOrderId,
     paymentSignature: razorpaySignature,
   });
 
-  // ── 5. Clear cart ─────────────────────────────────────────────────────────
+  // ── 6. Clear cart ─────────────────────────────────────────────────────────
   await cartService.clearCart(req.user._id);
 
-  // ── 5.5 Send Order Confirmation Email ──────────────────────────────────────
+  // ── 7. Send Order Confirmation Email ──────────────────────────────────────
   generateInvoicePdf(order)
     .then((pdfBuffer) => {
       return emailService.sendOrderConfirmation(req.user.email, req.user.name, order, pdfBuffer);
@@ -128,17 +166,17 @@ const verifyPayment = asyncHandler(async (req, res) => {
       logger.error(`[Order Email Error] Failed to generate/send order confirmation email: ${err.message}`);
     });
 
-  // ── 6. Assign delivery (non-blocking — don't fail order on delivery error) ─
+  // ── 8. Assign delivery (non-blocking — don't fail order on delivery error) ─
   deliveryService.assignDelivery(order._id.toString()).catch((err) => {
     logger.error(`[Delivery] Failed to assign delivery for order ${order._id}: ${err.message}`);
   });
 
-  // ── 7. Send WhatsApp Notification to hardcoded receiver (non-blocking) ─────
+  // ── 9. Send WhatsApp Notification (non-blocking) ───────────────────────────
   whatsappService.sendOrderNotification(order).catch((err) => {
     logger.error(`[WhatsApp] Failed to trigger order notification for order ${order._id}: ${err.message}`);
   });
 
-  logger.info(`[Payment] Verified — orderId: ${order._id}, paymentId: ${razorpayPaymentId}`);
+  logger.info(`[Payment] Verified — orderId: ${order._id}, paymentId: ${razorpayPaymentId}, total: ₹${serverTotal}`);
 
   return new ApiResponse(200, 'Payment verified. Order placed successfully.', { order }).send(res);
 });

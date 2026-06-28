@@ -1,12 +1,12 @@
 import { useState, useEffect, useCallback } from 'react';
+import { Link } from 'react-router-dom';
 import SmoothScroll from '../components/SmoothScroll.jsx';
 import Navbar from '../components/Navbar.jsx';
 import Footer from '../components/Footer.jsx';
-import CancelOrderModal from '../components/CancelOrderModal.jsx';
 import {
   Package, Clock, Truck, MapPin, CheckCircle2, XCircle,
   AlertTriangle, RefreshCw, ShieldAlert, Loader,
-  ArrowLeft, Phone, User, Bell, X
+  ArrowLeft, Phone, User, Bell, X, Zap
 } from 'lucide-react';
 import { deliveryAPI } from '../services/api.js';
 
@@ -63,8 +63,6 @@ export default function Tracking({ onNavigate, activeCategory, completedOrder })
   const [tracking, setTracking] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [apiError, setApiError] = useState('');
-  const [showCancelModal, setShowCancelModal] = useState(false);
-  const [isCancelling, setIsCancelling] = useState(false);
   const [toast, setToast] = useState(null);
 
   const showToast = (message, type = 'info') => setToast({ message, type });
@@ -96,26 +94,11 @@ export default function Tracking({ onNavigate, activeCategory, completedOrder })
     }
   }, [orderId, fetchTracking]);
 
-  const handleCancelConfirm = async (reason) => {
-    setIsCancelling(true);
-    try {
-      await deliveryAPI.cancel(orderId, reason);
-      await fetchTracking(orderId);
-      setShowCancelModal(false);
-      showToast('Order cancelled successfully. Refund will be processed.', 'success');
-    } catch (err) {
-      showToast(err.message || 'Failed to cancel order', 'error');
-    } finally {
-      setIsCancelling(false);
-    }
-  };
-
   const deliveryStatus = tracking?.deliveryStatus || 'not_assigned';
   const currentStepIndex = STATUS_ORDER.indexOf(deliveryStatus);
   const isCancelled = deliveryStatus === 'cancelled';
   const isFailed = deliveryStatus === 'failed_delivery';
   const isDelivered = deliveryStatus === 'delivered';
-  const canCancel = tracking?.canCancel && !isCancelling;
 
   return (
     <SmoothScroll>
@@ -246,20 +229,14 @@ export default function Tracking({ onNavigate, activeCategory, completedOrder })
                   </div>
                 </div>
 
-                {/* Cancel Button */}
-                {canCancel && (
-                  <div className="mt-4 pt-4 border-t-2 border-[color:var(--chipzo-ink)]/10 flex items-center justify-between">
-                    <p className="text-[10px] font-bold text-[color:var(--chipzo-muted)] uppercase">
-                      Eligible for cancellation
-                    </p>
-                    <button
-                      onClick={() => setShowCancelModal(true)}
-                      className="bg-red-500 text-white brutal-border border-red-700 px-5 py-2 text-xs font-black uppercase cursor-pointer flex items-center gap-2 hover:bg-red-600 transition-all"
-                    >
-                      <XCircle size={14} /> CANCEL ORDER
-                    </button>
-                  </div>
-                )}
+                <div className="mt-4 pt-4 border-t-2 border-[color:var(--chipzo-ink)]/10">
+                  <p className="text-[10px] font-bold text-[color:var(--chipzo-muted)] text-center">
+                    Orders cannot be canceled once placed. Need assistance?{' '}
+                    <Link to="/help" className="underline font-black hover:text-[color:var(--chipzo-primary)] transition-colors cursor-pointer">
+                      Contact our support team
+                    </Link>.
+                  </p>
+                </div>
               </section>
 
               {/* Delivery Timeline */}
@@ -419,6 +396,20 @@ export default function Tracking({ onNavigate, activeCategory, completedOrder })
                       <span className="text-[color:var(--chipzo-muted)] uppercase">Updates</span>
                       <span className="font-black">{tracking.history?.length || 0} events</span>
                     </div>
+                    {/* Delivery Provider Badge */}
+                    {tracking.provider && (
+                      <div className="flex justify-between items-center pt-2 mt-1 border-t-2 border-dashed border-[color:var(--chipzo-rule)]">
+                        <span className="text-[color:var(--chipzo-muted)] uppercase">Provider</span>
+                        <span className={`flex items-center gap-1.5 font-black text-[10px] uppercase px-2 py-1 brutal-border ${
+                          tracking.provider === 'borzo'
+                            ? 'bg-orange-400 border-orange-600'
+                            : 'bg-sky-300 border-sky-500'
+                        }`}>
+                          <Zap size={10} strokeWidth={3} />
+                          {tracking.provider === 'borzo' ? 'Borzo' : 'Shiprocket'}
+                        </span>
+                      </div>
+                    )}
                     {tracking.deliveryError && (
                       <div className="mt-3 p-3 bg-red-50 border-2 border-red-400 text-red-800 text-[10px] font-bold uppercase">
                         <XCircle size={12} className="inline mr-1" />
@@ -492,14 +483,6 @@ export default function Tracking({ onNavigate, activeCategory, completedOrder })
             </button>
           </div>
         </main>
-
-        {/* Cancel Order Modal */}
-        <CancelOrderModal
-          isOpen={showCancelModal}
-          onClose={() => setShowCancelModal(false)}
-          onConfirm={handleCancelConfirm}
-          isCancelling={isCancelling}
-        />
 
         <Footer />
       </div>

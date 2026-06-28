@@ -69,6 +69,15 @@ const preprocessMultipartProduct = (req, res, next) => {
 
   const parsedInterfaces = parseMultipartJsonField(req.body.interfaces, []);
   req.body.interfaces = Array.isArray(parsedInterfaces) ? parsedInterfaces : [];
+
+  const parsedKitContents = parseMultipartJsonField(req.body.kitContents, []);
+  req.body.kitContents = Array.isArray(parsedKitContents) ? parsedKitContents : [];
+
+  const parsedProjectsIncluded = parseMultipartJsonField(req.body.projectsIncluded, []);
+  req.body.projectsIncluded = Array.isArray(parsedProjectsIncluded) ? parsedProjectsIncluded : [];
+
+  const parsedFeatures = parseMultipartJsonField(req.body.features, []);
+  req.body.features = Array.isArray(parsedFeatures) ? parsedFeatures : [];
   
   // If files were uploaded via multipart, Multer populates req.files.
   // We remove raw/file strings from req.body.images so Joi doesn't fail on .uri() check.

@@ -15,11 +15,6 @@ export function AuthProvider({ children }) {
       setLoading(false)
       return
     }
-    if (token === 'admin-secret-token') {
-      setUser({ name: 'System Admin', email: 'admin@chipzo.in', role: 'admin' })
-      setLoading(false)
-      return
-    }
     let cancelled = false
     authAPI.getMe()
       .then(data => {
@@ -43,17 +38,6 @@ export function AuthProvider({ children }) {
   }, [token])
 
   const login = useCallback(async (email, password) => {
-    const normalizedEmail = email.trim().toLowerCase();
-    if ((normalizedEmail === 'admin' || normalizedEmail === 'admin@chipzo.in') && password === 'admin123') {
-      const tok = 'admin-secret-token';
-      const usr = { name: 'System Admin', email: 'admin@chipzo.in', role: 'admin' };
-      localStorage.setItem('chipzo_token', tok)
-      localStorage.setItem('chipzo_user', JSON.stringify(usr))
-      setToken(tok)
-      setUser(usr)
-      return usr
-    }
-
     const data = await authAPI.login(email, password)
     const t = data?.data?.token || data?.token
     const u = data?.data?.user || data?.user

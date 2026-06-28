@@ -86,16 +86,13 @@ module.exports = Object.freeze({
   RAPIDO_API_KEY: process.env.RAPIDO_API_KEY || '',
   RAPIDO_BASE_URL: process.env.RAPIDO_BASE_URL || 'https://api.rapido.bike/v1',
 
-  SHIPROCKET_EMAIL: process.env.SHIPROCKET_EMAIL || '',
-  SHIPROCKET_PASSWORD: process.env.SHIPROCKET_PASSWORD || '',
-  SHIPROCKET_API_KEY: process.env.SHIPROCKET_API_KEY || '',
-  SHIPROCKET_BASE_URL: process.env.SHIPROCKET_BASE_URL || 'https://apiv2.shiprocket.in/v1/external',
-  SHIPROCKET_PICKUP_NAME: process.env.SHIPROCKET_PICKUP_NAME || 'BIT MENS HOSTEL',
-  SHIPROCKET_PICKUP_ADDRESS: process.env.SHIPROCKET_PICKUP_ADDRESS || 'KR Road, VV Puram',
-  SHIPROCKET_PICKUP_CITY: process.env.SHIPROCKET_PICKUP_CITY || 'Bangalore',
-  SHIPROCKET_PICKUP_STATE: process.env.SHIPROCKET_PICKUP_STATE || 'Karnataka',
-  SHIPROCKET_PICKUP_PINCODE: process.env.SHIPROCKET_PICKUP_PINCODE || '560004',
-  SHIPROCKET_PICKUP_PHONE: process.env.SHIPROCKET_PICKUP_PHONE || '080-22421739',
+  BORZO_API_KEY: process.env.BORZO_API_KEY || '',
+  BORZO_BASE_URL: process.env.BORZO_BASE_URL || 'https://robotapitest-in.borzodelivery.com/api/business/1.8',
+  BORZO_PICKUP_ADDRESS: process.env.BORZO_PICKUP_ADDRESS || 'KR Road, VV Puram, Bangalore',
+  BORZO_PICKUP_PHONE: process.env.BORZO_PICKUP_PHONE || '+918022421739',
+  BORZO_PICKUP_NAME: process.env.BORZO_PICKUP_NAME || 'Chipzo Store',
+
+  DELIVERY_PROVIDER: process.env.DELIVERY_PROVIDER || 'borzo',
 
   CLIENT_URL: process.env.CLIENT_URL,
   RESEND_API_KEY: process.env.RESEND_API_KEY || '',

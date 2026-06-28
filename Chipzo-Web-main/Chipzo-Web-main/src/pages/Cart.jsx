@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { Trash2, Minus, Plus, ArrowRight, ShoppingBag, Check, Ban, Clock, CheckCircle, AlertTriangle, Lock, Unlock, X } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Skeleton } from 'boneyard-js/react'
@@ -8,16 +8,20 @@ import Footer from '../components/Footer.jsx'
 import { LoadingButton } from '../components/LoadingButton.jsx'
 import { useAsyncStatus } from '../hooks/useAsyncAction.js'
 import { getOrderStatus } from '../utils/orderValidation.js'
-import { productsAPI } from '../services/api.js'
+import { productsAPI, ordersAPI } from '../services/api.js'
 import { getProductImageUrl } from '../utils/imageUtils.js'
+import { useAuth } from '../contexts/AuthContext.jsx'
 
 /* ================= FUTURISTIC DELIVERY AND VALIDATION COMPONENTS ================= */
 
-const calculateDeliveryFee = (cartTotal) => {
-  if (cartTotal > 1000) return 49;
-  if (cartTotal >= 250) return 79;
-  return 99;
+// ─── Local fallback delivery fee (used only for logged-out users) ─────────────
+// Logged-in users always get pricing from the backend via GET /orders/price-summary
+const localDeliveryFee = (subtotal) => {
+  if (subtotal >= 1000) return 0;
+  if (subtotal >= 200) return 59;
+  return 100;
 };
+
 
 const DYNAMIC_UPSELLS = [
   {
@@ -107,8 +111,8 @@ function CheckoutProgressBar({ progress, total }) {
 }
 
 function DeliveryFeePanel({ subtotal, deliveryFee }) {
-  const showDiscount = subtotal >= 250;
-  const baseFee = 99;
+  const showDiscount = subtotal >= 200;
+  const baseFee = 100;
   
   return (
     <div className="flex justify-between font-black text-xs uppercase tracking-wider items-center">
@@ -122,7 +126,7 @@ function DeliveryFeePanel({ subtotal, deliveryFee }) {
         >
           <span className="animate-pulse">●</span>
           <span className="line-through text-emerald-600/70 mr-1">₹{baseFee.toFixed(2)}</span>
-          <span>₹{deliveryFee.toFixed(2)}</span>
+          <span>{deliveryFee === 0 ? 'FREE' : `₹${deliveryFee.toFixed(2)}`}</span>
         </motion.div>
       ) : (
         <span className="tabular-prices font-mono text-xs">
@@ -275,9 +279,64 @@ function SkeletonCardGrid() {
 }
 
 export default function Cart({ onNavigate, activeCategory, cart = [], isCartLoading, onUpdateQuantity, onRemoveFromCart, onAddToCart }) {
+  const { isLoggedIn } = useAuth()
   const items = cart.filter(item => item && item.price > 0 && item.id)
   const cartCount = items.reduce((total, item) => total + item.quantity, 0)
-  const subtotal = items.reduce((total, item) => total + (item.price * item.quantity), 0)
+
+  // ── Local fallback subtotal (for display only while backend pricing loads) ──
+  const localSubtotal = items.reduce((total, item) => total + (item.price * item.quantity), 0)
+  const localTotal = Number((localSubtotal + localDeliveryFee(localSubtotal)).toFixed(2))
+
+  // ── Backend pricing state ──────────────────────────────────────────────────
+  const [pricing, setPricing] = useState(null)       // null = not yet loaded
+  const [pricingLoading, setPricingLoading] = useState(false)
+  const prevCartKey = useRef('')
+
+  // Fetch from backend whenever cart contents change (for logged-in users)
+  useEffect(() => {
+    if (!isLoggedIn || items.length === 0) {
+      setPricing(null)
+      return
+    }
+
+    // Build a lightweight cart fingerprint to avoid redundant fetches
+    const cartKey = items.map(i => `${i.id}:${i.quantity}`).sort().join(',')
+    if (cartKey === prevCartKey.current) return
+    prevCartKey.current = cartKey
+
+    let cancelled = false
+    setPricingLoading(true)
+    ordersAPI.getPriceSummary()
+      .then(res => {
+        if (cancelled) return
+        const data = res?.data || res
+        setPricing({
+          subtotal: data.subtotal ?? localSubtotal,
+          deliveryFee: data.deliveryFee ?? localDeliveryFee(localSubtotal),
+          discountAmount: data.discountAmount ?? 0,
+          total: data.total ?? localTotal,
+        })
+      })
+      .catch(() => {
+        if (cancelled) return
+        // Fallback to local computation if API fails
+        setPricing({
+          subtotal: localSubtotal,
+          deliveryFee: localDeliveryFee(localSubtotal),
+          discountAmount: 0,
+          total: localTotal,
+        })
+      })
+      .finally(() => { if (!cancelled) setPricingLoading(false) })
+    return () => { cancelled = true }
+  }, [isLoggedIn, items.map(i => `${i.id}:${i.quantity}`).sort().join(',')])
+
+  // ── Resolved pricing values (backend if available, else local fallback) ─────
+  const subtotal     = pricing?.subtotal      ?? localSubtotal
+  const deliveryFee  = pricing?.deliveryFee   ?? localDeliveryFee(localSubtotal)
+  const discountAmt  = pricing?.discountAmount ?? 0
+  const orderTotal   = pricing?.total         ?? localTotal
+
   const [orderStatus, setOrderStatus] = useState(getOrderStatus())
   const [complementaryItems, setComplementaryItems] = useState([])
   const [complementaryLoading, setComplementaryLoading] = useState(true)
@@ -294,12 +353,8 @@ export default function Cart({ onNavigate, activeCategory, cart = [], isCartLoad
     if (buildStatuses[compItem.id]) return
     setBuildStatuses(prev => ({ ...prev, [compItem.id]: 'loading' }))
     try {
-      // Simulate premium pre-load latency (800ms to 1s, e.g., 900ms)
       await new Promise(resolve => setTimeout(resolve, 900))
-
-      // When loading state is done, we actually add the product to the cart
       await onAddToCart?.(compItem)
-
       setBuildStatuses(prev => ({ ...prev, [compItem.id]: 'success' }))
       setTimeout(() => {
         setBuildStatuses(prev => { const n = { ...prev }; delete n[compItem.id]; return n })
@@ -324,27 +379,24 @@ export default function Cart({ onNavigate, activeCategory, cart = [], isCartLoad
   const remainingAmount = 0;
   const progress = 100;
 
-  const deliveryFee = calculateDeliveryFee(subtotal);
-  
+  // ── Delivery progress bar values (derived from backend subtotal) ───────────
   let deliveryProgress = 0;
   let deliveryTarget = 1000;
   let deliveryProgressLabel = '';
 
-  if (subtotal < 250) {
-    deliveryProgress = Math.min((subtotal / 250) * 100, 100);
-    deliveryTarget = 250;
-    deliveryProgressLabel = `ADD ₹${(250 - subtotal).toFixed(2)} MORE FOR ₹79 DELIVERY`;
+  if (subtotal < 200) {
+    deliveryProgress = Math.min((subtotal / 200) * 100, 100);
+    deliveryTarget = 200;
+    deliveryProgressLabel = `ADD ₹${(200 - subtotal).toFixed(2)} MORE FOR ₹59 DELIVERY`;
   } else if (subtotal < 1000) {
     deliveryProgress = Math.min((subtotal / 1000) * 100, 100);
     deliveryTarget = 1000;
-    deliveryProgressLabel = `ADD ₹${(1000 - subtotal).toFixed(2)} MORE FOR ₹49 DELIVERY`;
+    deliveryProgressLabel = `ADD ₹${(1000 - subtotal).toFixed(2)} MORE FOR FREE DELIVERY`;
   } else {
     deliveryProgress = 100;
     deliveryTarget = 1000;
-    deliveryProgressLabel = 'MINIMUM DELIVERY CHARGE ₹49 UNLOCKED';
+    deliveryProgressLabel = 'FREE DELIVERY UNLOCKED';
   }
-
-  const orderTotal = subtotal + deliveryFee;
 
   useEffect(() => {
     const interval = setInterval(() => setOrderStatus(getOrderStatus()), 60000)
@@ -632,10 +684,14 @@ export default function Cart({ onNavigate, activeCategory, cart = [], isCartLoad
                     <div className="p-5 flex flex-col gap-4">
                       <div className="flex justify-between font-black text-xs uppercase text-[color:var(--chipzo-ink)]">
                         <span>SUBTOTAL</span>
-                        <span className="tabular-prices">₹{subtotal.toFixed(2)}</span>
+                        <span className="tabular-prices">
+                          ₹{subtotal.toFixed(2)}
+                        </span>
                       </div>
                       
                       <DeliveryFeePanel subtotal={subtotal} deliveryFee={deliveryFee} />
+
+
 
                       {/* DELIVERY STATUS PROGRESS BAR */}
                       <div className="border-t border-dashed border-[color:var(--chipzo-ink)] pt-2.5 mt-0.5">
@@ -644,7 +700,7 @@ export default function Cart({ onNavigate, activeCategory, cart = [], isCartLoad
 
                       <div className="flex justify-between font-black text-xs uppercase text-[color:var(--chipzo-primary)]">
                         <span>DYNAMIC DISCOUNT</span>
-                        <span className="tabular-prices">-₹0.00</span>
+                        <span className="tabular-prices">-₹{discountAmt.toFixed(2)}</span>
                       </div>
                       
                       {/* Coupon Code Input */}
@@ -663,7 +719,9 @@ export default function Cart({ onNavigate, activeCategory, cart = [], isCartLoad
                       
                       <div className="flex justify-between font-black text-xl uppercase text-[color:var(--chipzo-ink)]">
                         <span>TOTAL</span>
-                        <span className="tabular-prices font-mono">₹{orderTotal.toFixed(2)}</span>
+                        <span className="tabular-prices font-mono">
+                          ₹{orderTotal.toFixed(2)}
+                        </span>
                       </div>
 
                       <LoadingButton

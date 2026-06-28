@@ -15,6 +15,9 @@ const serializeProduct = (product) => {
   return {
     ...product,
     images: Array.isArray(product.images) ? product.images : [],
+    kitContents: Array.isArray(product.kitContents) ? product.kitContents : [],
+    projectsIncluded: Array.isArray(product.projectsIncluded) ? product.projectsIncluded : [],
+    features: Array.isArray(product.features) ? product.features : [],
   };
 };
 
@@ -70,6 +73,15 @@ const createProduct = asyncHandler(async (req, res) => {
   if (typeof productData.interfaces === 'string') {
     productData.interfaces = JSON.parse(productData.interfaces);
   }
+  if (typeof productData.kitContents === 'string') {
+    productData.kitContents = JSON.parse(productData.kitContents);
+  }
+  if (typeof productData.projectsIncluded === 'string') {
+    productData.projectsIncluded = JSON.parse(productData.projectsIncluded);
+  }
+  if (typeof productData.features === 'string') {
+    productData.features = JSON.parse(productData.features);
+  }
 
   const uploadedFiles = [];
   if (req.files && req.files.length > 0) {
@@ -107,6 +119,15 @@ const updateProduct = asyncHandler(async (req, res) => {
   }
   if (typeof updates.interfaces === 'string') {
     updates.interfaces = JSON.parse(updates.interfaces);
+  }
+  if (typeof updates.kitContents === 'string') {
+    updates.kitContents = JSON.parse(updates.kitContents);
+  }
+  if (typeof updates.projectsIncluded === 'string') {
+    updates.projectsIncluded = JSON.parse(updates.projectsIncluded);
+  }
+  if (typeof updates.features === 'string') {
+    updates.features = JSON.parse(updates.features);
   }
 
   if (req.files && req.files.length > 0) {

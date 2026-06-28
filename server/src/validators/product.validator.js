@@ -32,6 +32,10 @@ const createProductSchema = Joi.object({
   currency: Joi.string().trim().uppercase().max(10).default('INR'),
 
   images: Joi.array().items(Joi.string()).default([]),
+
+  kitContents: Joi.array().items(Joi.string()).default([]),
+  projectsIncluded: Joi.array().items(Joi.string()).default([]),
+  features: Joi.array().items(Joi.string()).default([]),
 });
 
 // ── Update (all fields optional, at least one required) ───────────────────────
@@ -45,6 +49,9 @@ const updateProductSchema = Joi.object({
   price: Joi.number().min(0).allow(null),
   currency: Joi.string().trim().uppercase().max(10),
   images: Joi.array().items(Joi.string()),
+  kitContents: Joi.array().items(Joi.string()),
+  projectsIncluded: Joi.array().items(Joi.string()),
+  features: Joi.array().items(Joi.string()),
 }).min(1); // At least one field must be provided
 
 module.exports = { createProductSchema, updateProductSchema };

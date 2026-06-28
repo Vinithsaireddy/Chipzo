@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import SmoothScroll from '../components/SmoothScroll.jsx';
 import Navbar from '../components/Navbar.jsx';
 import Footer from '../components/Footer.jsx';
-import { CheckCircle, ShoppingBag, Eye, ArrowLeft, MapPin, Package, Truck } from 'lucide-react';
+import { CheckCircle, ShoppingBag, Eye, ArrowLeft, MapPin, Package, Truck, AlertTriangle, HelpCircle } from 'lucide-react';
 
 export default function OrderSuccess({ onNavigate, activeCategory, orderData }) {
   const [visible, setVisible] = useState(false);
@@ -39,6 +40,20 @@ export default function OrderSuccess({ onNavigate, activeCategory, orderData }) 
             <p className="text-sm font-bold text-[color:var(--chipzo-muted)] text-center max-w-md">
               Your order has been placed and is being processed. You will receive a confirmation shortly.
             </p>
+          </div>
+
+          {/* Cancellation Notice */}
+          <div className={`bg-amber-50 border-2 border-amber-400 brutal-border p-5 flex items-start gap-4 transition-all duration-700 delay-150 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+            <AlertTriangle size={22} className="text-amber-600 shrink-0 mt-0.5" strokeWidth={2.5} />
+            <div>
+              <p className="font-black uppercase text-sm text-amber-800">Order Placed Successfully</p>
+              <p className="text-sm font-bold text-amber-700 mt-1">
+                Please note that once an order is placed, it cannot be canceled. If you have any concerns or require assistance, please contact our{' '}
+                <Link to="/help" className="underline font-black cursor-pointer hover:text-[color:var(--chipzo-primary)] transition-colors">
+                  support team
+                </Link>.
+              </p>
+            </div>
           </div>
 
           {/* Order ID Banner */}
@@ -134,6 +149,12 @@ export default function OrderSuccess({ onNavigate, activeCategory, orderData }) 
               className="flex-1 bg-[color:var(--chipzo-surface)] text-[color:var(--chipzo-ink)] font-black uppercase py-4 px-8 brutal-border brutal-shadow cursor-pointer flex items-center justify-center gap-3 text-sm hover:-translate-y-[1px] transition-all"
             >
               <Truck size={18} strokeWidth={3} /> Track Order
+            </button>
+            <button
+              onClick={() => onNavigate('help')}
+              className="flex-1 bg-[color:var(--chipzo-lime)] text-[color:var(--chipzo-ink)] font-black uppercase py-4 px-8 brutal-border brutal-shadow cursor-pointer flex items-center justify-center gap-3 text-sm hover:-translate-y-[1px] transition-all"
+            >
+              <HelpCircle size={18} strokeWidth={3} /> Go to Help Center
             </button>
             <button
               onClick={() => onNavigate('shop')}

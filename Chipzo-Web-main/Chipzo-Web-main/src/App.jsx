@@ -14,6 +14,8 @@ import Signup from './pages/Signup.jsx'
 import Admin from './pages/Admin.jsx'
 import VerifyOTP from './pages/VerifyOTP.jsx'
 import ForgotPassword from './pages/ForgotPassword.jsx'
+import Help from './pages/Help.jsx'
+import Terms from './pages/Terms.jsx'
 import { useAuth } from './contexts/AuthContext.jsx'
 import { cartAPI } from './services/api.js'
 import Toast from './components/Toast.jsx'
@@ -299,6 +301,8 @@ function App() {
       <Route path="/signup" element={<Signup />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/admin" element={<Admin />} />
+      <Route path="/help" element={<Help onNavigate={handleNavigate} activeCategory={activeCategory} cartCount={cartCount} />} />
+      <Route path="/terms" element={<Terms onNavigate={handleNavigate} activeCategory={activeCategory} cartCount={cartCount} />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
     {toastProduct && (

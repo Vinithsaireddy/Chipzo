@@ -214,13 +214,9 @@ async function sendOrderConfirmation(email, name, order, invoiceBuffer) {
     )
     .join('');
 
-  const calculateDeliveryFee = (cartTotal) => {
-    if (cartTotal > 1000) return 49;
-    if (cartTotal >= 250) return 79;
-    return 99;
-  };
-  const shipping = calculateDeliveryFee(order.totalAmount);
-  const total = order.totalAmount + shipping;
+  const shipping = order.deliveryFee || 0;
+  const subtotal = order.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  const total = order.totalAmount;
 
   const html = `
 <!DOCTYPE html>
@@ -329,8 +325,8 @@ async function sendOrderConfirmation(email, name, order, invoiceBuffer) {
         </tbody>
       </table>
 
-      <div style="text-align: right; font-size: 13px;">
-        Subtotal: ₹${order.totalAmount.toFixed(2)}<br>
+      <div style="text-align: right; font-size: 13px; line-height: 1.5;">
+        Subtotal: ₹${subtotal.toFixed(2)}<br>
         Shipping: ₹${shipping.toFixed(2)}
       </div>
 

@@ -19,17 +19,6 @@ const protect = asyncHandler(async (req, res, next) => {
 
   const token = authHeader.split(' ')[1];
 
-  // MOCK ADMIN SYSTEM AUTHENTICATION
-  if (token === 'admin-secret-token') {
-    req.user = {
-      _id: '6a098ab765ecf83aaed0e000',
-      name: 'System Admin',
-      email: 'admin@chipzo.in',
-      role: 'admin'
-    };
-    return next();
-  }
-
   // ── 2. Verify signature + expiry ───────────────────────────────────────────
   let decoded;
   try {

@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import SmoothScroll from '../components/SmoothScroll.jsx';
 import Navbar from '../components/Navbar.jsx';
 import Footer from '../components/Footer.jsx';
 import {
   ArrowRight, ArrowLeft, Check, AlertTriangle,
-  MapPin, Trash2, CreditCard, Banknote, Plus, Edit3, Star, Loader,
+  MapPin, Trash2, CreditCard, Plus, Edit3, Star, Loader,
 } from 'lucide-react';
 import { ordersAPI, paymentAPI, addressAPI } from '../services/api.js';
 import { useAuth } from '../contexts/AuthContext.jsx';
@@ -23,9 +23,55 @@ const EMPTY_FORM = {
 export default function Checkout({ onNavigate, activeCategory, cart = [], onCheckoutComplete, onPaymentFailed }) {
   const { isLoggedIn, user } = useAuth();
   const cartCount = cart.reduce((t, i) => t + i.quantity, 0);
-  const subtotal = cart.reduce((t, i) => t + i.price * i.quantity, 0);
-  const shipping = subtotal >= 100 ? 0 : 9.99;
-  const total = subtotal + shipping;
+
+  // ── Backend pricing state (the single source of truth) ────────────────────────
+  const [pricingData, setPricingData] = useState(null);
+  const [pricingLoading, setPricingLoading] = useState(false);
+  const prevCartKey = useRef('');
+
+  // Local fallback (only used if not logged-in or API fails)
+  const _localSubtotal = cart.reduce((t, i) => t + i.price * i.quantity, 0);
+  const _localDelivery = _localSubtotal >= 1000 ? 0 : _localSubtotal >= 200 ? 59 : 100;
+  const _localTotal = Number((_localSubtotal + _localDelivery).toFixed(2));
+
+  // Fetch backend pricing whenever cart changes
+  useEffect(() => {
+    if (!isLoggedIn || cart.length === 0) return;
+    const cartKey = cart.map(i => `${i.id}:${i.quantity}`).sort().join(',');
+    if (cartKey === prevCartKey.current) return;
+    prevCartKey.current = cartKey;
+
+    let cancelled = false;
+    setPricingLoading(true);
+    ordersAPI.getPriceSummary()
+      .then(res => {
+        if (cancelled) return;
+        const d = res?.data || res;
+        setPricingData({
+          subtotal: d.subtotal ?? _localSubtotal,
+          deliveryFee: d.deliveryFee ?? _localDelivery,
+          discountAmount: d.discountAmount ?? 0,
+          total: d.total ?? _localTotal,
+        });
+      })
+      .catch(() => {
+        if (cancelled) return;
+        setPricingData({
+          subtotal: _localSubtotal,
+          deliveryFee: _localDelivery,
+          discountAmount: 0,
+          total: _localTotal,
+        });
+      })
+      .finally(() => { if (!cancelled) setPricingLoading(false); });
+    return () => { cancelled = true; };
+  }, [isLoggedIn, cart.map(i => `${i.id}:${i.quantity}`).sort().join(',')]);
+
+  // Resolved values (backend or local fallback)
+  const subtotal    = pricingData?.subtotal    ?? _localSubtotal;
+  const shipping    = pricingData?.deliveryFee ?? _localDelivery;
+  const total       = pricingData?.total       ?? _localTotal;
+
 
   const [currentStep, setCurrentStep] = useState('address');
   const [errorMessage, setErrorMessage] = useState('');
@@ -33,7 +79,7 @@ export default function Checkout({ onNavigate, activeCategory, cart = [], onChec
   const [detectingLocationStep, setDetectingLocationStep] = useState('');
   const { status: processingStatus, execute: executeProcessing } = useAsyncStatus({ minDuration: 2000, successDuration: 800 });
   const { status: saveStatus, execute: executeSave } = useAsyncStatus({ minDuration: 2000, successDuration: 800 });
-  const [paymentMethod, setPaymentMethod] = useState('razorpay');
+  const [paymentMethod] = useState('razorpay');
   const [selectedAddressId, setSelectedAddressId] = useState(null);
   const [savedAddresses, setSavedAddresses] = useState([]);
   const [addressesLoading, setAddressesLoading] = useState(true);
@@ -298,22 +344,6 @@ export default function Checkout({ onNavigate, activeCategory, cart = [], onChec
         pincode: addr.pincode,
       };
 
-      if (paymentMethod === 'cod' && isLoggedIn) {
-        const data = await ordersAPI.createCOD(chosenAddress);
-        const order = data?.data?.order || data?.order || {};
-        onCheckoutComplete?.({
-          orderId: order._id || fallbackOrderId(),
-          items: [...cart],
-          address: addr,
-          date: new Date().toLocaleDateString('en-US', {
-            year: 'numeric', month: 'short', day: 'numeric',
-            hour: '2-digit', minute: '2-digit',
-          }),
-          subtotal, shipping, total, paymentMethod,
-        });
-        return;
-      }
-
       if (!isLoggedIn) {
         await new Promise(r => setTimeout(r, 800));
         onCheckoutComplete?.({
@@ -339,6 +369,8 @@ export default function Checkout({ onNavigate, activeCategory, cart = [], onChec
         || orderData?.razorpayOrderId;
       const amount = orderData?.data?.amount || orderData?.amount;
       const currency = orderData?.data?.currency || orderData?.currency || 'INR';
+      // Use key returned by backend so frontend & backend always match
+      const razorpayKeyId = orderData?.data?.key_id || orderData?.key_id || import.meta.env.VITE_RAZORPAY_KEY_ID;
 
       if (!rzpOrderId) throw new Error('Failed to create payment order.');
 
@@ -356,7 +388,7 @@ export default function Checkout({ onNavigate, activeCategory, cart = [], onChec
         let resolved = false;
         const currentUser = JSON.parse(localStorage.getItem('chipzo_user') || '{}');
         const rzp = new window.Razorpay({
-          key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+          key: razorpayKeyId,
           amount: Math.round(amount * 100),
           currency,
           name: 'Chipzo',
@@ -690,21 +722,13 @@ export default function Checkout({ onNavigate, activeCategory, cart = [], onChec
                   <div className="px-6 py-4 border-b-[3px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-surface)] flex justify-between items-center">
                     <h2 className="text-lg font-black uppercase tracking-tight flex items-center gap-2"><CreditCard size={16} strokeWidth={2.5} /> Payment Method</h2>
                   </div>
-                  <div className="p-6 space-y-3">
-                    <label className={`flex items-center gap-4 p-4 brutal-border cursor-pointer transition-all ${paymentMethod === 'razorpay' ? 'bg-[color:var(--chipzo-primary)]' : 'bg-[color:var(--chipzo-paper)] hover:bg-[color:var(--chipzo-surface)]'}`}>
-                      <input type="radio" name="paymentMethod" value="razorpay" checked={paymentMethod === 'razorpay'} onChange={() => setPaymentMethod('razorpay')} className="accent-black" />
+                  <div className="p-6">
+                    <label className="flex items-center gap-4 p-4 brutal-border bg-[color:var(--chipzo-primary)] cursor-default">
+                      <input type="radio" name="paymentMethod" value="razorpay" checked readOnly className="accent-black" />
                       <CreditCard size={20} strokeWidth={2} />
                       <div>
                         <p className="font-black uppercase text-sm">Razorpay (UPI / Cards / Net Banking)</p>
                         <p className="text-[10px] font-bold text-[color:var(--chipzo-muted)]">Secure online payment</p>
-                      </div>
-                    </label>
-                    <label className={`flex items-center gap-4 p-4 brutal-border cursor-pointer transition-all ${paymentMethod === 'cod' ? 'bg-[color:var(--chipzo-lime)]' : 'bg-[color:var(--chipzo-paper)] hover:bg-[color:var(--chipzo-surface)]'}`}>
-                      <input type="radio" name="paymentMethod" value="cod" checked={paymentMethod === 'cod'} onChange={() => setPaymentMethod('cod')} className="accent-black" />
-                      <Banknote size={20} strokeWidth={2} />
-                      <div>
-                        <p className="font-black uppercase text-sm">Cash on Delivery</p>
-                        <p className="text-[10px] font-bold text-[color:var(--chipzo-muted)]">Pay when you receive</p>
                       </div>
                     </label>
                   </div>
@@ -741,8 +765,18 @@ export default function Checkout({ onNavigate, activeCategory, cart = [], onChec
                     </div>
                     <div className="mt-6 pt-4 border-t-2 border-[color:var(--chipzo-ink)] space-y-2">
                       <div className="flex justify-between text-sm"><span className="font-bold uppercase">Subtotal</span><span className="font-black tabular-prices">₹{subtotal.toFixed(2)}</span></div>
-                      <div className="flex justify-between text-sm"><span className="font-bold uppercase">Delivery</span><span className="font-black tabular-prices">{shipping === 0 ? 'FREE' : `₹${shipping.toFixed(2)}`}</span></div>
-                      <div className="flex justify-between pt-2 border-t border-[color:var(--chipzo-ink)]"><span className="font-black uppercase">Total</span><span className="font-black text-xl tabular-prices">₹{total.toFixed(2)}</span></div>
+                      <div className="flex justify-between text-sm">
+                        <span className="font-bold uppercase">Delivery</span>
+                        <span className="font-black tabular-prices">
+                          {shipping === 0 ? 'FREE' : `₹${shipping.toFixed(2)}`}
+                        </span>
+                      </div>
+                      <div className="flex justify-between pt-2 border-t border-[color:var(--chipzo-ink)]">
+                        <span className="font-black uppercase">Total</span>
+                        <span className="font-black text-xl tabular-prices">
+                          ₹{total.toFixed(2)}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </section>
@@ -788,7 +822,7 @@ export default function Checkout({ onNavigate, activeCategory, cart = [], onChec
                   variant="lime"
                   size="lg"
                 >
-                  {paymentMethod === 'cod' ? 'PLACE ORDER (COD)' : `PAY ₹${total.toFixed(2)}`}
+                  {`PAY ₹${total.toFixed(2)}`}
                 </LoadingButton>
               )}
             </div>
@@ -838,7 +872,7 @@ export default function Checkout({ onNavigate, activeCategory, cart = [], onChec
                   fullWidth
                   className="flex-1"
                 >
-                  {paymentMethod === 'cod' ? 'PLACE ORDER' : `PAY ₹${total.toFixed(2)}`}
+                  {`PAY ₹${total.toFixed(2)}`}
                 </LoadingButton>
                 )}
               </div>

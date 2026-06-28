@@ -14,6 +14,44 @@ const asyncHandler = require('../utils/asyncHandler');
 const logger = require('../utils/logger');
 
 /**
+ * GET /api/orders/price-summary
+ * Returns a backend-computed price breakdown for the current user's cart.
+ * The frontend MUST display these values verbatim — no client-side price math.
+ */
+const getPriceSummary = asyncHandler(async (req, res) => {
+  const userId = req.user._id;
+
+  const cart = await Cart.findOne({ userId }).populate('items.productId', 'name price images category id');
+
+  if (!cart || cart.items.length === 0) {
+    // Return zero-state so the frontend can render an empty summary cleanly
+    return new ApiResponse(200, 'Cart is empty', {
+      subtotal: 0,
+      deliveryFee: 0,
+      discountAmount: 0,
+      total: 0,
+      items: [],
+    }).send(res);
+  }
+
+  // Filter out stale items (deleted products)
+  const validItems = cart.items.filter(i => i.productId && i.productId.name);
+
+  const pricing = cartService.computePriceSummary(validItems);
+
+  // Build a lightweight item summary for display purposes
+  const items = validItems.map(i => ({
+    productId: i.productId._id,
+    name: i.productId.name,
+    price: i.productId.price,
+    quantity: i.quantity,
+    lineTotal: i.productId.price * i.quantity,
+  }));
+
+  return new ApiResponse(200, 'Price summary computed', { ...pricing, items }).send(res);
+});
+
+/**
  * POST /api/orders
  * Validates cart and creates a Razorpay order.
  * Does NOT create a DB Order document — waits for payment verification.
@@ -34,15 +72,16 @@ const initiateOrder = asyncHandler(async (req, res) => {
   }
   console.log('[Order] Cart items count:', cart.items.length);
 
-  const totalAmount = cartService.computeTotal(cart.items);
-  console.log('[Order] Total amount (INR):', totalAmount);
+  // Use computePriceSummary — includes delivery fee so Razorpay gets the real total
+  const pricing = cartService.computePriceSummary(cart.items);
+  console.log('[Order] Price summary (INR):', JSON.stringify(pricing));
 
   // Create Razorpay order (amount in INR — service converts to paise)
   const receipt = `rcpt_${userId.toString().slice(-6)}_${Date.now()}`;
   console.log('[Order] Creating Razorpay order with receipt:', receipt);
   let rzpOrder;
   try {
-    rzpOrder = await paymentService.createRazorpayOrder({ amount: totalAmount, receipt });
+    rzpOrder = await paymentService.createRazorpayOrder({ amount: pricing.total, receipt });
     console.log('[Order] Razorpay order created:', rzpOrder.id);
   } catch (rzpErr) {
     console.log('[Order] Razorpay order creation FAILED:', rzpErr.message);
@@ -52,7 +91,10 @@ const initiateOrder = asyncHandler(async (req, res) => {
 
   const response = {
     razorpayOrderId: rzpOrder.id,
-    amount: totalAmount,
+    amount: pricing.total,
+    subtotal: pricing.subtotal,
+    deliveryFee: pricing.deliveryFee,
+    discountAmount: pricing.discountAmount,
     currency: 'INR',
     key_id: process.env.RAZORPAY_KEY_ID,
   };
@@ -84,58 +126,6 @@ const getOrders = asyncHandler(async (req, res) => {
 const getOrder = asyncHandler(async (req, res) => {
   const order = await orderService.getOrderById(req.params.id, req.user._id);
   return new ApiResponse(200, 'Order fetched successfully', { order }).send(res);
-});
-
-/**
- * POST /api/orders/cod
- * Creates a direct order for Cash on Delivery (no Razorpay).
- */
-const createCODOrder = asyncHandler(async (req, res) => {
-  const userId = req.user._id;
-  const { address } = req.body;
-
-  if (!address) throw new ApiError(400, 'Delivery address is required.');
-
-  const cart = await Cart.findOne({ userId }).populate('items.productId', 'name price');
-  if (!cart || cart.items.length === 0) throw new ApiError(400, 'Your cart is empty.');
-
-  const items = cart.items.map((item) => {
-    const product = item.productId;
-    return {
-      productId: product._id,
-      name: product.name,
-      price: product.price || 0,
-      quantity: item.quantity,
-    };
-  });
-
-  const totalAmount = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-
-  const order = await orderService.createOrder({
-    userId,
-    items,
-    totalAmount,
-    address,
-    paymentMethod: 'cod',
-    paymentStatus: 'pending',
-  });
-
-  await cartService.clearCart(userId);
-
-  // ── Send Order Confirmation Email ──────────────────────────────────────────
-  generateInvoicePdf(order)
-    .then((pdfBuffer) => {
-      return emailService.sendOrderConfirmation(req.user.email, req.user.name, order, pdfBuffer);
-    })
-    .catch((err) => {
-      logger.error(`[Order Email Error] Failed to generate/send order confirmation email: ${err.message}`);
-    });
-
-  deliveryService.assignDelivery(order._id.toString()).catch((err) => {
-    logger.error(`[Delivery] Failed to assign delivery for order ${order._id}: ${err.message}`);
-  });
-
-  return new ApiResponse(201, 'Order placed successfully (Cash on Delivery)', { order }).send(res);
 });
 
 /**
@@ -250,14 +240,14 @@ const deleteOrderAdmin = asyncHandler(async (req, res) => {
   if (!order) {
     throw new ApiError(404, 'Order not found');
   }
-  return new ApiResponse(200, 'Order permanently deleted and cancelled successfully', null).send(res);
+  return new ApiResponse(200, 'Order permanently deleted successfully', null).send(res);
 });
 
 module.exports = { 
+  getPriceSummary,
   initiateOrder, 
   getOrders, 
   getOrder, 
-  createCODOrder,
   getAllOrdersAdmin,
   getOrderAdmin,
   updateOrderAdmin,

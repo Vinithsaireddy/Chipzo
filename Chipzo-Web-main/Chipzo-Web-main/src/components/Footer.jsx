@@ -1,4 +1,10 @@
-const links = ['Documentation', 'Shipping', 'Delivery Coverage', 'API Support', 'Privacy Policy']
+import { Link } from 'react-router-dom'
+
+const links = [
+  { label: 'Terms & Conditions', to: '/terms' },
+  { label: 'Help', to: '/help' },
+  { label: 'Support Chipzo', to: 'mailto:support@shopchipzo.com' },
+]
 
 export default function Footer() {
   return (
@@ -11,9 +17,15 @@ export default function Footer() {
 
         <div className="grid gap-3 sm:grid-cols-2">
           {links.map((item) => (
-            <a key={item} href="#" className="border-b-2 border-dashed border-[color:var(--chipzo-rule)] py-2 text-sm font-black uppercase tracking-[0.08em] transition-colors hover:text-[color:var(--chipzo-primary)]">
-              {item}
-            </a>
+            item.to.startsWith('mailto:') ? (
+              <a key={item.label} href={item.to} className="border-b-2 border-dashed border-[color:var(--chipzo-rule)] py-2 text-sm font-black uppercase tracking-[0.08em] transition-colors hover:text-[color:var(--chipzo-primary)]">
+                {item.label}
+              </a>
+            ) : (
+              <Link key={item.label} to={item.to} className="border-b-2 border-dashed border-[color:var(--chipzo-rule)] py-2 text-sm font-black uppercase tracking-[0.08em] transition-colors hover:text-[color:var(--chipzo-primary)]">
+                {item.label}
+              </Link>
+            )
           ))}
         </div>
       </div>

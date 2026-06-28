@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, ShoppingCart, Minus, Plus, Zap, Cpu } from 'lucide-react'
+import { X, ShoppingCart, Minus, Plus, Zap, Cpu, ChevronDown, ChevronUp, Package, Wrench } from 'lucide-react'
 import { getProductImageUrl } from '../utils/imageUtils.js'
 import { LoadingButton } from './LoadingButton.jsx'
 import { useAsyncStatus } from '../hooks/useAsyncAction.js'
@@ -130,6 +130,89 @@ function ProductSpecsPanel({ specs }) {
     </div>
   )
 }
+
+function ExpandableSection({ title, items, icon: Icon, renderItem }) {
+  const [isExpanded, setIsExpanded] = useState(false)
+  const limit = 5
+  const hasMore = items && items.length > limit
+  const visibleItems = isExpanded ? items : (items ? items.slice(0, limit) : [])
+
+  if (!items || items.length === 0) return null
+
+  return (
+    <div className="border-[3px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-surface)] shadow-[4px_4px_0_var(--chipzo-ink)] p-4 flex flex-col gap-3">
+      <button
+        type="button"
+        onClick={() => setIsExpanded(!isExpanded)}
+        className="flex w-full items-center justify-between font-black text-xs uppercase tracking-wider text-[color:var(--chipzo-ink)] text-left focus:outline-none cursor-pointer"
+      >
+        <span className="flex items-center gap-2">
+          {Icon && <Icon size={14} className="text-[color:var(--chipzo-primary)]" />}
+          {title} ({items.length})
+        </span>
+        <span className="flex items-center justify-center border-2 border-[color:var(--chipzo-ink)] bg-white p-1 hover:bg-[color:var(--chipzo-primary)] hover:text-white transition-colors">
+          {isExpanded ? <ChevronUp size={12} strokeWidth={3} /> : <ChevronDown size={12} strokeWidth={3} />}
+        </span>
+      </button>
+
+      <motion.div
+        layout
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.2 }}
+        className="space-y-2 overflow-hidden"
+      >
+        <div className="grid grid-cols-1 gap-2">
+          {visibleItems.map((item, idx) => renderItem(item, idx))}
+        </div>
+
+        {hasMore && (
+          <button
+            type="button"
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="mt-2 w-full border-2 border-[color:var(--chipzo-ink)] bg-white hover:bg-[color:var(--chipzo-lime)] py-1.5 text-[9px] font-black uppercase tracking-widest text-[color:var(--chipzo-ink)] shadow-[2px_2px_0_var(--chipzo-ink)] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0_var(--chipzo-ink)] cursor-pointer"
+          >
+            {isExpanded ? 'SHOW LESS ▲' : 'SHOW MORE ▼'}
+          </button>
+        )}
+      </motion.div>
+    </div>
+  )
+}
+
+const renderKitContentItem = (item, idx) => (
+  <div key={idx} className="flex items-center gap-2 border border-[color:var(--chipzo-rule)] bg-[color:var(--chipzo-paper)] px-3 py-2 text-xs font-bold text-[color:var(--chipzo-ink)]">
+    <span className="text-[color:var(--chipzo-primary)] font-black text-sm">•</span>
+    <span>{item}</span>
+  </div>
+)
+
+const renderProjectItem = (project, idx) => {
+  let title = project
+  let description = ''
+  
+  const parenIndex = project.indexOf('(')
+  if (parenIndex !== -1 && project.endsWith(')')) {
+    title = project.slice(0, parenIndex).trim()
+    description = project.slice(parenIndex + 1, -1).trim()
+  } else {
+    const colonIndex = project.indexOf(':')
+    if (colonIndex !== -1) {
+      title = project.slice(0, colonIndex).trim()
+      description = project.slice(colonIndex + 1).trim()
+    }
+  }
+
+  return (
+    <div key={idx} className="flex flex-col border border-[color:var(--chipzo-rule)] bg-[color:var(--chipzo-paper)] p-3 text-xs">
+      <span className="font-black uppercase text-[color:var(--chipzo-ink)]">{title}</span>
+      {description && (
+        <span className="font-semibold text-[color:var(--chipzo-muted)] mt-0.5">{description}</span>
+      )}
+    </div>
+  )
+}
+
 
 function QuantitySelector({ quantity, onDecrement, onIncrement }) {
   return (
@@ -378,8 +461,25 @@ export default function ProductQuickViewModal({ product, isOpen, onClose, onAddT
                 {/* Divider */}
                 <div className="border-t-[2px] border-dashed border-[color:var(--chipzo-rule)]" />
 
-                {/* Specs */}
-                <ProductSpecsPanel specs={product.specs} />
+                {/* Specs or Project Kits Expandable Sections */}
+                {product.category === 'Project Kits' ? (
+                  <div className="space-y-4">
+                    <ExpandableSection
+                      title="Kit Contents (Items Included)"
+                      items={product.kitContents}
+                      icon={Package}
+                      renderItem={renderKitContentItem}
+                    />
+                    <ExpandableSection
+                      title="Projects You Can Build"
+                      items={product.projectsIncluded}
+                      icon={Wrench}
+                      renderItem={renderProjectItem}
+                    />
+                  </div>
+                ) : (
+                  <ProductSpecsPanel specs={product.specs} />
+                )}
 
                 {/* Divider */}
                 <div className="border-t-[2px] border-dashed border-[color:var(--chipzo-rule)]" />
