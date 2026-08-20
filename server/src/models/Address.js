@@ -49,6 +49,14 @@ const addressSchema = new mongoose.Schema({
     required: [true, 'Pincode is required'],
     trim: true,
   },
+  lat: {
+    type: Number,
+    default: null,
+  },
+  lng: {
+    type: Number,
+    default: null,
+  },
   isDefault: {
     type: Boolean,
     default: false,

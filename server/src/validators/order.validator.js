@@ -31,6 +31,8 @@ const addressSchema = Joi.object({
       'string.pattern.name': 'Pincode must be a valid 6-digit Indian PIN',
       'any.required': 'Pincode is required',
     }),
+  lat: Joi.number().min(-90).max(90).optional().allow(null),
+  lng: Joi.number().min(-180).max(180).optional().allow(null),
 }).unknown(true);
 
 const createOrderSchema = Joi.object({

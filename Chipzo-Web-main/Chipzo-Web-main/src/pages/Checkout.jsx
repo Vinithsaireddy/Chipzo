@@ -10,6 +10,7 @@ import { ordersAPI, paymentAPI, addressAPI } from '../services/api.js';
 import { useAuth } from '../contexts/AuthContext.jsx';
 import AlertModal from '../components/AlertModal.jsx';
 import { LoadingButton } from '../components/LoadingButton.jsx';
+import AddressMapPicker from '../components/AddressMapPicker.jsx';
 import { useAsyncStatus } from '../hooks/useAsyncAction.js';
 import { checkSunday, checkTime, checkBangalore } from '../utils/orderValidation.js';
 
@@ -18,6 +19,7 @@ const fallbackOrderId = () => `CPZ-ORD-${Date.now()}`;
 const EMPTY_FORM = {
   fullName: '', phone: '', house: '', street: '',
   landmark: '', city: '', state: 'Karnataka', pincode: '',
+  lat: null, lng: null,
 };
 
 export default function Checkout({ onNavigate, activeCategory, cart = [], onCheckoutComplete, onPaymentFailed }) {
@@ -192,7 +194,7 @@ export default function Checkout({ onNavigate, activeCategory, cart = [], onChec
 
   const handleDetectLocation = () => {
     if (!navigator.geolocation) {
-      setErrorMessage('Geolocation is not supported by your browser.');
+      setErrorMessage('Geolocation is not supported by your browser. Use HTTPS or localhost.');
       return;
     }
 
@@ -200,40 +202,66 @@ export default function Checkout({ onNavigate, activeCategory, cart = [], onChec
     setDetectingLocationStep('Accessing GPS...');
     setErrorMessage('');
 
-    navigator.geolocation.getCurrentPosition(
-      async (position) => {
-        try {
-          const { latitude, longitude } = position.coords;
-          setDetectingLocationStep('Geocoding...');
+    const onSuccess = async (position) => {
+      try {
+        const { latitude, longitude } = position.coords;
+        setDetectingLocationStep('Geocoding...');
 
-          const data = await addressAPI.reverseGeocode(latitude, longitude);
-          const address = data?.data?.address || data?.address;
+        const data = await addressAPI.reverseGeocode(latitude, longitude);
+        const address = data?.data?.address || data?.address;
 
-          if (address) {
-            setFormData((prev) => ({
-              ...prev,
-              street: address.street || prev.street,
-              city: address.city || prev.city,
-              state: address.state || prev.state || 'Karnataka',
-              pincode: address.pincode || prev.pincode,
-            }));
-          }
-          setDetectingLocation(false);
-        } catch (err) {
-          setErrorMessage(err.message || 'Failed to detect location.');
-          setDetectingLocation(false);
+        if (address) {
+          setFormData((prev) => ({
+            ...prev,
+            street: address.street || prev.street,
+            city: address.city || prev.city,
+            state: address.state || prev.state || 'Karnataka',
+            pincode: address.pincode || prev.pincode,
+            lat: latitude,
+            lng: longitude,
+          }));
         }
-      },
-      (error) => {
-        let msg = 'Failed to get location.';
-        if (error.code === 1) msg = 'Location permission denied. Please allow location access in your browser settings.';
-        else if (error.code === 2) msg = 'Location position unavailable.';
-        else if (error.code === 3) msg = 'Location request timed out.';
-        setErrorMessage(msg);
         setDetectingLocation(false);
-      },
-      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
-    );
+      } catch (err) {
+        setErrorMessage(err.message || 'Failed to detect location.');
+        setDetectingLocation(false);
+      }
+    };
+
+    const onError = (error) => {
+      let msg = 'Failed to get location.';
+      if (error.code === 1) msg = 'Location permission denied. Please allow location access in your browser settings.';
+      else if (error.code === 2) msg = 'Location position unavailable. Try again or enter manually.';
+      else if (error.code === 3) msg = 'Location request timed out. Try again with a stronger GPS signal.';
+      setErrorMessage(msg);
+      setDetectingLocation(false);
+    };
+
+    // Try with high accuracy first, fall back to low accuracy on timeout
+    navigator.geolocation.getCurrentPosition(onSuccess, (error) => {
+      if (error.code === 3) {
+        setDetectingLocationStep('Retrying with low accuracy...');
+        navigator.geolocation.getCurrentPosition(onSuccess, onError, {
+          enableHighAccuracy: false,
+          timeout: 15000,
+          maximumAge: 300000,
+        });
+      } else {
+        onError(error);
+      }
+    }, { enableHighAccuracy: true, timeout: 8000, maximumAge: 60000 });
+  };
+
+  const handleMapLocation = (address) => {
+    setFormData((prev) => ({
+      ...prev,
+      street: address.street || prev.street,
+      city: address.city || prev.city || 'Bengaluru',
+      state: address.state || prev.state || 'Karnataka',
+      pincode: address.pincode || prev.pincode,
+      lat: address.lat ?? prev.lat,
+      lng: address.lng ?? prev.lng,
+    }));
   };
 
   const handleSaveAddress = async () => {
@@ -342,6 +370,8 @@ export default function Checkout({ onNavigate, activeCategory, cart = [], onChec
         city: addr.city,
         state: addr.state,
         pincode: addr.pincode,
+        lat: addr.lat || null,
+        lng: addr.lng || null,
       };
 
       if (!isLoggedIn) {
@@ -561,9 +591,7 @@ export default function Checkout({ onNavigate, activeCategory, cart = [], onChec
                                     formErrors={formErrors}
                                     onChange={handleInputChange}
                                     inputCls={inputCls}
-                                    detectingLocation={detectingLocation}
-                                    detectingLocationStep={detectingLocationStep}
-                                    onDetectLocation={handleDetectLocation}
+                                    onMapLocation={handleMapLocation}
                                   />
                                   <div className="flex gap-2 mt-4">
                                     <LoadingButton
@@ -662,9 +690,7 @@ export default function Checkout({ onNavigate, activeCategory, cart = [], onChec
                                 formErrors={formErrors}
                                 onChange={handleInputChange}
                                 inputCls={inputCls}
-                                detectingLocation={detectingLocation}
-                                detectingLocationStep={detectingLocationStep}
-                                onDetectLocation={handleDetectLocation}
+                                onMapLocation={handleMapLocation}
                               />
                           <div className="flex gap-2 mt-4">
                             <LoadingButton
@@ -895,25 +921,10 @@ export default function Checkout({ onNavigate, activeCategory, cart = [], onChec
 }
 
 /* ─── Address Form Sub-Component ─── */
-function AddressFormFields({ formData, formErrors, onChange, inputCls, detectingLocation, detectingLocationStep, onDetectLocation }) {
+function AddressFormFields({ formData, formErrors, onChange, inputCls, onMapLocation }) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <button
-        type="button"
-        onClick={onDetectLocation}
-        disabled={detectingLocation}
-        className="w-full md:col-span-2 mb-2 border-[3px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-primary)] hover:bg-[color:var(--chipzo-lime)] hover:-translate-y-[1px] hover:-translate-x-[1px] px-4 py-2.5 text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer shadow-[3px_3px_0_rgba(0,0,0,1)] disabled:opacity-50 disabled:cursor-not-allowed"
-      >
-        {detectingLocation ? (
-          <>
-            <Loader size={12} className="animate-spin" /> {detectingLocationStep}
-          </>
-        ) : (
-          <>
-            <MapPin size={12} fill="currentColor" /> Use Current Location
-          </>
-        )}
-      </button>
+      <AddressMapPicker onLocationSelect={onMapLocation} />
 
       <div className="flex flex-col gap-1.5 md:col-span-2">
         <label className="text-[10px] font-black uppercase tracking-widest text-[color:var(--chipzo-muted)]">FULL NAME *</label>

@@ -527,9 +527,6 @@ export default function Shop({ onNavigate, activeCategory, setActiveCategory, ca
                           <ProductVisual image={product.image} code={product.code} title={product.title} />
                         </div>
                         
-                        <span className={`absolute top-3 left-3 inline-flex border-[1.5px] border-[color:var(--chipzo-ink)] px-1.5 py-0.5 text-[8px] font-extrabold uppercase tracking-[0.05em] leading-none ${statusTone(product.tone)}`}>
-                          {product.status}
-                        </span>
                       </div>
 
                       {/* Card Content & Footer Stack */}

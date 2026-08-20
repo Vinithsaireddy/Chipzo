@@ -28,6 +28,8 @@ const addressSchema = new mongoose.Schema(
     city: { type: String, required: true },
     state: { type: String, required: true },
     pincode: { type: String, required: true },
+    lat: { type: Number, default: null },
+    lng: { type: Number, default: null },
   },
   { _id: false }
 );

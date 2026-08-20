@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Ola Maps Standalone Test</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet">
+  <style>
+    body { margin: 0; font-family: monospace; padding: 20px; }
+    #map { width: 100%; height: 500px; border: 2px solid #000; }
+    #log { background: #111; color: #0f0; padding: 10px; margin-top: 10px; max-height: 300px; overflow-y: auto; font-size: 12px; white-space: pre-wrap; }
+    button { padding: 8px 16px; margin: 4px; font-size: 14px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h2>Ola Maps + MapLibre GL Standalone Test</h2>
+  <button onclick="fetchToken()">1. Fetch Token</button>
+  <button onclick="testStyle()">2. Test Style.json</button>
+  <button onclick="initMap()">3. Init Map</button>
+  <button onclick="testTile()">4. Test Tile</button>
+  <div id="map"></div>
+  <div id="log">Ready. Click buttons in order.\n</div>
+
+  <script>
+    let map = null;
+    let token = null;
+
+    function log(msg) {
+      document.getElementById('log').textContent += `[${new Date().toLocaleTimeString()}] ${msg}\n`;
+    }
+
+    async function fetchToken() {
+      try {
+        const resp = await fetch('/api/addresses/maps-token');
+        const data = await resp.json();
+        const d = data.data || data;
+        token = d.token;
+        log(`Token: ${token ? token.substring(0, 30) + '...' : 'FAILED'}`);
+        log(`Style: ${d.style}`);
+      } catch (e) {
+        log(`ERROR fetching token: ${e.message}`);
+      }
+    }
+
+    function testStyle() {
+      if (!token) { log('No token yet!'); return; }
+      const styleUrl = `https://api.olamaps.io/tiles/vector/v1/styles/eclipse-light-standard/style.json`;
+      log(`Fetching style: ${styleUrl}`);
+      fetch(styleUrl, { headers: { Authorization: `Bearer ${token}` } })
+        .then(r => { log(`Style status: ${r.status}`); return r.json(); })
+        .then(d => log(`Style sources: ${JSON.stringify(Object.keys(d.sources || {}))}`))
+        .catch(e => log(`Style ERROR: ${e.message}`));
+    }
+
+    function initMap() {
+      if (!token) { log('No token yet!'); return; }
+      if (map) { map.remove(); map = null; }
+      const styleUrl = `https://api.olamaps.io/tiles/vector/v1/styles/eclipse-light-standard/style.json`;
+      log(`Init map with style: ${styleUrl}`);
+
+      map = new maplibregl.Map({
+        container: 'map',
+        style: styleUrl,
+        center: [77.5946, 12.9716],
+        zoom: 12,
+        transformRequest: (url) => {
+          if (url.includes('olamaps.io')) {
+            log(`transformRequest: ${url.substring(0, 80)}...`);
+            return { url, headers: { Authorization: `Bearer ${token}` } };
+          }
+          return { url };
+        },
+      });
+
+      map.addControl(new maplibregl.NavigationControl(), 'top-right');
+
+      map.on('load', () => log('EVENT: map.on("load") fired!'));
+      map.on('style.load', () => log('EVENT: map.on("style.load") fired!'));
+      map.on('error', (e) => log(`EVENT: map.on("error") - ${e.error?.message || e.message || JSON.stringify(e)}`));
+      map.on('sourcedata', (e) => {
+        if (e.isSourceLoaded) log(`EVENT: sourcedata loaded: ${e.sourceId}`);
+      });
+      map.on('data', (e) => {
+        if (e.dataType === 'style') log(`EVENT: data(style)`);
+      });
+      map.on('render', () => {
+        if (map.loaded()) log('EVENT: map loaded=true on render');
+      });
+
+      log('Map object created, waiting for events...');
+    }
+
+    async function testTile() {
+      if (!token) { log('No token yet!'); return; }
+      const tileUrl = `https://api.olamaps.io/tiles/vector/v1/data/planet/12/2742/3634.pbf`;
+      log(`Fetching tile: ${tileUrl}`);
+      fetch(tileUrl, { headers: { Authorization: `Bearer ${token}` } })
+        .then(r => { log(`Tile status: ${r.status}, type: ${r.headers.get('content-type')}`); return r.arrayBuffer(); })
+        .then(b => log(`Tile size: ${b.byteLength} bytes`))
+        .catch(e => log(`Tile ERROR: ${e.message}`));
+    }
+  </script>
+</body>
+</html>

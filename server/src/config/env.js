@@ -98,6 +98,11 @@ module.exports = Object.freeze({
   RESEND_API_KEY: process.env.RESEND_API_KEY || '',
   EMAIL_FROM: process.env.EMAIL_FROM || 'support@shopchipzo.com',
 
+  // Ola Maps integration
+  OLA_MAPS_CLIENT_ID: process.env.OLA_MAPS_CLIENT_ID || '',
+  OLA_MAPS_CLIENT_SECRET: process.env.OLA_MAPS_CLIENT_SECRET || '',
+  OLA_MAPS_STYLE: process.env.OLA_MAPS_STYLE || 'eclipse-light-standard',
+
   // WhatsApp integration configs
   WHATSAPP_PROVIDER: process.env.WHATSAPP_PROVIDER || 'mock',
   META_WHATSAPP_PHONE_NUMBER_ID: process.env.META_WHATSAPP_PHONE_NUMBER_ID || '',

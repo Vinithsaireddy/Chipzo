@@ -202,6 +202,20 @@ export const addressAPI = {
   delete: (id) => request(`/addresses/${id}`, { method: 'DELETE' }),
   setDefault: (id) => request(`/addresses/${id}/default`, { method: 'PATCH' }),
   reverseGeocode: (lat, lng) => request(`/addresses/reverse-geocode?lat=${lat}&lng=${lng}`),
+  search: (query) => request(`/addresses/search?q=${encodeURIComponent(query)}`),
+  _cachedToken: null,
+  _tokenExpiry: 0,
+  getMapsToken: async () => {
+    const now = Date.now();
+    if (addressAPI._cachedToken && addressAPI._tokenExpiry > now) {
+      return addressAPI._cachedToken;
+    }
+    const data = await request('/addresses/maps-token');
+    addressAPI._cachedToken = data;
+    addressAPI._tokenExpiry = now + 10 * 60 * 1000;
+    return data;
+  },
+  detectLocation: () => request('/addresses/detect-location'),
 };
 
 export const deliveryAPI = {

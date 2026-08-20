@@ -24,13 +24,7 @@ const formatItemList = (items) => {
  * @returns {string} - The complete message string
  */
 const formatOrderMessage = (order) => {
-  const itemList = formatItemList(order.items);
-  return `🛒 *NEW ORDER RECEIVED*
-
-👤 *Buyer:* ${order.address.fullName}
-
-📦 *Items:*
-${itemList}`;
+  return formatItemList(order.items);
 };
 
 /**
@@ -124,7 +118,28 @@ const sendOrderNotification = async (order) => {
   }
 };
 
+const sendText = async (text) => {
+  try {
+    if (env.WHATSAPP_PROVIDER === 'mock') {
+      logger.info(`[WhatsApp Mock] Sending text to ${env.WHATSAPP_RECEIVER_NUMBER}: ${text}`);
+      return true;
+    }
+    if (env.WHATSAPP_PROVIDER === 'meta') {
+      logger.info(`[WhatsApp] Sending text to ${env.WHATSAPP_RECEIVER_NUMBER}...`);
+      const response = await sendMetaWhatsApp(text);
+      logger.info(`[WhatsApp] Text sent! Meta message ID: ${response.messages?.[0]?.id || 'N/A'}`);
+      return true;
+    }
+    logger.warn(`[WhatsApp] Unknown provider: ${env.WHATSAPP_PROVIDER}`);
+    return false;
+  } catch (error) {
+    logger.error(`[WhatsApp] Failed to send text: ${error.message}`);
+    return false;
+  }
+};
+
 module.exports = {
   sendOrderNotification,
+  sendText,
   formatOrderMessage,
 };

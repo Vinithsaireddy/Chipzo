@@ -10,6 +10,7 @@ import {
   Loader, Plus, Trash2, Star, CheckCircle, Clock, CreditCard, Truck, Edit3,
 } from 'lucide-react';
 import { LoadingButton } from '../components/LoadingButton.jsx';
+import AddressMapPicker from '../components/AddressMapPicker.jsx';
 import { useAsyncStatus } from '../hooks/useAsyncAction.js';
 
 export default function Profile({ onNavigate, activeCategory }) {
@@ -41,6 +42,8 @@ export default function Profile({ onNavigate, activeCategory }) {
     city: '',
     state: 'Karnataka',
     pincode: '',
+    lat: null,
+    lng: null,
   });
   const [addressErrors, setAddressErrors] = useState({});
   const [saveAddressStatus, setSaveAddressStatus] = useState('idle');
@@ -72,6 +75,8 @@ export default function Profile({ onNavigate, activeCategory }) {
       city: '',
       state: 'Karnataka',
       pincode: '',
+      lat: null,
+      lng: null,
     });
     setAddressErrors({});
     setSaveAddressStatus('idle');
@@ -89,6 +94,8 @@ export default function Profile({ onNavigate, activeCategory }) {
       city: addr.city || '',
       state: addr.state || 'Karnataka',
       pincode: addr.pincode || '',
+      lat: addr.lat || null,
+      lng: addr.lng || null,
     });
     setAddressErrors({});
     setSaveAddressStatus('idle');
@@ -118,7 +125,7 @@ export default function Profile({ onNavigate, activeCategory }) {
 
   const handleDetectLocation = () => {
     if (!navigator.geolocation) {
-      setAddressErrors((prev) => ({ ...prev, submit: 'Geolocation is not supported by your browser.' }));
+      setAddressErrors((prev) => ({ ...prev, submit: 'Geolocation is not supported by your browser. Use HTTPS or localhost.' }));
       return;
     }
 
@@ -126,40 +133,66 @@ export default function Profile({ onNavigate, activeCategory }) {
     setDetectingLocationStep('Accessing GPS...');
     setAddressErrors({});
 
-    navigator.geolocation.getCurrentPosition(
-      async (position) => {
-        try {
-          const { latitude, longitude } = position.coords;
-          setDetectingLocationStep('Geocoding...');
+    const onSuccess = async (position) => {
+      try {
+        const { latitude, longitude } = position.coords;
+        setDetectingLocationStep('Geocoding...');
 
-          const data = await addressAPI.reverseGeocode(latitude, longitude);
-          const address = data?.data?.address || data?.address;
+        const data = await addressAPI.reverseGeocode(latitude, longitude);
+        const address = data?.data?.address || data?.address;
 
-          if (address) {
-            setAddressForm((prev) => ({
-              ...prev,
-              street: address.street || prev.street,
-              city: address.city || prev.city,
-              state: address.state || prev.state || 'Karnataka',
-              pincode: address.pincode || prev.pincode,
-            }));
-          }
-          setDetectingLocation(false);
-        } catch (err) {
-          setAddressErrors((prev) => ({ ...prev, submit: err.message || 'Failed to detect location.' }));
-          setDetectingLocation(false);
+        if (address) {
+          setAddressForm((prev) => ({
+            ...prev,
+            street: address.street || prev.street,
+            city: address.city || prev.city,
+            state: address.state || prev.state || 'Karnataka',
+            pincode: address.pincode || prev.pincode,
+            lat: latitude,
+            lng: longitude,
+          }));
         }
-      },
-      (error) => {
-        let msg = 'Failed to get location.';
-        if (error.code === 1) msg = 'Location permission denied. Please allow location access in your browser settings.';
-        else if (error.code === 2) msg = 'Location position unavailable.';
-        else if (error.code === 3) msg = 'Location request timed out.';
-        setAddressErrors((prev) => ({ ...prev, submit: msg }));
         setDetectingLocation(false);
-      },
-      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
-    );
+      } catch (err) {
+        setAddressErrors((prev) => ({ ...prev, submit: err.message || 'Failed to detect location.' }));
+        setDetectingLocation(false);
+      }
+    };
+
+    const onError = (error) => {
+      let msg = 'Failed to get location.';
+      if (error.code === 1) msg = 'Location permission denied. Please allow location access in your browser settings.';
+      else if (error.code === 2) msg = 'Location position unavailable. Try again or enter manually.';
+      else if (error.code === 3) msg = 'Location request timed out. Try again with a stronger GPS signal.';
+      setAddressErrors((prev) => ({ ...prev, submit: msg }));
+      setDetectingLocation(false);
+    };
+
+    // Try with high accuracy first, fall back to low accuracy on timeout
+    navigator.geolocation.getCurrentPosition(onSuccess, (error) => {
+      if (error.code === 3) {
+        setDetectingLocationStep('Retrying with low accuracy...');
+        navigator.geolocation.getCurrentPosition(onSuccess, onError, {
+          enableHighAccuracy: false,
+          timeout: 15000,
+          maximumAge: 300000,
+        });
+      } else {
+        onError(error);
+      }
+    }, { enableHighAccuracy: true, timeout: 8000, maximumAge: 60000 });
+  };
+
+  const handleMapLocation = (address) => {
+    setAddressForm((prev) => ({
+      ...prev,
+      street: address.street || prev.street,
+      city: address.city || prev.city || 'Bengaluru',
+      state: address.state || prev.state || 'Karnataka',
+      pincode: address.pincode || prev.pincode,
+      lat: address.lat ?? prev.lat,
+      lng: address.lng ?? prev.lng,
+    }));
   };
 
   const handleSaveAddress = async (e) => {
@@ -606,22 +639,7 @@ export default function Profile({ onNavigate, activeCategory }) {
                     </div>
                   )}
 
-                  <button
-                    type="button"
-                    onClick={handleDetectLocation}
-                    disabled={detectingLocation}
-                    className="w-full mb-4 border-[3px] border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-primary)] hover:bg-[color:var(--chipzo-lime)] hover:-translate-y-[1px] hover:-translate-x-[1px] px-4 py-2.5 text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer shadow-[3px_3px_0_rgba(0,0,0,1)] disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {detectingLocation ? (
-                      <>
-                        <Loader size={12} className="animate-spin" /> {detectingLocationStep}
-                      </>
-                    ) : (
-                      <>
-                        <MapPin size={12} fill="currentColor" /> Use Current Location
-                      </>
-                    )}
-                  </button>
+                  <AddressMapPicker onLocationSelect={handleMapLocation} />
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="flex flex-col gap-1 sm:col-span-2">

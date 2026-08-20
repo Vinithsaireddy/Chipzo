@@ -212,7 +212,7 @@ function DeliveryRewardMessage({ remaining, onAddToCart, cartItems }) {
               >
                 <div className="flex items-center gap-1.5 min-w-0">
                   <div className="w-8 h-8 border border-[color:var(--chipzo-ink)] bg-[color:var(--chipzo-surface)] overflow-hidden p-0.5 flex items-center justify-center shrink-0">
-                    <img src={item.image} alt={item.title} className="w-full h-full object-contain grayscale group-hover:grayscale-0 transition-all duration-300" />
+                    <img src={item.image} alt={item.title} className="w-full h-full object-contain" />
                   </div>
                   <div className="font-mono text-left truncate">
                     <h4 className="text-[9px] font-black uppercase text-[color:var(--chipzo-ink)] leading-none truncate max-w-[110px]">{item.title}</h4>
@@ -462,25 +462,17 @@ export default function Cart({ onNavigate, activeCategory, cart = [], isCartLoad
               </div>
             </div>
           ) : items.length === 0 ? (
-            /* ================= EMPTY STATE ================= */
             <div className="flex flex-col items-center justify-center py-20 px-6 brutal-border bg-[color:var(--chipzo-surface)] brutal-shadow text-center max-w-4xl mx-auto w-full my-12">
-              <div className="w-20 h-20 brutal-border bg-[color:var(--chipzo-lime)] flex items-center justify-center shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] mb-8">
-                <ShoppingBag size={40} strokeWidth={2.5} />
-              </div>
-              <h1 className="text-4xl sm:text-5xl font-black uppercase text-[color:var(--chipzo-ink)] leading-none tracking-tight">
-                NO HARDWARE DETECTED
+              <ShoppingBag size={48} strokeWidth={2} className="text-[color:var(--chipzo-muted)] mb-6" />
+              <h1 className="text-3xl sm:text-4xl font-black uppercase text-[color:var(--chipzo-ink)] leading-none tracking-tight">
+                Cart is empty
               </h1>
-              <p className="font-mono text-xs sm:text-sm tracking-wider text-[color:var(--chipzo-muted)] mt-4 uppercase max-w-lg border-2 border-dashed border-[color:var(--chipzo-rule)] p-4 bg-[color:var(--chipzo-paper)]">
-                [SYSTEM LOG ERROR // CODE 404]: INTERNAL ACQUISITION DRIVE IS EMPTY. PLEASE LOAD HARDWARE MODULES TO INTIALIZE THE DEVELOPMENT CART STACK.
-              </p>
-              
               <button
                 type="button"
                 onClick={() => onNavigate?.('shop')}
-                className="mt-8 bg-[color:var(--chipzo-primary)] text-[color:var(--chipzo-paper)] font-black text-sm py-4 px-8 brutal-border shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] transition-all flex items-center gap-2 group cursor-pointer uppercase tracking-widest"
+                className="mt-8 bg-[color:var(--chipzo-primary)] text-[color:var(--chipzo-paper)] font-black text-sm py-4 px-8 brutal-border shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] transition-all uppercase tracking-widest cursor-pointer"
               >
-                <span>INITIALIZE MODULE ACQUISITION</span>
-                <ArrowRight size={16} strokeWidth={3} className="group-hover:translate-x-1 transition-transform" />
+                Shop Now
               </button>
             </div>
           ) : (
@@ -522,7 +514,7 @@ export default function Cart({ onNavigate, activeCategory, cart = [], isCartLoad
                           <div className="h-32 w-full brutal-border bg-[color:var(--chipzo-surface)] mb-3 overflow-hidden flex items-center justify-center p-2 relative">
                             <img 
                               alt={item.title} 
-                              className="w-full h-full object-contain grayscale group-hover:grayscale-0 transition-all duration-300" 
+                              className="w-full h-full object-contain" 
                               src={item.image || ''}
                               onError={(e) => { e.target.style.display = 'none' }}
                             />
@@ -623,7 +615,7 @@ export default function Cart({ onNavigate, activeCategory, cart = [], isCartLoad
                                   <div className="w-16 h-16 shrink-0 brutal-border bg-[color:var(--chipzo-surface)] overflow-hidden flex items-center justify-center p-1.5">
                                     <img 
                                       alt={compItem.title} 
-                                      className="w-full h-full object-contain grayscale group-hover:grayscale-0 transition-all duration-300" 
+                                      className="w-full h-full object-contain" 
                                       src={compItem.image}
                                     />
                                   </div>
