@@ -5,6 +5,22 @@ import { addressAPI } from '../services/api.js';
 
 const BANGALORE_CENTER = [77.5946, 12.9716];
 
+const BANGALORE_BOUNDS = {
+  minLat: 12.73,
+  maxLat: 13.17,
+  minLng: 77.34,
+  maxLng: 77.88,
+};
+
+const isInsideBangalore = (lat, lng) => {
+  return (
+    lat >= BANGALORE_BOUNDS.minLat &&
+    lat <= BANGALORE_BOUNDS.maxLat &&
+    lng >= BANGALORE_BOUNDS.minLng &&
+    lng <= BANGALORE_BOUNDS.maxLng
+  );
+};
+
 function SuggestionList({ items, searchLeft, searchTop, searchWidth, onSelect, onClose }) {
   const listRef = useRef(null);
 
@@ -99,6 +115,10 @@ export default function AddressMapPicker({ onLocationSelect, onDetecting }) {
         style: styleUrl,
         center: center || BANGALORE_CENTER,
         zoom,
+        maxBounds: [
+          [BANGALORE_BOUNDS.minLng, BANGALORE_BOUNDS.minLat],
+          [BANGALORE_BOUNDS.maxLng, BANGALORE_BOUNDS.maxLat]
+        ],
         transformRequest: (url, resourceType) => {
           if (url.includes('olamaps.io')) {
             return { url, headers: { Authorization: `Bearer ${token}` } };
@@ -114,7 +134,10 @@ export default function AddressMapPicker({ onLocationSelect, onDetecting }) {
           clearTimeout(loadingTimerRef.current);
           loadingTimerRef.current = null;
         }
-        if (!mapReady) setMapReady(true);
+        setMapReady(true);
+        if (center) {
+          updateMarker(map, center);
+        }
       };
 
       map.on('load', markReady);
@@ -131,6 +154,11 @@ export default function AddressMapPicker({ onLocationSelect, onDetecting }) {
 
       map.on('click', (e) => {
         const { lng, lat } = e.lngLat;
+        if (!isInsideBangalore(lat, lng)) {
+          setMapError('Delivery is only available within Bengaluru.');
+          return;
+        }
+        setMapError('');
         updateMarker(map, [lng, lat]);
         reverseGeocodeAndNotify(lat, lng);
       });
@@ -168,6 +196,14 @@ export default function AddressMapPicker({ onLocationSelect, onDetecting }) {
 
       markerRef.current.on('dragend', () => {
         const pos = markerRef.current.getLngLat();
+        if (!isInsideBangalore(pos.lat, pos.lng)) {
+          setMapError('Delivery is only available within Bengaluru.');
+          const prev = positionRef.current;
+          const prevLngLat = prev ? [prev[1], prev[0]] : BANGALORE_CENTER;
+          markerRef.current.setLngLat(prevLngLat);
+          return;
+        }
+        setMapError('');
         setPosition([pos.lat, pos.lng]);
         reverseGeocodeAndNotify(pos.lat, pos.lng);
       });
@@ -193,23 +229,23 @@ export default function AddressMapPicker({ onLocationSelect, onDetecting }) {
     }
   }, [onLocationSelect]);
 
+  const positionRef = useRef(position);
+  useEffect(() => {
+    positionRef.current = position;
+  }, [position]);
+
   useEffect(() => {
     if (expanded && !mapRef.current) {
       const pending = pendingCenterRef.current;
       pendingCenterRef.current = null;
-      initMap(pending?.center || null, pending?.zoom || 12);
+      const currentPos = positionRef.current;
+      const initialCenter = pending?.center || (currentPos ? [currentPos[1], currentPos[0]] : null);
+      initMap(initialCenter, pending?.zoom || 15);
     }
     return () => {
       cleanupMap();
     };
   }, [expanded, initMap, cleanupMap]);
-
-  useEffect(() => {
-    if (position && mapRef.current && mapReady) {
-      mapRef.current.flyTo({ center: [position[1], position[0]], zoom: 15, duration: 1000 });
-      updateMarker(mapRef.current, [position[1], position[0]]);
-    }
-  }, [position, mapReady, updateMarker]);
 
   const fetchSuggestions = useCallback(async (query) => {
     if (query.length < 2) { setSuggestions([]); return; }
@@ -250,7 +286,21 @@ export default function AddressMapPicker({ onLocationSelect, onDetecting }) {
     let lat = item.lat;
     let lng = item.lng;
 
+    // If suggestion has no coordinates, fetch them via place details
+    if ((!lat || !lng) && item.placeId) {
+      try {
+        const data = await addressAPI.getPlaceDetails(item.placeId);
+        const loc = data?.data?.location || data?.location;
+        if (loc) { lat = loc.lat; lng = loc.lng; }
+      } catch { /* fall through */ }
+    }
+
     if (lat && lng) {
+      if (!isInsideBangalore(lat, lng)) {
+        setMapError('Selected location is outside Bengaluru. Delivery is not supported here.');
+        return;
+      }
+      setMapError('');
       setPosition([lat, lng]);
       if (mapRef.current) {
         mapRef.current.flyTo({ center: [lng, lat], zoom: 15, duration: 1000 });
@@ -265,6 +315,13 @@ export default function AddressMapPicker({ onLocationSelect, onDetecting }) {
     if (onDetecting) onDetecting(true);
 
     const applyLocation = async (lat, lng) => {
+      if (!isInsideBangalore(lat, lng)) {
+        setMapError('Detected location is outside Bengaluru. Delivery is not supported here.');
+        if (onDetecting) onDetecting(false);
+        setLoading(false);
+        return;
+      }
+      setMapError('');
       setPosition([lat, lng]);
       if (!mapRef.current) {
         pendingCenterRef.current = { center: [lng, lat], zoom: 15 };

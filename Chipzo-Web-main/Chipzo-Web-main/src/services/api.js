@@ -216,6 +216,7 @@ export const addressAPI = {
     return data;
   },
   detectLocation: () => request('/addresses/detect-location'),
+  getPlaceDetails: (placeId) => request(`/addresses/place-details?placeId=${encodeURIComponent(placeId)}`),
 };
 
 export const deliveryAPI = {

@@ -5,6 +5,22 @@ import { addressAPI } from '../services/api.js';
 
 const BANGALORE_CENTER = [77.5946, 12.9716];
 
+const BANGALORE_BOUNDS = {
+  minLat: 12.73,
+  maxLat: 13.17,
+  minLng: 77.34,
+  maxLng: 77.88,
+};
+
+const isInsideBangalore = (lat, lng) => {
+  return (
+    lat >= BANGALORE_BOUNDS.minLat &&
+    lat <= BANGALORE_BOUNDS.maxLat &&
+    lng >= BANGALORE_BOUNDS.minLng &&
+    lng <= BANGALORE_BOUNDS.maxLng
+  );
+};
+
 export default function LocationMap() {
   const [position, setPosition] = useState(null);
   const [address, setAddress] = useState(null);
@@ -61,6 +77,14 @@ export default function LocationMap() {
 
       markerRef.current.on('dragend', () => {
         const pos = markerRef.current.getLngLat();
+        if (!isInsideBangalore(pos.lat, pos.lng)) {
+          setMapError('Delivery is only available within Bengaluru.');
+          const prev = position; // position state stores [lat, lng]
+          const prevLngLat = prev ? [prev[1], prev[0]] : BANGALORE_CENTER;
+          markerRef.current.setLngLat(prevLngLat);
+          return;
+        }
+        setMapError('');
         setPosition([pos.lat, pos.lng]);
         doReverseGeocode(pos.lat, pos.lng);
       });
@@ -110,6 +134,10 @@ export default function LocationMap() {
         style: styleUrl,
         center: center || BANGALORE_CENTER,
         zoom,
+        maxBounds: [
+          [BANGALORE_BOUNDS.minLng, BANGALORE_BOUNDS.minLat],
+          [BANGALORE_BOUNDS.maxLng, BANGALORE_BOUNDS.maxLat]
+        ],
         transformRequest: (url, resourceType) => {
           if (url.includes('olamaps.io')) {
             return { url, headers: { Authorization: `Bearer ${token}` } };
@@ -125,7 +153,7 @@ export default function LocationMap() {
           clearTimeout(loadingTimerRef.current);
           loadingTimerRef.current = null;
         }
-        if (!mapReady) setMapReady(true);
+        setMapReady(true);
       };
 
       map.on('load', markReady);
@@ -142,6 +170,11 @@ export default function LocationMap() {
 
       map.on('click', (e) => {
         const { lng, lat } = e.lngLat;
+        if (!isInsideBangalore(lat, lng)) {
+          setMapError('Delivery is only available within Bengaluru.');
+          return;
+        }
+        setMapError('');
         updateMarker(map, [lng, lat]);
         doReverseGeocode(lat, lng);
       });
@@ -185,9 +218,24 @@ export default function LocationMap() {
   const selectSuggestion = async (item) => {
     setSearchQuery(item.mainText || item.description || '');
     setShowSuggestions(false);
-    const lat = item.lat;
-    const lng = item.lng;
+    let lat = item.lat;
+    let lng = item.lng;
+
+    // If suggestion has no coordinates, fetch them via place details
+    if ((!lat || !lng) && item.placeId) {
+      try {
+        const data = await addressAPI.getPlaceDetails(item.placeId);
+        const loc = data?.data?.location || data?.location;
+        if (loc) { lat = loc.lat; lng = loc.lng; }
+      } catch { /* fall through */ }
+    }
+
     if (lat && lng && mapRef.current) {
+      if (!isInsideBangalore(lat, lng)) {
+        setMapError('Selected location is outside Bengaluru. Delivery is not supported here.');
+        return;
+      }
+      setMapError('');
       mapRef.current.flyTo({ center: [lng, lat], zoom: 15, duration: 1500 });
       updateMarker(mapRef.current, [lng, lat]);
       doReverseGeocode(lat, lng);
@@ -199,6 +247,12 @@ export default function LocationMap() {
     setError('');
 
     const applyLocation = async (lat, lng) => {
+      if (!isInsideBangalore(lat, lng)) {
+        setMapError('Detected location is outside Bengaluru. Delivery is not supported here.');
+        setLoading(false);
+        return;
+      }
+      setMapError('');
       if (mapRef.current) {
         mapRef.current.flyTo({ center: [lng, lat], zoom: 15, duration: 1500 });
         updateMarker(mapRef.current, [lng, lat]);

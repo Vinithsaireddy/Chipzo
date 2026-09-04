@@ -552,7 +552,7 @@ export default function Checkout({ onNavigate, activeCategory, cart = [], onChec
                   {/* Saved Addresses List */}
                   {addressesLoading ? (
                     <div className="text-center py-12 brutal-border bg-[color:var(--chipzo-paper)] relative overflow-hidden flex flex-col items-center justify-center gap-3">
-                      <div className="absolute inset-0 opacity-[0.03] mix-blend-overlay bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
+                       <div className="absolute inset-0 opacity-[0.03] mix-blend-overlay bg-[url(&quot;data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E&quot;)]" />
                       <div className="flex h-10 w-10 items-center justify-center border-[2px] border-[color:var(--chipzo-lime)] bg-[color:var(--chipzo-ink)] shadow-[2px_2px_0px_var(--chipzo-lime)] animate-spin-slow">
                         <MapPin size={20} className="text-[color:var(--chipzo-lime)] animate-pulse" />
                       </div>
